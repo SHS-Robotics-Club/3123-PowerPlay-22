@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.old.b_opmodes.teleop;
+package org.firstinspires.ftc.teamcode.linear;
 
 import static java.lang.Math.round;
 
@@ -10,9 +10,10 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import java.text.DecimalFormat;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.old.a_hardware.Hardware;
+
+import java.text.DecimalFormat;
 
 @Disabled
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "LinearTeleOp", group = ".")
@@ -56,7 +57,7 @@ public class TeleOp extends LinearOpMode {
         while (opModeIsActive()) {
             // GAME-PADS
             GamepadEx gp1 = new GamepadEx(gamepad1);
-            GamepadEx gp2 = new GamepadEx(gamepad2);
+            //GamepadEx gp2 = new GamepadEx(gamepad2);
 
             // DRIVE-----------------------------------------------------------------------------------------
             // Mecanum

@@ -3,14 +3,14 @@ package org.firstinspires.ftc.teamcode.b_commands.auto;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.arcrobotics.ftclib.command.CommandBase;
 
-import org.firstinspires.ftc.teamcode.c_subsystems.auto.MecanumDriveSubsystem;
+import org.firstinspires.ftc.teamcode.c_subsystems.auto.MDriveSubsystem;
 
 public class TrajectoryFollowerCommand extends CommandBase {
 
-    private final MecanumDriveSubsystem drive;
+    private final MDriveSubsystem drive;
     private final Trajectory trajectory;
 
-    public TrajectoryFollowerCommand(MecanumDriveSubsystem drive, Trajectory trajectory) {
+    public TrajectoryFollowerCommand(MDriveSubsystem drive, Trajectory trajectory) {
         this.drive = drive;
         this.trajectory = trajectory;
 

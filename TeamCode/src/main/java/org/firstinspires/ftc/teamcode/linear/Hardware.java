@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.old.a_hardware;
+package org.firstinspires.ftc.teamcode.linear;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
