@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode;
 import android.app.Activity;
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeRegistrar;
@@ -15,10 +17,23 @@ import org.firstinspires.ftc.robotcore.internal.system.Misc;
 /**
  * Main class for interacting with the instance.
  */
-public class Ali {
+public class AllianceToggle {
+    public static Alliance alliance = Alliance.RED; // Current Alliance
+
+    // Alliance switch
+    public enum Alliance {
+        RED, BLUE;
+
+        @NonNull
+        @Override
+        public String toString() {
+            return super.toString();
+        }
+    }
+
     private static boolean suppressOpMode = false;
 
-    private static Ali instance;
+    private static AllianceToggle instance;
 
     @OpModeRegistrar
     public static void registerOpMode(OpModeManager manager) {
@@ -33,50 +48,40 @@ public class Ali {
     @OnCreate
     public static void start(Context context) {
         if (instance == null) {
-            instance = new Ali();
+            instance = new AllianceToggle();
         }
     }
 
-    /**
-     * Returns the active instance instance. This should be called after {@link #start(Context)}.
-     * @return active instance instance or null outside of its lifecycle
-     */
-    public static Ali getInstance() {
-        return instance;
-    }
+    private boolean Team;
 
-    private boolean REDd;
-
-    private Ali() {
-
-
+    private AllianceToggle() {
         Activity activity = AppUtil.getInstance().getActivity();
     }
 
     private void RED() {
-        if (REDd) return;
-        REDd = true;
-        GlobalConfig.alliance = GlobalConfig.Alliance.RED;
+        if (Team)
+            return;
+        Team = true;
+        alliance = Alliance.RED;
     }
 
     private void BLUE() {
-        if (!REDd) return;
-        REDd = false;
-        GlobalConfig.alliance = GlobalConfig.Alliance.BLUE;
+        if (!Team)
+            return;
+        Team = false;
+        alliance = Alliance.BLUE;
     }
 
     private void internalRegisterOpMode(OpModeManager manager) {
         manager.register(
-                new OpModeMeta.Builder()
-                    .setName("RED/BLUE Dashboard")
-                    .setFlavor(OpModeMeta.Flavor.TELEOP)
-                    .setGroup("dash")
-                    .build(),
+                new OpModeMeta.Builder().setName("Red/Blue Team")
+                        .setFlavor(OpModeMeta.Flavor.TELEOP).setGroup("dash").build(),
                 new LinearOpMode() {
                     @Override
-                    public void runOpMode() throws InterruptedException {
-                        telemetry.log().add(Misc.formatInvariant("Dashboard is currently %s. Press Start to %s it.",
-                                REDd ? "REDd" : "BLUEd", REDd ? "BLUE" : "RED"));
+                    public void runOpMode() {
+                        telemetry.log().add(Misc.formatInvariant(
+                                "Robot is configured for %s Team. Press Start to configure it for %s Team.",
+                                Team ? "Red" : "Blue", Team ? "Blue" : "Red"));
                         telemetry.update();
 
                         waitForStart();
@@ -85,12 +90,12 @@ public class Ali {
                             return;
                         }
 
-                        if (REDd) {
+                        if (Team) {
                             BLUE();
                         } else {
                             RED();
                         }
-                   }
+                    }
                 });
     }
 }

@@ -1,10 +1,12 @@
-package org.firstinspires.ftc.teamcode.b_opmodes.settings;
+package org.firstinspires.ftc.teamcode.old.b_opmodes.settings;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.GlobalConfig;
+import org.firstinspires.ftc.teamcode.old.GlobalConfig;
 
+@Disabled
 @TeleOp(name = "Toggle Alliance", group = "Conf")
 public class ToggleAlliance extends LinearOpMode {
     @Override
