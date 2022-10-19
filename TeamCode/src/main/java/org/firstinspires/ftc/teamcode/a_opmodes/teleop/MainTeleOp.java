@@ -3,18 +3,26 @@ package org.firstinspires.ftc.teamcode.a_opmodes.teleop;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.RunCommand;
+import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.RevIMU;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.b_commands.teleop.AllianceCommand;
 import org.firstinspires.ftc.teamcode.b_commands.teleop.DriveCommand;
 import org.firstinspires.ftc.teamcode.c_subsystems.teleop.DriveSubsystem;
+import org.firstinspires.ftc.teamcode.c_subsystems.teleop.LynxSubsystem;
+
+import java.util.List;
 
 //@Disabled
 @TeleOp(name = "CommandTeleOp", group = ".")
 @Config
 public class MainTeleOp extends CommandOpMode {
+    int n = 0;
 
     // MOTORS
 
@@ -23,9 +31,11 @@ public class MainTeleOp extends CommandOpMode {
     
     // SUBSYSTEMS
     private DriveSubsystem driveSubsystem;
+    private LynxSubsystem lynxSubsystem;
 
     // COMMANDS
     private DriveCommand driveCommand;
+    private AllianceCommand allianceCommand;
 
     // EXTRAS
     private GamepadEx gPad1, gPad2;
@@ -36,6 +46,13 @@ public class MainTeleOp extends CommandOpMode {
 
     @Override
     public void initialize() {
+        List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
+
+        for (LynxModule hub : allHubs) {
+            hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
+            hub.setConstant(n);
+        }
+
         // Initialize Motors
         frontLeft = new MotorEx(hardwareMap, "fL");
         frontRight = new MotorEx(hardwareMap, "fR");
@@ -49,6 +66,17 @@ public class MainTeleOp extends CommandOpMode {
         // Initialize Commands and Subsystems
         driveSubsystem = new DriveSubsystem(frontLeft, frontRight, backLeft, backRight, revIMU);
         driveCommand = new DriveCommand(driveSubsystem, gPad1::getLeftX, gPad1::getLeftY, gPad1::getRightX);
+
+/*        GamepadButton grabButton = new GamepadButton(
+                gPad1, GamepadKeys.Button.A
+        );*/
+
+        if (gPad1.getButton(GamepadKeys.Button.A)){
+            n = n + 1;
+        }
+
+/*        lynxSubsystem = new LynxSubsystem(hardwareMap.getAll(LynxModule.class));
+        allianceCommand = new AllianceCommand(lynxSubsystem, LynxModule.BulkCachingMode.AUTO, 2);*/
 
         // Motor Settings
         frontLeft.resetEncoder();
@@ -81,9 +109,14 @@ public class MainTeleOp extends CommandOpMode {
             telemetry.addData("frontRight encoder position", frontRight.encoder.getPosition());
             telemetry.addData("backLeft encoder position", backLeft.encoder.getPosition());
             telemetry.addData("backRight encoder position", backRight.encoder.getPosition());
+
+            telemetry.addData("n", n);
+            telemetry.addData("A", gPad1.getButton(GamepadKeys.Button.A));
+
             telemetry.update();
         }));
 
         idle();
     }
+
 }
