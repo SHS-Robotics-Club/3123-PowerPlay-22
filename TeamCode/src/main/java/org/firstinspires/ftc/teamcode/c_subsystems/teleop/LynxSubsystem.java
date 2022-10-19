@@ -17,9 +17,8 @@ public class LynxSubsystem extends SubsystemBase {
     }
 
     // Method which runs the subsystem
-    public void revHub(LynxModule.BulkCachingMode cachingMode, int color) {
+    public void revHub( int color) {
         for (LynxModule hub : allHubs) {
-            hub.setBulkCachingMode(cachingMode);
             hub.setConstant(color);
         }
     }

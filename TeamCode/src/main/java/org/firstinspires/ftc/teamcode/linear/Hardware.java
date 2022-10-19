@@ -5,12 +5,6 @@ import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.openftc.easyopencv.OpenCvCamera;
-import org.openftc.easyopencv.OpenCvCameraFactory;
-import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.openftc.easyopencv.OpenCvWebcam;
-
 /*
  * TYPE			NAME			ID		DESCRIPTION
  * ------------------------------------------------------------
@@ -29,8 +23,6 @@ public class Hardware {
 
     // DEFINE DEVICES
     public MotorEx frontLeft, frontRight, backLeft, backRight;
-
-    public OpenCvWebcam logiCam;
 
     public Hardware(HardwareMap hwMap) {
         // SET DEVICES
@@ -59,29 +51,6 @@ public class Hardware {
         backRight.setRunMode(MotorEx.RunMode.VelocityControl);
         backRight.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
         backRight.setVeloCoefficients(kp, ki, kd);
-
-        // Camera
-        int cameraMonitorViewId = hwMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id",
-                hwMap.appContext.getPackageName());
-
-        logiCam = OpenCvCameraFactory.getInstance().createWebcam(hwMap.get(WebcamName.class, "cam"),
-                cameraMonitorViewId);
-
-        // logiCam.setPipeline(new pipeline());
-
-        logiCam.setMillisecondsPermissionTimeout(2500);
-        logiCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-            @Override
-            public void onOpened() {
-                logiCam.setViewportRenderer(OpenCvCamera.ViewportRenderer.GPU_ACCELERATED);
-                logiCam.startStreaming(1280, 720, OpenCvCameraRotation.UPRIGHT);
-            }
-
-            @Override
-            public void onError(int errorCode) { // This will be called if the camera could not be opened
-
-            }
-        });
 
         // BOT VOLTAGE
         for (VoltageSensor sensor : hwMap.voltageSensor) {

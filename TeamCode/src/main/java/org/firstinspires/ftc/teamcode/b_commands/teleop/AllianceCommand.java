@@ -2,27 +2,33 @@ package org.firstinspires.ftc.teamcode.b_commands.teleop;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.c_subsystems.teleop.DriveSubsystem;
-import org.firstinspires.ftc.teamcode.c_subsystems.teleop.LynxSubsystem;
+import org.firstinspires.ftc.teamcode.AllianceToggle;
 
-import java.util.function.DoubleSupplier;
+import java.util.List;
 
 public class AllianceCommand extends CommandBase {
-    private final LynxSubsystem mecDrive;
-    private int ledcolor;
-    private LynxModule.BulkCachingMode cachingMode;
+    private final HardwareMap hwMap;
+    private int color;
 
-    public AllianceCommand(LynxSubsystem subsystem, LynxModule.BulkCachingMode mode, int color){
-        mecDrive = subsystem;
-        ledcolor = color;
-        cachingMode = mode;
-
-        addRequirements(subsystem);
+    public AllianceCommand(HardwareMap hwMapi){
+        hwMap = hwMapi;
     }
 
     @Override
     public void execute(){
-        mecDrive.revHub(cachingMode, ledcolor);
+        List<LynxModule> allHubs = hwMap.getAll(LynxModule.class);
+        
+        if (AllianceToggle.alliance == AllianceToggle.Alliance.RED){
+            color = 16711680;
+        } else if (AllianceToggle.alliance == AllianceToggle.Alliance.BLUE){
+            color = 255;
+        }
+
+        for (LynxModule hub : allHubs) {
+            hub.setConstant(color);
+        }
+
     }
 }

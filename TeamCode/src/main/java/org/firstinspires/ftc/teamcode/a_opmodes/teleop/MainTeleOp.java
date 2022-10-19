@@ -11,6 +11,7 @@ import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.AllianceToggle;
 import org.firstinspires.ftc.teamcode.b_commands.teleop.AllianceCommand;
 import org.firstinspires.ftc.teamcode.b_commands.teleop.DriveCommand;
 import org.firstinspires.ftc.teamcode.c_subsystems.teleop.DriveSubsystem;
@@ -22,8 +23,6 @@ import java.util.List;
 @TeleOp(name = "CommandTeleOp", group = ".")
 @Config
 public class MainTeleOp extends CommandOpMode {
-    int n = 0;
-
     // MOTORS
 
     // DEFINE DEVICES
@@ -43,15 +42,11 @@ public class MainTeleOp extends CommandOpMode {
 
     // CONSTANTS
     public static double kp = 0, ki = 0, kd = 0;
+    public int color = 1;
 
     @Override
     public void initialize() {
-        List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
-
-        for (LynxModule hub : allHubs) {
-            hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
-            hub.setConstant(n);
-        }
+//        List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
 
         // Initialize Motors
         frontLeft = new MotorEx(hardwareMap, "fL");
@@ -71,12 +66,22 @@ public class MainTeleOp extends CommandOpMode {
                 gPad1, GamepadKeys.Button.A
         );*/
 
-        if (gPad1.getButton(GamepadKeys.Button.A)){
-            n = n + 1;
+//        if (gPad1.getButton(GamepadKeys.Button.A)){
+//            n += 1;
+//        }
+//
+//        for (LynxModule hub : allHubs) {
+//            hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
+//            hub.setConstant(n);
+//        }
+
+        if (AllianceToggle.alliance == AllianceToggle.Alliance.RED){
+            color = 16711680;
+        } else if (AllianceToggle.alliance == AllianceToggle.Alliance.BLUE){
+            color = 255;
         }
 
-/*        lynxSubsystem = new LynxSubsystem(hardwareMap.getAll(LynxModule.class));
-        allianceCommand = new AllianceCommand(lynxSubsystem, LynxModule.BulkCachingMode.AUTO, 2);*/
+        allianceCommand = new AllianceCommand(hardwareMap);
 
         // Motor Settings
         frontLeft.resetEncoder();
@@ -110,8 +115,7 @@ public class MainTeleOp extends CommandOpMode {
             telemetry.addData("backLeft encoder position", backLeft.encoder.getPosition());
             telemetry.addData("backRight encoder position", backRight.encoder.getPosition());
 
-            telemetry.addData("n", n);
-            telemetry.addData("A", gPad1.getButton(GamepadKeys.Button.A));
+            telemetry.addData("asd", color);
 
             telemetry.update();
         }));
