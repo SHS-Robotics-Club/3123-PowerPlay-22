@@ -4,31 +4,29 @@ import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
-import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.RevIMU;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.AllianceToggle;
-import org.firstinspires.ftc.teamcode.b_commands.teleop.DriveCommand;
-import org.firstinspires.ftc.teamcode.c_subsystems.teleop.DriveSubsystem;
+import org.firstinspires.ftc.teamcode.b_commands.teleop.TestDriveCommand;
+import org.firstinspires.ftc.teamcode.c_subsystems.teleop.TestDriveSubsystem;
 
 import java.util.List;
-import java.util.function.DoubleSupplier;
 
 //@Disabled
-@TeleOp(name = "CommandTeleOp", group = ".")
+@TeleOp(name = "TestCommandTeleOp", group = ".")
 @Config
-public class MainTeleOp extends CommandOpMode {
+public class TestMainTeleOp extends CommandOpMode {
     // DEFINE DEVICES
     public MotorEx frontLeft, frontRight, backLeft, backRight;
     
     // SUBSYSTEMS
-    private DriveSubsystem driveSubsystem;
+    private TestDriveSubsystem testDriveSubsystem;
 
     // COMMANDS
-    private DriveCommand driveCommand;
+    private TestDriveCommand testDriveCommand;
 
     // EXTRAS
     private GamepadEx gPad1, gPad2;
@@ -60,8 +58,8 @@ public class MainTeleOp extends CommandOpMode {
         gPad2 = new GamepadEx(gamepad2);
 
         // Initialize Commands and Subsystems
-        driveSubsystem = new DriveSubsystem(frontLeft, frontRight, backLeft, backRight, revIMU);
-        driveCommand = new DriveCommand(driveSubsystem, gPad1::getLeftX, gPad1::getLeftY, gPad1::getRightX);
+        testDriveSubsystem = new TestDriveSubsystem(frontLeft, frontRight, backLeft, backRight, revIMU);
+        testDriveCommand = new TestDriveCommand(testDriveSubsystem, gPad1::getLeftX, gPad1::getLeftY, gPad1::getRightX);
 
         // Motor Settings
         frontLeft.resetEncoder();
@@ -69,24 +67,24 @@ public class MainTeleOp extends CommandOpMode {
         backLeft.resetEncoder();
         backRight.resetEncoder();
 
-        frontLeft.setRunMode(MotorEx.RunMode.VelocityControl);
+/*        frontLeft.setRunMode(MotorEx.RunMode.VelocityControl);
         frontRight.setRunMode(MotorEx.RunMode.VelocityControl);
         backLeft.setRunMode(MotorEx.RunMode.VelocityControl);
-        backRight.setRunMode(MotorEx.RunMode.VelocityControl);
+        backRight.setRunMode(MotorEx.RunMode.VelocityControl);*/
 
         frontLeft.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
         backLeft.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
         backRight.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
 
-        frontLeft.setVeloCoefficients(kp, ki, kd);
+/*        frontLeft.setVeloCoefficients(kp, ki, kd);
         frontRight.setVeloCoefficients(kp, ki, kd);
         backLeft.setVeloCoefficients(kp, ki, kd);
-        backRight.setVeloCoefficients(kp, ki, kd);
+        backRight.setVeloCoefficients(kp, ki, kd);*/
 
         // Default Drivetrain Command
-        register(driveSubsystem);
-        driveSubsystem.setDefaultCommand(driveCommand);
+        register(testDriveSubsystem);
+        testDriveSubsystem.setDefaultCommand(testDriveCommand);
 
         schedule(new RunCommand(() -> {
 

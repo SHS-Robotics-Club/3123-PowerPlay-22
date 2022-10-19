@@ -9,6 +9,7 @@ import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -18,7 +19,7 @@ import org.firstinspires.ftc.teamcode.AllianceToggle;
 import java.text.DecimalFormat;
 import java.util.List;
 
-//@Disabled
+@Disabled
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "LinearTeleOp", group = ".")
 @Config
 public class TeleOp extends LinearOpMode {
@@ -39,9 +40,6 @@ public class TeleOp extends LinearOpMode {
     @Override
     public void runOpMode() {
         // Get Hardware
-
-        int n = 16711680;
-
         final Hardware bot = new Hardware(hardwareMap);
 
         // Setup Dashboard Telemetry
@@ -82,18 +80,6 @@ public class TeleOp extends LinearOpMode {
             mdrive.driveRobotCentric(strafe, drive, turn);
 
             // MISC------------------------------------------------------------------------------------------
-            List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
-
-            if (AllianceToggle.alliance == AllianceToggle.Alliance.RED){
-                n = 16711680;
-            } else if (AllianceToggle.alliance == AllianceToggle.Alliance.BLUE){
-                n = 255;
-            }
-
-            for (LynxModule hub : allHubs) {
-                hub.setConstant(n);
-            }
-
             // Run-Time
             long seconds = round(time.time());
             long t1 = seconds % 60;
@@ -114,7 +100,6 @@ public class TeleOp extends LinearOpMode {
 
             // Dashboard Specific Telemetry
             dTelemetry.addData("Voltage", decimalTenths.format(bot.volt) + " V"); // Voltage
-            telemetry.addData("n", n);
 
             telemetry.update();
             idle();
