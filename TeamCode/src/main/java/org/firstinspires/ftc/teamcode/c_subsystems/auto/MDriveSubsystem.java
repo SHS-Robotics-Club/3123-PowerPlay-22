@@ -14,9 +14,9 @@ import org.firstinspires.ftc.teamcode.d_roadrunner.drive.SampleMecanumDrive;
 import java.util.List;
 
 /**
- * A subsystem that uses the {@link SampleMecanumDrive} class.
- * This periodically calls {@link SampleMecanumDrive#update()} which runs the internal
- * state machine for the mecanum drive. All movement/following is async to fit the paradigm.
+ * A subsystem that uses the {@link SampleMecanumDrive} class. This periodically calls
+ * {@link SampleMecanumDrive#update()} which runs the internal state machine for the mecanum drive.
+ * All movement/following is async to fit the paradigm.
  */
 public class MDriveSubsystem extends SubsystemBase {
 
@@ -51,17 +51,10 @@ public class MDriveSubsystem extends SubsystemBase {
     public void drive(double leftY, double leftX, double rightX) {
         Pose2d poseEstimate = getPoseEstimate();
 
-        Vector2d input = new Vector2d(-leftY, -leftX).rotated(
-                fieldCentric ? -poseEstimate.getHeading() : 0
-        );
+        Vector2d input =
+                new Vector2d(-leftY, -leftX).rotated(fieldCentric ? -poseEstimate.getHeading() : 0);
 
-        drive.setWeightedDrivePower(
-                new Pose2d(
-                        input.getX(),
-                        input.getY(),
-                        -rightX
-                )
-        );
+        drive.setWeightedDrivePower(new Pose2d(input.getX(), input.getY(), -rightX));
     }
 
     public void setDrivePower(Pose2d drivePower) {

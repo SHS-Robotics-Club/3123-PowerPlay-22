@@ -61,15 +61,12 @@ public class TeleOp extends LinearOpMode {
         while (opModeIsActive()) {
             // GAME-PADS
             GamepadEx gp1 = new GamepadEx(gamepad1);
-            //GamepadEx gp2 = new GamepadEx(gamepad2);
+            // GamepadEx gp2 = new GamepadEx(gamepad2);
 
             // DRIVE-----------------------------------------------------------------------------------------
             // Mecanum
-            MecanumDrive mdrive = new MecanumDrive(
-                    bot.frontLeft,
-                    bot.frontRight,
-                    bot.backLeft,
-                    bot.backRight);
+            MecanumDrive mdrive =
+                    new MecanumDrive(bot.frontLeft, bot.frontRight, bot.backLeft, bot.backRight);
 
             // Set Drive Components
             double strafe = gp1.getLeftX() * STRAFE_MULT;
@@ -89,14 +86,8 @@ public class TeleOp extends LinearOpMode {
 
             // TELEMETRY--------------------------------------------------------------------------------------
             // Driver Station Telemetry
-            telemetry.addData(
-                    "!Status",
-                    "Run Time: " +
-                            doubleDigits.format(t2) +
-                            ":" +
-                            doubleDigits.format(t3) +
-                            ":" +
-                            doubleDigits.format(t1)); // Run Time HH:MM:SS
+            telemetry.addData("!Status", "Run Time: " + doubleDigits.format(t2) + ":"
+                    + doubleDigits.format(t3) + ":" + doubleDigits.format(t1)); // Run Time HH:MM:SS
 
             // Dashboard Specific Telemetry
             dTelemetry.addData("Voltage", decimalTenths.format(bot.volt) + " V"); // Voltage

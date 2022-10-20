@@ -17,13 +17,13 @@ import org.firstinspires.ftc.teamcode.c_subsystems.teleop.DriveSubsystem;
 import java.util.List;
 import java.util.function.DoubleSupplier;
 
-//@Disabled
+// @Disabled
 @TeleOp(name = "CommandTeleOp", group = ".")
 @Config
 public class MainTeleOp extends CommandOpMode {
     // DEFINE DEVICES
     public MotorEx frontLeft, frontRight, backLeft, backRight;
-    
+
     // SUBSYSTEMS
     private DriveSubsystem driveSubsystem;
 
@@ -40,15 +40,6 @@ public class MainTeleOp extends CommandOpMode {
 
     @Override
     public void initialize() {
-        if (AllianceToggle.alliance == AllianceToggle.Alliance.RED){
-            color = 16711680;
-            telemetry.addData(".Alliance", "RED");
-        } else if (AllianceToggle.alliance == AllianceToggle.Alliance.BLUE){
-            color = 255;
-            telemetry.addData(".Alliance", "BLUE");
-        }
-
-
         // Initialize Motors
         frontLeft = new MotorEx(hardwareMap, "fL", MotorEx.GoBILDA.RPM_312);
         frontRight = new MotorEx(hardwareMap, "fR", MotorEx.GoBILDA.RPM_312);
@@ -89,6 +80,13 @@ public class MainTeleOp extends CommandOpMode {
         driveSubsystem.setDefaultCommand(driveCommand);
 
         schedule(new RunCommand(() -> {
+            if (AllianceToggle.alliance == AllianceToggle.Alliance.RED) {
+                color = 16711680;
+                telemetry.addData(".Alliance", "RED");
+            } else if (AllianceToggle.alliance == AllianceToggle.Alliance.BLUE) {
+                color = 255;
+                telemetry.addData(".Alliance", "BLUE");
+            }
 
             // REV Hub Config
             List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
@@ -103,9 +101,6 @@ public class MainTeleOp extends CommandOpMode {
             telemetry.addData("frontRight encoder position", frontRight.encoder.getPosition());
             telemetry.addData("backLeft encoder position", backLeft.encoder.getPosition());
             telemetry.addData("backRight encoder position", backRight.encoder.getPosition());
-
-            telemetry.addData("asd", color);
-
             telemetry.update();
         }));
 

@@ -9,7 +9,7 @@ public class DriveSubsystem extends SubsystemBase {
     private MotorEx frontLeft, frontRight, backLeft, backRight;
     private MecanumDrive mecanumDrive;
 
-    public DriveSubsystem(MotorEx fL, MotorEx fR, MotorEx bL, MotorEx bR, RevIMU imu){
+    public DriveSubsystem(MotorEx fL, MotorEx fR, MotorEx bL, MotorEx bR, RevIMU imu) {
         frontLeft = fL;
         frontRight = fR;
         backLeft = bL;

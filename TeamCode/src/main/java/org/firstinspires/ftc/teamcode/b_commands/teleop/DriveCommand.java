@@ -11,7 +11,7 @@ public class DriveCommand extends CommandBase {
     private final DoubleSupplier m_strafe, m_forward, m_turn;
     private double multiplier;
 
-    public DriveCommand(DriveSubsystem subsystem, DoubleSupplier strafe, DoubleSupplier forward, DoubleSupplier turn, double mult){
+    public DriveCommand(DriveSubsystem subsystem, DoubleSupplier strafe, DoubleSupplier forward, DoubleSupplier turn, double mult) {
         mecDrive = subsystem;
         m_strafe = strafe;
         m_forward = forward;
@@ -20,7 +20,8 @@ public class DriveCommand extends CommandBase {
 
         addRequirements(subsystem);
     }
-    public DriveCommand(DriveSubsystem subsystem, DoubleSupplier strafe, DoubleSupplier forward, DoubleSupplier turn){
+
+    public DriveCommand(DriveSubsystem subsystem, DoubleSupplier strafe, DoubleSupplier forward, DoubleSupplier turn) {
         mecDrive = subsystem;
         m_strafe = strafe;
         m_forward = forward;
@@ -31,10 +32,10 @@ public class DriveCommand extends CommandBase {
     }
 
     @Override
-    public void execute(){
-//        mecDrive.drive(m_strafe.getAsDouble() * 0.8 * multiplier,
-//                m_forward.getAsDouble() * 0.8 * multiplier,
-//                m_turn.getAsDouble() * 0.78 * multiplier);
+    public void execute() {
+        // mecDrive.drive(m_strafe.getAsDouble() * 0.8 * multiplier,
+        // m_forward.getAsDouble() * 0.8 * multiplier,
+        // m_turn.getAsDouble() * 0.78 * multiplier);
         mecDrive.drive(m_strafe.getAsDouble() * 0.9 * multiplier,
                 m_forward.getAsDouble() * 0.9 * multiplier,
                 m_turn.getAsDouble() * 0.88 * multiplier);

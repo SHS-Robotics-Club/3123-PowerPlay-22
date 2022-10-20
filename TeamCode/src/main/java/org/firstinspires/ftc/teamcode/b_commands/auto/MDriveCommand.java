@@ -11,8 +11,7 @@ public class MDriveCommand extends CommandBase {
     private final MDriveSubsystem drive;
     private final DoubleSupplier leftY, leftX, rightX;
 
-    public MDriveCommand(MDriveSubsystem drive, DoubleSupplier leftY,
-                         DoubleSupplier leftX, DoubleSupplier rightX) {
+    public MDriveCommand(MDriveSubsystem drive, DoubleSupplier leftY, DoubleSupplier leftX, DoubleSupplier rightX) {
         this.drive = drive;
         this.leftX = leftX;
         this.leftY = leftY;
