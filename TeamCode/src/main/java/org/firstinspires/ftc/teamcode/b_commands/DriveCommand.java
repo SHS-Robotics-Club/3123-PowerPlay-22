@@ -1,8 +1,8 @@
-package org.firstinspires.ftc.teamcode.b_commands.teleop;
+package org.firstinspires.ftc.teamcode.b_commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 
-import org.firstinspires.ftc.teamcode.c_subsystems.teleop.DriveSubsystem;
+import org.firstinspires.ftc.teamcode.c_subsystems.DriveSubsystem;
 
 import java.util.function.DoubleSupplier;
 

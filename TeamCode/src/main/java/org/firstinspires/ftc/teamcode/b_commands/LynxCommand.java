@@ -6,10 +6,8 @@ import com.arcrobotics.ftclib.command.CommandBase;
 import com.qualcomm.hardware.lynx.LynxModule;
 
 import org.firstinspires.ftc.teamcode.AllianceToggle;
-import org.firstinspires.ftc.teamcode.c_subsystems.teleop.DriveSubsystem;
 
 import java.util.List;
-import java.util.function.DoubleSupplier;
 
 public class LynxCommand extends CommandBase {
 	private final List<LynxModule> revHubs;

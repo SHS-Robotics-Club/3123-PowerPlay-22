@@ -1,22 +1,19 @@
-package org.firstinspires.ftc.teamcode.a_opmodes.teleop;
+package org.firstinspires.ftc.teamcode.a_opmodes;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
-import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.RevIMU;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.AllianceToggle;
 import org.firstinspires.ftc.teamcode.b_commands.LynxCommand;
-import org.firstinspires.ftc.teamcode.b_commands.teleop.DriveCommand;
-import org.firstinspires.ftc.teamcode.c_subsystems.teleop.DriveSubsystem;
+import org.firstinspires.ftc.teamcode.b_commands.DriveCommand;
+import org.firstinspires.ftc.teamcode.c_subsystems.DriveSubsystem;
 
 import java.util.List;
-import java.util.function.DoubleSupplier;
 
 // @Disabled
 @TeleOp(name = "CommandTeleOp", group = ".")
