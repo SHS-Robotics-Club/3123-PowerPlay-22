@@ -11,6 +11,7 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.AllianceToggle;
+import org.firstinspires.ftc.teamcode.b_commands.LynxCommand;
 import org.firstinspires.ftc.teamcode.b_commands.teleop.DriveCommand;
 import org.firstinspires.ftc.teamcode.c_subsystems.teleop.DriveSubsystem;
 
@@ -23,12 +24,14 @@ import java.util.function.DoubleSupplier;
 public class MainTeleOp extends CommandOpMode {
     // DEFINE DEVICES
     public MotorEx frontLeft, frontRight, backLeft, backRight;
+    List<LynxModule> revHubs = hardwareMap.getAll(LynxModule.class);
 
     // SUBSYSTEMS
     private DriveSubsystem driveSubsystem;
 
     // COMMANDS
     private DriveCommand driveCommand;
+    private LynxCommand lynxCommand;
 
     // EXTRAS
     private GamepadEx gPad1, gPad2;
@@ -40,6 +43,11 @@ public class MainTeleOp extends CommandOpMode {
 
     @Override
     public void initialize() {
+
+
+        lynxCommand = new LynxCommand(revHubs);
+        schedule(lynxCommand);
+
         // Initialize Motors
         frontLeft = new MotorEx(hardwareMap, "fL", MotorEx.GoBILDA.RPM_312);
         frontRight = new MotorEx(hardwareMap, "fR", MotorEx.GoBILDA.RPM_312);
@@ -80,7 +88,7 @@ public class MainTeleOp extends CommandOpMode {
         driveSubsystem.setDefaultCommand(driveCommand);
 
         schedule(new RunCommand(() -> {
-            if (AllianceToggle.alliance == AllianceToggle.Alliance.RED) {
+/*            if (AllianceToggle.alliance == AllianceToggle.Alliance.RED) {
                 color = 16711680;
                 telemetry.addData(".Alliance", "RED");
             } else if (AllianceToggle.alliance == AllianceToggle.Alliance.BLUE) {
@@ -89,12 +97,10 @@ public class MainTeleOp extends CommandOpMode {
             }
 
             // REV Hub Config
-            List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
-
-            for (LynxModule hub : allHubs) {
+            for (LynxModule hub : revHubs) {
                 hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
                 hub.setConstant(color);
-            }
+            }*/
 
             // Telemetry
             telemetry.addData("frontLeft encoder position", frontLeft.encoder.getPosition());
