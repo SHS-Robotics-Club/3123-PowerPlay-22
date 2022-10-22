@@ -18,12 +18,12 @@ import java.util.List;
  * {@link SampleMecanumDrive#update()} which runs the internal state machine for the mecanum drive.
  * All movement/following is async to fit the paradigm.
  */
-public class MDriveSubsystem extends SubsystemBase {
+public class MecanumSubsystem extends SubsystemBase {
 
 	private final SampleMecanumDrive drive;
 	private final boolean fieldCentric;
 
-	public MDriveSubsystem(SampleMecanumDrive drive, boolean isFieldCentric) {
+	public MecanumSubsystem(SampleMecanumDrive drive, boolean isFieldCentric) {
 		this.drive   = drive;
 		fieldCentric = isFieldCentric;
 	}

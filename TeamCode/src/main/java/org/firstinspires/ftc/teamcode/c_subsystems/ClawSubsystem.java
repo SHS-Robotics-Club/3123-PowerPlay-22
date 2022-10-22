@@ -1,18 +1,19 @@
 package org.firstinspires.ftc.teamcode.c_subsystems;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
-import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.hardware.ServoEx;
 
 
 public class ClawSubsystem extends SubsystemBase {
-	private ServoEx clawLeft, clawRight;
-	private boolean s_active;
+	private ServoEx clawLeft, clawRight, clawPitch;
+	private boolean s_active, pit_active;
 
-	public ClawSubsystem(ServoEx clawLeft, ServoEx clawRight) {
+	public ClawSubsystem(ServoEx clawLeft, ServoEx clawRight, ServoEx clawPitch) {
 		this.clawLeft  = clawLeft;
 		this.clawRight = clawRight;
-		s_active = true;
+		this.clawPitch = clawPitch;
+		s_active       = true;
+		pit_active     = true;
 	}
 
 	// switch the toggle
@@ -33,5 +34,23 @@ public class ClawSubsystem extends SubsystemBase {
 	public void close() {
 		clawLeft.turnToAngle(-10);
 		clawRight.turnToAngle(-10);
+	}
+
+	// switch the toggle
+	public void pit_toggle() {
+		pit_active = !pit_active;
+	}
+
+	// return the active state
+	public boolean pit_active() {
+		return pit_active;
+	}
+
+	public void up() {
+		clawPitch.turnToAngle(-45);
+	}
+
+	public void down() {
+		clawPitch.turnToAngle(-10);
 	}
 }

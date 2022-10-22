@@ -11,11 +11,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.b_commands.auto.MDriveCommand;
 import org.firstinspires.ftc.teamcode.b_commands.auto.TrajectoryFollowerCommand;
-import org.firstinspires.ftc.teamcode.c_subsystems.ClawPitchSubsystem;
 import org.firstinspires.ftc.teamcode.c_subsystems.ClawSubsystem;
-import org.firstinspires.ftc.teamcode.c_subsystems.auto.MDriveSubsystem;
+import org.firstinspires.ftc.teamcode.c_subsystems.auto.MecanumSubsystem;
 import org.firstinspires.ftc.teamcode.d_roadrunner.drive.SampleMecanumDrive;
 
 @Config
@@ -29,10 +27,7 @@ public class LeftStrafe1Tile extends CommandOpMode {
 	private static long START_DELAY = 0; //ms
 	private static double STRAFE_DISTANCE = 24; //in
 
-	// Subsystems
-	private MDriveSubsystem mecanumDriveS;
 	private ClawSubsystem claw;
-	private ClawPitchSubsystem clawPit;
 
 	// Extra Stuff
 	private final ElapsedTime runtime = new ElapsedTime();
@@ -56,7 +51,8 @@ public class LeftStrafe1Tile extends CommandOpMode {
 
 		clawPitch.turnToAngle(-60);
 
-		mecanumDriveS = new MDriveSubsystem(new SampleMecanumDrive(hardwareMap), true);
+		// Subsystems
+		MecanumSubsystem mecanumDriveS = new MecanumSubsystem(new SampleMecanumDrive(hardwareMap), true);
 
 		Trajectory strafe = mecanumDriveS.trajectoryBuilder(startPose)
 		                                 .strafeLeft(STRAFE_DISTANCE)
