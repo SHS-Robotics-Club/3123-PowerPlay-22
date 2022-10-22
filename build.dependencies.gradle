@@ -2,34 +2,35 @@ repositories {
     mavenCentral()
     google() // Needed for androidx
     maven { url = 'https://maven.brott.dev/' }
+    maven { url 'https://jitpack.com' }
 }
 
 dependencies {
     //noinspection GradleDependency
     api 'androidx.appcompat:appcompat:1.2.0'
 
-    api ('org.firstinspires.ftc:Inspection:8.0.0') {
+    api('org.firstinspires.ftc:Inspection:8.0.0') {
         exclude group: 'com.android.support', module: 'appcompat-v7'
     }
-    api ('org.firstinspires.ftc:Blocks:8.0.0') {
+    api('org.firstinspires.ftc:Blocks:8.0.0') {
         exclude group: 'com.android.support', module: 'appcompat-v7'
     }
-    api ('org.firstinspires.ftc:RobotCore:8.0.0') {
+    api('org.firstinspires.ftc:RobotCore:8.0.0') {
         exclude group: 'com.android.support', module: 'appcompat-v7'
     }
-    api ('org.firstinspires.ftc:RobotServer:8.0.0') {
+    api('org.firstinspires.ftc:RobotServer:8.0.0') {
         exclude group: 'com.android.support', module: 'appcompat-v7'
     }
-    api ('org.firstinspires.ftc:OnBotJava:8.0.0') {
+    api('org.firstinspires.ftc:OnBotJava:8.0.0') {
         exclude group: 'com.android.support', module: 'appcompat-v7'
     }
-    api ('org.firstinspires.ftc:Hardware:8.0.0') {
+    api('org.firstinspires.ftc:Hardware:8.0.0') {
         exclude group: 'com.android.support', module: 'appcompat-v7'
     }
-    api ('org.firstinspires.ftc:FtcCommon:8.0.0') {
+    api('org.firstinspires.ftc:FtcCommon:8.0.0') {
         exclude group: 'com.android.support', module: 'appcompat-v7'
     }
-    api ('org.tensorflow:tensorflow-lite-task-vision:0.2.0') {
+    api('org.tensorflow:tensorflow-lite-task-vision:0.2.0') {
         exclude group: 'com.android.support', module: 'appcompat-v7'
     }
 
@@ -37,4 +38,6 @@ dependencies {
     api 'org.firstinspires.ftc:gameAssets-PowerPlay:1.0.0'
 
     implementation 'com.acmerobotics.dashboard:dashboard:0.4.5'
+
+    //implementation 'com.github.deltacv:EOCV-Sim:3.3.2'
 }
