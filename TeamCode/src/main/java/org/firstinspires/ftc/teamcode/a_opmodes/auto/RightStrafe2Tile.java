@@ -5,21 +5,23 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.WaitCommand;
+import com.arcrobotics.ftclib.hardware.ServoEx;
+import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.b_commands.auto.MDriveCommand;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.b_commands.auto.TrajectoryFollowerCommand;
 import org.firstinspires.ftc.teamcode.c_subsystems.auto.MDriveSubsystem;
 import org.firstinspires.ftc.teamcode.d_roadrunner.drive.SampleMecanumDrive;
 
 @Config
-@Autonomous(name = "Strafe Left 18in", group = "Parking")
-public class LeftStrafe18 extends CommandOpMode {
+@Autonomous(name = "Strafe Right ~2 Tile", group = "Parking")
+public class RightStrafe2Tile extends CommandOpMode {
 
 	// CONFIG
 	private static long START_DELAY = 0; //ms
-	private static double STRAFE_DISTANCE = 18; //in
+	private static double STRAFE_DISTANCE = 48; //in
 
 	// Subsystems
 	private MDriveSubsystem mecanumDriveS;
@@ -33,14 +35,26 @@ public class LeftStrafe18 extends CommandOpMode {
 
 	@Override
 	public void initialize() {
+		// Initialize Servos
+		ServoEx clawPitch, clawLeft, clawRight;
+		clawLeft  = new SimpleServo(hardwareMap, "clawLeft", -180, 180, AngleUnit.DEGREES);
+		clawRight = new SimpleServo(hardwareMap, "clawRight", -180, 180, AngleUnit.DEGREES);
+		clawPitch = new SimpleServo(hardwareMap, "clawPitch", -180, 180, AngleUnit.DEGREES);
+
+		clawRight.setInverted(true);
+
+		clawLeft.turnToAngle(-10);
+		clawRight.turnToAngle(-10);
+
+		clawPitch.turnToAngle(-60);
+
 		mecanumDriveS = new MDriveSubsystem(new SampleMecanumDrive(hardwareMap), true);
 
 		Trajectory strafe = mecanumDriveS.trajectoryBuilder(startPose)
-		                                 .strafeLeft(STRAFE_DISTANCE)
+		                                 .strafeRight(STRAFE_DISTANCE)
 		                                 .build();
 
 		TrajectoryFollowerCommand autonomous = new TrajectoryFollowerCommand(mecanumDriveS, strafe);
-		//MDriveCommand auto = new MDriveCommand(mecanumDriveS, 0, -18, 0)
 
 		if (isStopRequested()) {
 			return;

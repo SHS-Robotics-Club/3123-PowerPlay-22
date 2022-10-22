@@ -3,24 +3,28 @@ package org.firstinspires.ftc.teamcode.a_opmodes;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.CommandOpMode;
+import com.arcrobotics.ftclib.command.ConditionalCommand;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
-import com.arcrobotics.ftclib.gamepad.TriggerReader;
 import com.arcrobotics.ftclib.hardware.RevIMU;
-import com.arcrobotics.ftclib.hardware.motors.Motor;
+import com.arcrobotics.ftclib.hardware.ServoEx;
+import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.b_commands.LynxCommand;
 import org.firstinspires.ftc.teamcode.b_commands.DriveCommand;
+import org.firstinspires.ftc.teamcode.c_subsystems.ClawPitchSubsystem;
+import org.firstinspires.ftc.teamcode.c_subsystems.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.c_subsystems.DriveSubsystem;
 
+import java.text.DecimalFormat;
 import java.util.List;
-import java.util.function.DoubleSupplier;
 
 // @Disabled
 @TeleOp(name = "CommandTeleOp", group = ".")
@@ -28,9 +32,12 @@ import java.util.function.DoubleSupplier;
 public class MainTeleOp extends CommandOpMode {
 	// DEFINE DEVICES
 	public MotorEx frontLeft, frontRight, backLeft, backRight;
+	public ServoEx clawPitch, clawLeft, clawRight;
 
 	// SUBSYSTEMS
 	private DriveSubsystem driveSubsystem;
+	private ClawSubsystem claw;
+	private ClawPitchSubsystem clawPit;
 
 	// COMMANDS
 	private DriveCommand driveCommand;
@@ -48,6 +55,8 @@ public class MainTeleOp extends CommandOpMode {
 
 	public double strafe;
 
+	private static final DecimalFormat decimalTenths = new DecimalFormat("0.00");
+
 	@Override
 	public void initialize() {
 
@@ -62,6 +71,18 @@ public class MainTeleOp extends CommandOpMode {
 		backLeft   = new MotorEx(hardwareMap, "bL", MotorEx.GoBILDA.RPM_312);
 		backRight  = new MotorEx(hardwareMap, "bR", MotorEx.GoBILDA.RPM_312);
 
+		// Initialize Servos
+		clawLeft  = new SimpleServo(hardwareMap, "clawLeft", -180, 180, AngleUnit.DEGREES);
+		clawRight = new SimpleServo(hardwareMap, "clawRight", -180, 180, AngleUnit.DEGREES);
+		clawPitch = new SimpleServo(hardwareMap, "clawPitch", -180, 180, AngleUnit.DEGREES);
+
+		clawRight.setInverted(true);
+
+		clawLeft.turnToAngle(-10);
+		clawRight.turnToAngle(-10);
+
+		clawPitch.turnToAngle(-60);
+
 		// Initialize Extras
 		gPad1 = new GamepadEx(gamepad1);
 		gPad2 = new GamepadEx(gamepad2);
@@ -69,11 +90,35 @@ public class MainTeleOp extends CommandOpMode {
 		revIMU = new RevIMU(hardwareMap);
 		revIMU.init();
 		dashboard = FtcDashboard.getInstance();
-		time = new ElapsedTime();
+		time      = new ElapsedTime();
+
 
 		// Initialize Commands and Subsystems
 		driveSubsystem = new DriveSubsystem(frontLeft, frontRight, backLeft, backRight, revIMU);
 		driveCommand   = new DriveCommand(driveSubsystem, gPad1::getLeftX, gPad1::getLeftY, gPad1::getRightX);
+
+		claw    = new ClawSubsystem(clawLeft, clawRight);
+		clawPit = new ClawPitchSubsystem(clawPitch);
+
+		gPad1.getGamepadButton(GamepadKeys.Button.X)
+			 .whenPressed(new ConditionalCommand(
+					 new InstantCommand(claw::open, claw),
+					 new InstantCommand(claw::close, claw),
+					 () -> {
+						 claw.toggle();
+						 return claw.active();
+					 }
+			 ));
+
+		gPad1.getGamepadButton(GamepadKeys.Button.A)
+			 .whenPressed(new ConditionalCommand(
+					 new InstantCommand(clawPit::up, clawPit),
+					 new InstantCommand(clawPit::down, clawPit),
+					 () -> {
+						 clawPit.toggle();
+						 return clawPit.active();
+					 }
+			 ));
 
 		// Motor Settings
 		frontLeft.resetEncoder();
@@ -106,9 +151,11 @@ public class MainTeleOp extends CommandOpMode {
 			telemetry.addData("frontRight encoder position", frontRight.encoder.getPosition());
 			telemetry.addData("backLeft encoder position", backLeft.encoder.getPosition());
 			telemetry.addData("backRight encoder position", backRight.encoder.getPosition());
-			telemetry.addData("Left", gPad1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER));
-			telemetry.addData("Right", gPad1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER));
-			telemetry.addData("strafe", strafe);
+
+			telemetry.addData("clawPitch", decimalTenths.format((clawPitch.getPosition() - 0.5) * 360));
+			telemetry.addData("clawLeft", decimalTenths.format((clawLeft.getPosition() - 0.5) * 360));
+			telemetry.addData("clawRight", decimalTenths.format((clawRight.getPosition() - 0.5) * 360));
+
 			telemetry.update();
 		}));
 
