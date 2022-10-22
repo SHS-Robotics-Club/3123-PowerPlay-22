@@ -1,6 +1,7 @@
 package com.example.meepmeeptesting;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.DriveTrainType;
@@ -14,8 +15,8 @@ public class MeepMeepTesting {
     public static double MAX_ANG_VEL = Math.toRadians(167.05832);
     public static double MAX_ANG_ACCEL = Math.toRadians(167.05832);
 
-    public static double BOT_WIDTH = 15;
-    public static double BOT_HEIGHT = 15;
+    public static double BOT_WIDTH = 18;
+    public static double BOT_HEIGHT = 13;
 
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
@@ -26,15 +27,8 @@ public class MeepMeepTesting {
                 .setDimensions(BOT_WIDTH, BOT_HEIGHT)
                 .setDriveTrainType(DriveTrainType.MECANUM)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(0, 0, 0))
-                                .forward(30)
-                                .turn(Math.toRadians(90))
-                                .forward(30)
-                                .turn(Math.toRadians(90))
-                                .forward(30)
-                                .turn(Math.toRadians(90))
-                                .forward(30)
-                                .turn(Math.toRadians(90))
+                        drive.trajectorySequenceBuilder(new Pose2d(0, 0, Math.toRadians(270)))
+                                .strafeLeft(40)
                                 .build()
                 );
 

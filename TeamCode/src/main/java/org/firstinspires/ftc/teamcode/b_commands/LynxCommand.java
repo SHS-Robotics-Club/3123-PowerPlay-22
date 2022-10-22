@@ -21,10 +21,10 @@ public class LynxCommand extends CommandBase {
 	public void initialize() {
 		if (AllianceToggle.alliance == AllianceToggle.Alliance.RED) {
 			color = 16711680;
-			telemetry.addData(".Alliance", "RED");
+			//telemetry.addData(".Alliance", "RED");
 		} else if (AllianceToggle.alliance == AllianceToggle.Alliance.BLUE) {
 			color = 255;
-			telemetry.addData(".Alliance", "BLUE");
+			//telemetry.addData(".Alliance", "BLUE");
 		}
 		
 		for (LynxModule hub : revHubs) {

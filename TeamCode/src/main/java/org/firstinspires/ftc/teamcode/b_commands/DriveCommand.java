@@ -10,7 +10,7 @@ public class DriveCommand extends CommandBase {
 	private final DriveSubsystem mecDrive;
 	private final DoubleSupplier m_strafe, m_forward, m_turn;
 	private double multiplier;
-	
+
 	public DriveCommand(DriveSubsystem subsystem, DoubleSupplier strafe, DoubleSupplier forward, DoubleSupplier turn, double mult) {
 		mecDrive   = subsystem;
 		m_strafe   = strafe;
