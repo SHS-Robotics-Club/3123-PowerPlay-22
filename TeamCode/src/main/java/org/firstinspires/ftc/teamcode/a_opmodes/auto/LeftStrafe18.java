@@ -8,6 +8,7 @@ import com.arcrobotics.ftclib.command.WaitCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.b_commands.auto.MDriveCommand;
 import org.firstinspires.ftc.teamcode.b_commands.auto.TrajectoryFollowerCommand;
 import org.firstinspires.ftc.teamcode.c_subsystems.auto.MDriveSubsystem;
 import org.firstinspires.ftc.teamcode.d_roadrunner.drive.SampleMecanumDrive;
@@ -27,18 +28,19 @@ public class LeftStrafe18 extends CommandOpMode {
 	private final ElapsedTime runtime = new ElapsedTime();
 
 	// Start Pose
-	private Pose2d startPose = new Pose2d(0.0, 0, Math.toRadians(0.0));
+	private Pose2d startPose = new Pose2d(0, 0, Math.toRadians(0));
 
 
 	@Override
 	public void initialize() {
-		mecanumDriveS = new MDriveSubsystem(new SampleMecanumDrive(hardwareMap), false);
+		mecanumDriveS = new MDriveSubsystem(new SampleMecanumDrive(hardwareMap), true);
 
 		Trajectory strafe = mecanumDriveS.trajectoryBuilder(startPose)
 		                                 .strafeLeft(STRAFE_DISTANCE)
 		                                 .build();
 
 		TrajectoryFollowerCommand autonomous = new TrajectoryFollowerCommand(mecanumDriveS, strafe);
+		//MDriveCommand auto = new MDriveCommand(mecanumDriveS, 0, -18, 0)
 
 		if (isStopRequested()) {
 			return;
