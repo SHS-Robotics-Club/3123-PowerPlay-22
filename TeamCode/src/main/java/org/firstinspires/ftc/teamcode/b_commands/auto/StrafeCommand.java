@@ -1,25 +1,25 @@
 package org.firstinspires.ftc.teamcode.b_commands.auto;
 
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.arcrobotics.ftclib.command.CommandBase;
 
 import org.firstinspires.ftc.teamcode.c_subsystems.auto.MecanumSubsystem;
 
-public class TrajectoryFollowerCommand extends CommandBase {
+public class StrafeCommand extends CommandBase {
 
     private final MecanumSubsystem drive;
-    private final Trajectory trajectory;
+    private final double strafeX, strafeY;
 
-    public TrajectoryFollowerCommand(MecanumSubsystem drive, Trajectory trajectory) {
-        this.drive      = drive;
-        this.trajectory = trajectory;
+    public StrafeCommand(MecanumSubsystem drive, double strafeX, double strafeY) {
+        this.drive = drive;
+        this.strafeX = strafeX;
+        this.strafeY = strafeY;
 
         addRequirements(drive);
     }
 
     @Override
     public void initialize() {
-        drive.followTrajectory(trajectory);
+        drive.strafe(strafeX, strafeY);
     }
 
     @Override

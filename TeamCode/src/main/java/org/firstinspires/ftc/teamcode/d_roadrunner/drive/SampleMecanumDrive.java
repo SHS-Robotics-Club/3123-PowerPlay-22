@@ -9,6 +9,7 @@ import com.acmerobotics.roadrunner.drive.MecanumDrive;
 import com.acmerobotics.roadrunner.followers.HolonomicPIDVAFollower;
 import com.acmerobotics.roadrunner.followers.TrajectoryFollower;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.acmerobotics.roadrunner.trajectory.constraints.AngularVelocityConstraint;
@@ -179,6 +180,19 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     public void turn(double angle) {
         turnAsync(angle);
+        waitForIdle();
+    }
+
+    public void strafeAsync(double strafeX, double strafeY) {
+        trajectorySequenceRunner.followTrajectorySequenceAsync(
+                trajectorySequenceBuilder(getPoseEstimate())
+                        .strafeTo(new Vector2d(strafeX, strafeY))
+                        .build()
+                                                              );
+    }
+
+    public void strafe(double strafeX, double strafeY) {
+        strafeAsync(strafeX, strafeY);
         waitForIdle();
     }
 
