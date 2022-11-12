@@ -9,8 +9,10 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.b_commands.ArmCommand;
 import org.firstinspires.ftc.teamcode.b_commands.DriveCommand;
 import org.firstinspires.ftc.teamcode.b_commands.LynxCommand;
+import org.firstinspires.ftc.teamcode.c_subsystems.ArmSubsystem;
 import org.firstinspires.ftc.teamcode.c_subsystems.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.c_subsystems.DriveSubsystem;
 
@@ -29,10 +31,14 @@ public class MainTeleOp extends CommandOpMode {
 
 		// Subsystems
 		DriveSubsystem driveSubsystem = new DriveSubsystem(devices.frontLeft, devices.frontRight, devices.backLeft, devices.backRight, devices.revIMU);
-		ClawSubsystem  claw           = new ClawSubsystem(devices.clawLeft, devices.clawRight, devices.clawPitch);
+		ClawSubsystem  claw           = new ClawSubsystem(devices.clawLeft, devices.clawRight);
+		ArmSubsystem	armSubsystem = new ArmSubsystem(devices.arm);
 
 		// Commands
 		DriveCommand driveCommand = new DriveCommand(driveSubsystem, gPad1::getLeftX, gPad1::getLeftY, gPad1::getRightX);
+		ArmCommand armCommand = new ArmCommand(armSubsystem, gPad1);
+
+		schedule(armCommand);
 
 		// CONTROLS ----------------------------------------------------------------------------------------------------
 		// X Button = Claw Open/Close
@@ -40,17 +46,6 @@ public class MainTeleOp extends CommandOpMode {
 		     .whenPressed(new ConditionalCommand(
 				     new InstantCommand(claw::open, claw),
 				     new InstantCommand(claw::close, claw),
-				     () -> {
-					     claw.toggle();
-					     return claw.active();
-				     }
-		     ));
-
-		// A Button = Claw Up/Down
-		gPad1.getGamepadButton(GamepadKeys.Button.A)
-		     .whenPressed(new ConditionalCommand(
-				     new InstantCommand(claw::up, claw),
-				     new InstantCommand(claw::down, claw),
 				     () -> {
 					     claw.toggle();
 					     return claw.active();
