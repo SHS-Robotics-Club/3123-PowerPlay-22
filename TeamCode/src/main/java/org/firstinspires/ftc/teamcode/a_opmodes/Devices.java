@@ -106,10 +106,10 @@ public class Devices {
 		arm.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
 		
 		// PID :( 🤷‍
-		//frontLeft.setVeloCoefficients(kp, ki, kd);
-		//frontRight.setVeloCoefficients(kp, ki, kd);
-		//backLeft.setVeloCoefficients(kp, ki, kd);
-		//backRight.setVeloCoefficients(kp, ki, kd);
+		frontLeft.setVeloCoefficients(kp, ki, kd);
+		frontRight.setVeloCoefficients(kp, ki, kd);
+		backLeft.setVeloCoefficients(kp, ki, kd);
+		backRight.setVeloCoefficients(kp, ki, kd);
 		
 		//liftA.setVeloCoefficients(kp, ki, kd);
 		//LiftB.setVeloCoefficients(kp, ki, kd);

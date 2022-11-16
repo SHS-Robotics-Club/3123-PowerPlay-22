@@ -17,6 +17,8 @@ import org.firstinspires.ftc.teamcode.c_subsystems.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.c_subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.c_subsystems.LiftSubsystem;
 
+import java.util.List;
+
 // @Disabled
 @TeleOp(name = "CommandTeleOp", group = ".")
 @Config
@@ -33,14 +35,12 @@ public class MainTeleOp extends CommandOpMode {
 		// Subsystems
 		DriveSubsystem driveSubsystem = new DriveSubsystem(devices.frontLeft, devices.frontRight, devices.backLeft, devices.backRight, devices.revIMU);
 		ClawSubsystem  claw           = new ClawSubsystem(devices.clawLeft, devices.clawRight);
-		ArmSubsystem   armSubsystem   = new ArmSubsystem(devices.arm);
+		//ArmSubsystem   armSubsystem   = new ArmSubsystem(devices.arm);
 		LiftSubsystem  liftSubsystem  = new LiftSubsystem(devices.lift);
 		
 		// Commands
-		DriveCommand driveCommand = new DriveCommand(driveSubsystem, gPad1::getLeftY, gPad1::getRightX, gPad1);
-		ArmCommand   armCommand   = new ArmCommand(armSubsystem, gPad1);
-		
-		schedule(armCommand);
+		DriveCommand driveCommand = new DriveCommand(driveSubsystem, gPad1::getLeftX, gPad1::getLeftY, gPad1::getRightX);
+		//ArmCommand   armCommand   = new ArmCommand(armSubsystem, gPad1);
 		
 		// CONTROLS ----------------------------------------------------------------------------------------------------
 		// X Button = Claw Open/Close
@@ -53,18 +53,20 @@ public class MainTeleOp extends CommandOpMode {
 							return claw.active();
 						}
 				));
-		
+
+		double value = 2000;
+
 		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
 				.whenPressed(new InstantCommand(() -> liftSubsystem.liftPos(0)));
 		
 		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_LEFT)
-				.whenPressed(new InstantCommand(() -> liftSubsystem.liftPos(20)));
+				.whenPressed(new InstantCommand(() -> liftSubsystem.liftPos((int) (value*(1/3)))));
 		
 		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_UP)
-				.whenPressed(new InstantCommand(() -> liftSubsystem.liftPos(40)));
+				.whenPressed(new InstantCommand(() -> liftSubsystem.liftPos((int) (value*2/3))));
 		
 		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT)
-				.whenPressed(new InstantCommand(() -> liftSubsystem.liftPos(60)));
+				.whenPressed(new InstantCommand(() -> liftSubsystem.liftPos((int) value)));
 		
 		// REGISTER/SCHEDULE ----------------------------------------------------------------------------------------------------
 		// Rev Hubs Lynx
@@ -74,12 +76,19 @@ public class MainTeleOp extends CommandOpMode {
 		// Default Drivetrain Command
 		register(driveSubsystem);
 		driveSubsystem.setDefaultCommand(driveCommand);
-		
+
+		//register(armSubsystem);
+		//armSubsystem.setDefaultCommand(armCommand);
+
 		schedule(new RunCommand(() -> {
 			// Telemetry
 			telemetry.update();
 			idle();
 		}));
+
+		if (isStopRequested()) {
+			return;
+		}
 	}
 	
 }
