@@ -41,7 +41,7 @@ import java.util.List;
 @Config
 public class Devices {
 	// DEFINE DEVICES
-	public MotorEx frontLeft, frontRight, backLeft, backRight;// Motors
+	public MotorEx frontLeft, frontRight, backLeft, backRight, liftA, liftB;// Motors
 	public MotorGroup lift;// Motor Group
 	public ServoEx clawLeft, clawRight; // Servos
 	public CRServo spool; // CR Servo
@@ -75,11 +75,10 @@ public class Devices {
 
 		spool = new CRServo(hardwareMap, "spool");
 
-		
-		lift = new MotorGroup(
-				new MotorEx(hardwareMap, "liftA", MotorEx.GoBILDA.RPM_312),
-				new MotorEx(hardwareMap, "liftB", MotorEx.GoBILDA.RPM_312)
-		);
+		liftA = new MotorEx(hardwareMap, "liftA", MotorEx.GoBILDA.RPM_312);
+		liftB = new MotorEx(hardwareMap, "liftB", MotorEx.GoBILDA.RPM_312);
+
+		lift = new MotorGroup(liftA, liftB);
 		
 		// Reset encoders
 		frontLeft.resetEncoder();
@@ -87,7 +86,7 @@ public class Devices {
 		backLeft.resetEncoder();
 		backRight.resetEncoder();
 
-		//lift.resetEncoder();
+		lift.resetEncoder();
 		
 		// Set RunMode for motors (RawPower, VelocityControl, PositionControl)
 		frontLeft.setRunMode(MotorEx.RunMode.VelocityControl);
