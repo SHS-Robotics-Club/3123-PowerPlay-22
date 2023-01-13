@@ -2,39 +2,31 @@ package org.firstinspires.ftc.teamcode.c_subsystems;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.SubsystemBase;
+import com.arcrobotics.ftclib.controller.PIDController;
+import com.arcrobotics.ftclib.controller.wpilibcontroller.ElevatorFeedforward;
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
 
 @Config
 public class LiftSubsystem extends SubsystemBase {
-	private MotorGroup lift;
-	private static final double gearDeg = (360.0 / 537.7);
-	public static final double posCoef = 0.05, posTol = 13.6;
-	public static final double kI = 0, kD = 0;
-	
-	public LiftSubsystem(MotorGroup lift) {
-		this.lift = lift;
-	}
-	
-	public void liftPos(int pos) {
-		// set and get the position coefficient
-		lift.setPositionCoefficient(posCoef);   //Default: 0.05
-		double kP = lift.getPositionCoefficient();
-		
-		lift.setVeloCoefficients(kP, kI, kD);
-		
-		// set the target position
-		lift.setTargetPosition((int) (pos / gearDeg));  // an integer representing desired tick count
-		
-		lift.set(0);
-		
-		// set the tolerance
-		lift.setPositionTolerance(posTol);  // allowed maximum error Default: 13.6
-		
-		// perform the control loop
-		while (!lift.atTargetPosition()) {
-			lift.set(0.5);
-		}
-		lift.stopMotor();   // stop the motor
-	}
-	
+    private MotorGroup lift;
+    private PIDController liftPID;
+    private ElevatorFeedforward liftFF;
+    public static final double kP = 0.05, kI = 0, kD = 0;
+    public static final double kS = 0, kG = 0, kV = 0, kA = 0;
+
+    public LiftSubsystem(MotorGroup lift) {
+        this.lift = lift;
+        liftPID = new PIDController(kP, kI, kD);
+        liftFF = new ElevatorFeedforward(kS, kG, kV, kA);
+    }
+
+    public void liftSet(double targetPosition, double targetVelocity, double targetAcceleration) {
+        double pidOutput = liftPID.calculate(lift.getCurrentPosition(), targetPosition);
+        double ffOutput = liftFF.calculate(targetVelocity, targetAcceleration);
+
+        double output = pidOutput + ffOutput;
+
+        lift.set(output);
+    }
+
 }

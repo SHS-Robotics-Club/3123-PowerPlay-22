@@ -5,6 +5,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.hardware.RevIMU;
 import com.arcrobotics.ftclib.hardware.ServoEx;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
+import com.arcrobotics.ftclib.hardware.motors.CRServo;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
@@ -32,6 +33,8 @@ import java.util.List;
  * SERVO        clawLeft        clawLeft    Claw Left (Open/Close)
  * SERVO        clawRight       clawRight   Claw Right (Open/Close)
  *
+ * CRSERVO		spool			spool		Funnie spool that spools
+ *
  * CAMERA		logiCam			cam		    Logitech C270 Webcam
  * IMU          revIMU          imu         REV Hub Built in IMU
  */
@@ -42,6 +45,7 @@ public class Devices {
 	public MotorEx frontLeft, frontRight, backLeft, backRight, arm;// Motors
 	public MotorGroup lift;// Motor Group
 	public ServoEx clawLeft, clawRight; // Servos
+	public CRServo spool; // CR Servo
 	public OpenCvWebcam logiCam; // USB Camera
 	public RevIMU revIMU; // REV Hub IMU
 	
@@ -70,8 +74,8 @@ public class Devices {
 		frontRight = new MotorEx(hardwareMap, "fR", MotorEx.GoBILDA.RPM_312);
 		backLeft   = new MotorEx(hardwareMap, "bL", MotorEx.GoBILDA.RPM_312);
 		backRight  = new MotorEx(hardwareMap, "bR", MotorEx.GoBILDA.RPM_312);
-		
-		arm = new MotorEx(hardwareMap, "arm", MotorEx.GoBILDA.RPM_312);
+
+		spool  = new CRServo(hardwareMap, "spool");
 		
 		lift = new MotorGroup(
 				new MotorEx(hardwareMap, "liftA", MotorEx.GoBILDA.RPM_312),
@@ -83,37 +87,32 @@ public class Devices {
 		frontRight.resetEncoder();
 		backLeft.resetEncoder();
 		backRight.resetEncoder();
-		
+
+		spool.resetEncoder();
 		lift.resetEncoder();
-		arm.resetEncoder();
 		
 		// Set RunMode for motors (RawPower, VelocityControl, PositionControl)
 		frontLeft.setRunMode(MotorEx.RunMode.VelocityControl);
 		frontRight.setRunMode(MotorEx.RunMode.VelocityControl);
 		backLeft.setRunMode(MotorEx.RunMode.VelocityControl);
 		backRight.setRunMode(MotorEx.RunMode.VelocityControl);
-		
-		lift.setRunMode(MotorEx.RunMode.PositionControl);
-		arm.setRunMode(MotorEx.RunMode.PositionControl);
+
+		spool.setRunMode(CRServo.RunMode.PositionControl);
 		
 		// Brake when zero power
 		frontLeft.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
 		frontRight.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
 		backLeft.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
 		backRight.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
-		
+
+		spool.setZeroPowerBehavior(CRServo.ZeroPowerBehavior.BRAKE);
 		lift.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
-		arm.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
 		
 		// PID :( 🤷‍
 		frontLeft.setVeloCoefficients(kp, ki, kd);
 		frontRight.setVeloCoefficients(kp, ki, kd);
 		backLeft.setVeloCoefficients(kp, ki, kd);
 		backRight.setVeloCoefficients(kp, ki, kd);
-		
-		//liftA.setVeloCoefficients(kp, ki, kd);
-		//LiftB.setVeloCoefficients(kp, ki, kd);
-		//arm.setVeloCoefficients(armP, armI, armD);
 		
 		// SERVOS ----------------------------------------------------------------------------------------------------
 		// Map
