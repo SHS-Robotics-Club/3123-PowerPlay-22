@@ -87,7 +87,7 @@ public class Devices {
 		backRight.resetEncoder();
 
 		spool.resetEncoder();
-		lift.resetEncoder();
+		//lift.resetEncoder();
 		
 		// Set RunMode for motors (RawPower, VelocityControl, PositionControl)
 		frontLeft.setRunMode(MotorEx.RunMode.VelocityControl);
@@ -95,7 +95,7 @@ public class Devices {
 		backLeft.setRunMode(MotorEx.RunMode.VelocityControl);
 		backRight.setRunMode(MotorEx.RunMode.VelocityControl);
 
-		lift.setRunMode(MotorEx.RunMode.RawPower);
+		//lift.setRunMode(MotorEx.RunMode.RawPower);
 
 		spool.setRunMode(CRServo.RunMode.PositionControl);
 		
