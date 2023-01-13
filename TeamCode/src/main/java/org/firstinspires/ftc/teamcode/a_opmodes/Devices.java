@@ -72,8 +72,6 @@ public class Devices {
 		frontRight = new MotorEx(hardwareMap, "fR", MotorEx.GoBILDA.RPM_312);
 		backLeft   = new MotorEx(hardwareMap, "bL", MotorEx.GoBILDA.RPM_312);
 		backRight  = new MotorEx(hardwareMap, "bR", MotorEx.GoBILDA.RPM_312);
-
-		spool  = new CRServo(hardwareMap, "spool");
 		
 		lift = new MotorGroup(
 				new MotorEx(hardwareMap, "liftA", MotorEx.GoBILDA.RPM_312),
@@ -86,7 +84,6 @@ public class Devices {
 		backLeft.resetEncoder();
 		backRight.resetEncoder();
 
-		spool.resetEncoder();
 		//lift.resetEncoder();
 		
 		// Set RunMode for motors (RawPower, VelocityControl, PositionControl)
