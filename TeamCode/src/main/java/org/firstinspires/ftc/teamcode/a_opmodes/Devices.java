@@ -28,7 +28,6 @@ import java.util.List;
  * MOTOR		backRight		bR		    Back Right Mecanum
  * MOTOR		liftA			lA			Lift Motor A
  * MOTOR		liftB			lB			Lift Motor B
- * MOTOR		arm				arm			Arm Motor
  *
  * SERVO        clawLeft        clawLeft    Claw Left (Open/Close)
  * SERVO        clawRight       clawRight   Claw Right (Open/Close)
@@ -95,6 +94,8 @@ public class Devices {
 		frontRight.setRunMode(MotorEx.RunMode.VelocityControl);
 		backLeft.setRunMode(MotorEx.RunMode.VelocityControl);
 		backRight.setRunMode(MotorEx.RunMode.VelocityControl);
+
+		lift.setRunMode(MotorEx.RunMode.RawPower);
 
 		spool.setRunMode(CRServo.RunMode.PositionControl);
 		
