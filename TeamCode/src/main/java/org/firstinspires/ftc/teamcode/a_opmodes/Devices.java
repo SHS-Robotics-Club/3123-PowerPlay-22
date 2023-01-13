@@ -93,8 +93,6 @@ public class Devices {
 		backRight.setRunMode(MotorEx.RunMode.VelocityControl);
 
 		//lift.setRunMode(MotorEx.RunMode.RawPower);
-
-		spool.setRunMode(CRServo.RunMode.PositionControl);
 		
 		// Brake when zero power
 		frontLeft.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
@@ -102,7 +100,6 @@ public class Devices {
 		backLeft.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
 		backRight.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
 
-		spool.setZeroPowerBehavior(CRServo.ZeroPowerBehavior.BRAKE);
 		lift.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
 		
 		// PID :( 🤷‍
