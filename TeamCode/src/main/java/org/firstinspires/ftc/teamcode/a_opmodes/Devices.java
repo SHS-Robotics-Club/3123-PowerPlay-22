@@ -42,7 +42,7 @@ import java.util.List;
 @Config
 public class Devices {
 	// DEFINE DEVICES
-	public MotorEx frontLeft, frontRight, backLeft, backRight, arm;// Motors
+	public MotorEx frontLeft, frontRight, backLeft, backRight;// Motors
 	public MotorGroup lift;// Motor Group
 	public ServoEx clawLeft, clawRight; // Servos
 	public CRServo spool; // CR Servo
@@ -57,7 +57,6 @@ public class Devices {
 	// BOT VARIABLES
 	public double volt = Double.POSITIVE_INFINITY; // Bot Voltage
 	public static final double kp = 0, ki = 0, kd = 0; // Drive PID
-	public static final double armP = 0, armI = 0, armD = 0; //Arm Pid
 	
 	public Devices(HardwareMap hardwareMap) {
 		// MISC ----------------------------------------------------------------------------------------------------

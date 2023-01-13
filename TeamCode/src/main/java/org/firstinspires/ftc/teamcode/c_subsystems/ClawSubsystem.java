@@ -4,7 +4,8 @@ import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.ServoEx;
 
 public class ClawSubsystem extends SubsystemBase {
-    private ServoEx clawLeft, clawRight;
+    private final ServoEx clawLeft;
+    private final ServoEx clawRight;
     private boolean isOpen;
 
     public ClawSubsystem(ServoEx clawLeft, ServoEx clawRight) {

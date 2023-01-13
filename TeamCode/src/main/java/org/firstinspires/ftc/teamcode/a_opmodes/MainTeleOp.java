@@ -52,8 +52,6 @@ public class MainTeleOp extends CommandOpMode {
                         }
                 ));
 
-        double value = 2000;
-
         // REGISTER/SCHEDULE ----------------------------------------------------------------------------------------------------
 
         register(driveSubsystem, liftSubsystem);
