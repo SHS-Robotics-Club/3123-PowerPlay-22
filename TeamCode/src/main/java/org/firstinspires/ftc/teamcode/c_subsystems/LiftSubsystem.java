@@ -13,6 +13,7 @@ public class LiftSubsystem extends SubsystemBase {
     private ElevatorFeedforward liftFF;
     public static final double kP = 0.05, kI = 0, kD = 0;
     public static final double kS = 0, kG = 0, kV = 0, kA = 0;
+    double output = 0;
 
     public LiftSubsystem(MotorGroup lift) {
         this.lift = lift;
@@ -21,12 +22,11 @@ public class LiftSubsystem extends SubsystemBase {
     }
 
     public void liftSet(double targetPosition, double targetVelocity, double targetAcceleration) {
+        lift.set(output);
         double pidOutput = liftPID.calculate(lift.getCurrentPosition(), targetPosition);
         double ffOutput = liftFF.calculate(targetVelocity, targetAcceleration);
 
-        double output = pidOutput + ffOutput;
-
-        lift.set(output);
+        output = pidOutput + ffOutput;
     }
 
 }
