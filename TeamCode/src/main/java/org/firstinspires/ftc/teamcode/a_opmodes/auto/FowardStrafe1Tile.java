@@ -26,19 +26,6 @@ public class FowardStrafe1Tile extends CommandOpMode {
 	@Override
 	public void initialize() {
 
-		// Initialize Servos
-		ServoEx clawPitch, clawLeft, clawRight;
-		clawLeft  = new SimpleServo(hardwareMap, "clawLeft", -180, 180, AngleUnit.DEGREES);
-		clawRight = new SimpleServo(hardwareMap, "clawRight", -180, 180, AngleUnit.DEGREES);
-		clawPitch = new SimpleServo(hardwareMap, "clawPitch", -180, 180, AngleUnit.DEGREES);
-
-		clawRight.setInverted(true);
-
-		clawLeft.turnToAngle(-10);
-		clawRight.turnToAngle(-10);
-
-		clawPitch.turnToAngle(-90);
-
 		mecanumSubsystem = new MecanumSubsystem(new SampleMecanumDrive(hardwareMap), true);
 
 		Trajectory strafe = mecanumSubsystem.trajectoryBuilder(new Pose2d(0, 0, Math.toRadians(0)))
