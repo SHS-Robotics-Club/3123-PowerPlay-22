@@ -77,6 +77,7 @@ public class Devices {
 
 		liftA = new MotorEx(hardwareMap, "liftA", MotorEx.GoBILDA.RPM_312);
 		liftB = new MotorEx(hardwareMap, "liftB", MotorEx.GoBILDA.RPM_312);
+
 		liftB.setInverted(true);
 		lift = new MotorGroup(
 				liftA,
@@ -98,7 +99,7 @@ public class Devices {
 		backRight.setRunMode(MotorEx.RunMode.VelocityControl);
 
 		lift.setRunMode(MotorEx.RunMode.PositionControl);
-		
+
 		// Brake when zero power
 		frontLeft.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
 		frontRight.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
@@ -106,7 +107,6 @@ public class Devices {
 		backRight.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
 
 		lift.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
-
 		
 		// PID :( 🤷‍
 		frontLeft.setVeloCoefficients(kp, ki, kd);

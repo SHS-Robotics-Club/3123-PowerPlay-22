@@ -28,5 +28,4 @@ public class LiftCommand extends CommandBase {
             liftSubsystem.liftSet(liftPositions[3]);
         }
     }
-
 }
