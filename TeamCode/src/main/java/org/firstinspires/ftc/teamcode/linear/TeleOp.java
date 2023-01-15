@@ -50,10 +50,10 @@ public class TeleOp extends LinearOpMode {
 		// START
 		waitForStart();
 		time.reset();
-        
-        if (isStopRequested()) {
-            return;
-        }
+		
+		if (isStopRequested()) {
+			return;
+		}
 		
 		while (opModeIsActive()) {
 			// GAME-PADS
