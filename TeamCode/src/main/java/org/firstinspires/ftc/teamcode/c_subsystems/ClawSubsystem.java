@@ -23,14 +23,14 @@ public class ClawSubsystem extends SubsystemBase {
     }
 
     public void open() {
-        clawLeft.turnToAngle(-40);
-        clawRight.turnToAngle(-40);
+        clawLeft.turnToAngle(20);
+        clawRight.turnToAngle(20);
         isOpen = true;
     }
 
     public void close() {
-        clawLeft.turnToAngle(20);
-        clawRight.turnToAngle(20);
+        clawLeft.turnToAngle(-15);
+        clawRight.turnToAngle(-15);
         isOpen = false;
     }
 }

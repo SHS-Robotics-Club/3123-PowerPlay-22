@@ -78,7 +78,11 @@ public class Devices {
 		liftA = new MotorEx(hardwareMap, "liftA", MotorEx.GoBILDA.RPM_312);
 		liftB = new MotorEx(hardwareMap, "liftB", MotorEx.GoBILDA.RPM_312);
 
-		lift = new MotorGroup(liftA, liftB);
+		liftB.setInverted(true);
+		lift = new MotorGroup(
+				liftA,
+				liftB
+		);
 		
 		// Reset encoders
 		frontLeft.resetEncoder();
@@ -94,8 +98,8 @@ public class Devices {
 		backLeft.setRunMode(MotorEx.RunMode.VelocityControl);
 		backRight.setRunMode(MotorEx.RunMode.VelocityControl);
 
-		//lift.setRunMode(MotorEx.RunMode.RawPower);
-		
+		lift.setRunMode(MotorEx.RunMode.PositionControl);
+
 		// Brake when zero power
 		frontLeft.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
 		frontRight.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
@@ -119,8 +123,8 @@ public class Devices {
 		clawRight.setInverted(true);
 		
 		// Default POS
-		//clawLeft.turnToAngle(-10);
-		//clawRight.turnToAngle(-10);
+		clawLeft.turnToAngle(0);
+		clawRight.turnToAngle(0);
 		
 		// VOLTAGE ----------------------------------------------------------------------------------------------------
 		for (VoltageSensor sensor : hardwareMap.voltageSensor) {

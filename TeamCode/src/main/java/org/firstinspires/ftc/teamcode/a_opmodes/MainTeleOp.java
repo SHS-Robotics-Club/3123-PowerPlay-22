@@ -17,6 +17,8 @@ import org.firstinspires.ftc.teamcode.c_subsystems.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.c_subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.c_subsystems.LiftSubsystem;
 
+import java.util.List;
+
 // @Disabled
 @TeleOp(name = "CommandTeleOp", group = ".")
 @Config
@@ -52,20 +54,45 @@ public class MainTeleOp extends CommandOpMode {
                         }
                 ));
 
-        // REGISTER/SCHEDULE ----------------------------------------------------------------------------------------------------
+        double value = 2000;
 
-        register(driveSubsystem, liftSubsystem);
+        register(liftSubsystem);
+/*        gPad1.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
+                .whenHeld(new RunCommand(() -> liftSubsystem.liftPos(0)))
+                .whenReleased(new InstantCommand(liftSubsystem::stop));
+
+        gPad1.getGamepadButton(GamepadKeys.Button.DPAD_LEFT)
+                .whenHeld(new RunCommand(() -> liftSubsystem.liftPos(537)))
+                .whenReleased(new InstantCommand(liftSubsystem::stop));
+
+        gPad1.getGamepadButton(GamepadKeys.Button.DPAD_UP)
+                .whenHeld(new RunCommand(() -> liftSubsystem.liftPos(40)))
+                .whenReleased(new InstantCommand(liftSubsystem::stop));
+
+        gPad1.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT)
+                .whenHeld(new RunCommand(() -> liftSubsystem.liftPos(60)))
+                .whenReleased(new InstantCommand(liftSubsystem::stop));*/
+        
+        // REGISTER/SCHEDULE ----------------------------------------------------------------------------------------------------
+/*      register(driveSubsystem, liftSubsystem);
         ParallelRaceGroup runGroup = new ParallelRaceGroup(driveCommand, liftCommand);
 
-        schedule(runGroup, lynxCommand);
 
-        schedule(new RunCommand(() -> {
+        schedule(runGroup, lynxCommand);*/
+
+        schedule(lynxCommand, liftCommand, new RunCommand(() -> {
             // Telemetry
             telemetry.update();
-            telemetry.addData("LiftPOS", devices.lift.getPositions());
+            telemetry.addData("liftSetL", devices.lift.getPositions());
             telemetry.addData("LiftVelo", devices.lift.getVelocities());
-            idle();
+            //idle();
         }));
+        register(driveSubsystem);
+        driveSubsystem.setDefaultCommand(driveCommand);
+
+        if (isStopRequested()) {
+            return;
+        }
     }
 
 }
