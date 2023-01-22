@@ -20,8 +20,8 @@ public class LiftSubsystemOtherOther extends SubsystemBase {
 	public static double tolerance = 10.0, velo = 10.0, accel = 20.0;
 
 	// Create a new ElevatorFeedforward
-	PIDFController      pidf        = new PIDController(kP, kI, kD);
-	double              pidfOut;
+	PIDFController pidf = new PIDController(kP, kI, kD);
+	double         pidfOut;
 
 	public LiftSubsystemOtherOther(MotorGroup lift) {
 		this.lift = lift;
@@ -35,14 +35,10 @@ public class LiftSubsystemOtherOther extends SubsystemBase {
 	}
 
 	public void set(double targetPosition) {
-		while (!pidf.atSetPoint()) {
-			double thong = calculate(targetPosition);
-			lift.set(thong);
-		}
-	}
-
-	public void stop() {
 		lift.set(0);
+		while (!pidf.atSetPoint()) {
+			lift.set(calculate(targetPosition));
+		}
 		lift.stopMotor();
 	}
 }

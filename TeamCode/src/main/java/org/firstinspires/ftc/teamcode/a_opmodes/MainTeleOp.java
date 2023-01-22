@@ -11,6 +11,7 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.b_commands.DriveCommand;
+import org.firstinspires.ftc.teamcode.b_commands.LiftCommand;
 import org.firstinspires.ftc.teamcode.c_subsystems.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.c_subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.c_subsystems.LiftSubsystemOther;
@@ -20,8 +21,6 @@ import org.firstinspires.ftc.teamcode.c_subsystems.LiftSubsystemOtherOther;
 @Config
 @TeleOp(name = "MainTeleOp", group = ".")
 public class MainTeleOp extends CommandOpMode {
-	public static double target = 300;
-
 	@Override
 	public void initialize() {
 		if (isStopRequested()) return; // Exit program if stop requested??
@@ -38,6 +37,7 @@ public class MainTeleOp extends CommandOpMode {
 		LiftSubsystemOtherOther lfoo           = new LiftSubsystemOtherOther(devices.lift);
 
 		DriveCommand driveCommand = new DriveCommand(driveSubsystem, gPad1::getLeftX, gPad1::getLeftY, gPad1::getRightX, 1);
+		LiftCommand  liftCommand  = new LiftCommand(lfoo, gPad1);
 
 		register(driveSubsystem, claw, lfoo);
 
@@ -53,22 +53,16 @@ public class MainTeleOp extends CommandOpMode {
 				     }
 		     ));
 
-		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenPressed(new RunCommand(() -> {
-			lfoo.set(target);
-		}));
-
-		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whenPressed(new RunCommand(lfoo::stop));
-
-
 		// Register and Schedule ----------------------------------------------------------------------------------------------------
-		schedule(driveCommand,
-		         new RunCommand(() -> {
-			         // Telemetry
-			         telemetry.update();
-			         telemetry.addData("velo", devices.lift.getVelocities());
-			         telemetry.addData("pos", devices.lift.getPositions());
-			         telemetry.addData("calc", lfoo.calculate(target));
-			         telemetry.addData("dpadup", gPad1.getGamepadButton(GamepadKeys.Button.DPAD_UP));
-		         }));
+		schedule(driveCommand.alongWith(
+				liftCommand,
+				new RunCommand(() -> {
+					// Telemetry
+					telemetry.update();
+					telemetry.addData("velo", devices.lift.getVelocities());
+					telemetry.addData("pos", devices.lift.getPositions());
+					telemetry.addData("calc", lfoo.calculate(500));
+					telemetry.addData("dpadup", gPad1.getGamepadButton(GamepadKeys.Button.DPAD_UP));
+				})));
 	}
 }
