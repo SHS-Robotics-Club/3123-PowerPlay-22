@@ -7,34 +7,46 @@ import org.firstinspires.ftc.teamcode.c_subsystems.DriveSubsystem;
 import java.util.function.DoubleSupplier;
 
 public class DriveCommand extends CommandBase {
-    private final DriveSubsystem mecDrive;
-    private final DoubleSupplier strafe, forward, turn;
-    private double multiplier;
+	private final DriveSubsystem driveSubsystem;
+	private final DoubleSupplier strafe, forward, turn;
+	private double multiplier;
 
-    public DriveCommand(DriveSubsystem subsystem, DoubleSupplier strafe, DoubleSupplier forward, DoubleSupplier turn, double mult) {
-        mecDrive = subsystem;
-        this.strafe = strafe;
-        this.forward = forward;
-        this.turn = turn;
-        multiplier = mult;
+	/**
+	 * @param driveSubsystem The drive subsystem this command wil run on.
+	 * @param strafe         The control input for driving left/right.
+	 * @param forward        The control input for driving forwards/backwards.
+	 * @param turn           The control input for turning.
+	 * @param multiplier     A multiplier for bot speed.
+	 */
+	public DriveCommand(DriveSubsystem driveSubsystem, DoubleSupplier strafe, DoubleSupplier forward, DoubleSupplier turn, double multiplier) {
+		this.driveSubsystem = driveSubsystem;
+		this.strafe         = strafe;
+		this.forward        = forward;
+		this.turn           = turn;
+		this.multiplier     = multiplier;
 
-        addRequirements(subsystem);
-    }
+		addRequirements(driveSubsystem);
+	}
+	/**
+	 * @param driveSubsystem The drive subsystem this command wil run on.
+	 * @param strafe         The control input for driving left/right.
+	 * @param forward        The control input for driving forwards/backwards.
+	 * @param turn           The control input for turning.
+	 */
+	public DriveCommand(DriveSubsystem driveSubsystem, DoubleSupplier strafe, DoubleSupplier forward, DoubleSupplier turn) {
+		this.driveSubsystem = driveSubsystem;
+		this.strafe         = strafe;
+		this.forward        = forward;
+		this.turn           = turn;
+		multiplier          = 1.0;
 
-    public DriveCommand(DriveSubsystem subsystem, DoubleSupplier strafe, DoubleSupplier forward, DoubleSupplier turn) {
-        mecDrive = subsystem;
-        this.strafe = strafe;
-        this.forward = forward;
-        this.turn = turn;
-        multiplier = 1.0;
+		addRequirements(driveSubsystem);
+	}
 
-        addRequirements(subsystem);
-    }
-
-    @Override
-    public void execute() {
-        mecDrive.drive(strafe.getAsDouble() * 0.9 * multiplier,
-                forward.getAsDouble() * 0.9 * multiplier,
-                turn.getAsDouble() * 0.88 * multiplier);
-    }
+	@Override
+	public void execute() {
+		driveSubsystem.drive(strafe.getAsDouble() * 0.9 * multiplier,
+		                     forward.getAsDouble() * 0.9 * multiplier,
+		                     turn.getAsDouble() * 0.8 * multiplier);
+	}
 }

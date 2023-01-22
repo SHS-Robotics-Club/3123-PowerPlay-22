@@ -1,4 +1,8 @@
-//Top-level build file for ftc_app project. It is extraordinarily rare that you will ever need to edit this file.
+/**
+ * Top-level build file for ftc_app project.
+ *
+ * It is extraordinarily rare that you will ever need to edit this file.
+ */
 
 buildscript {
     repositories {
@@ -17,10 +21,6 @@ allprojects {
         mavenCentral()
         google()
     }
-}
-
-repositories {
-    mavenCentral()
 }
 
 task clean(type: Delete) {

@@ -86,12 +86,10 @@ lint/outputs/
 lint/tmp/
 # lint/reports/
 
-.DS_Store
-.idea
-
-*.hprof
-/build
-/captures
+.gradle
 /local.properties
 /.idea
 /tempMergeFolder
+.DS_Store
+/build
+/captures
