@@ -6,6 +6,8 @@ import com.arcrobotics.ftclib.controller.PIDFController;
 import com.arcrobotics.ftclib.controller.wpilibcontroller.ElevatorFeedforward;
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 import java.util.List;
 
 @Config
@@ -15,9 +17,9 @@ public class LiftSubsystemOther extends SubsystemBase {
 	MotorGroup lift;
 
 	//Define Whatever These Mean
-	public static final double kS = 0.0, kG = 0.0, kV = 0.0, kA = 0.0;
-	public static final double kP = 0.0, kI = 0.0, kD = 0.0, kF = 0.0;
-	public static final double tolerance = 10.0, velo = 10.0, accel = 20.0;
+	public static double kS = 0.0, kG = 0.0, kV = 0.0, kA = 0.0;
+	public static double kP = 0.0, kI = 0.0, kD = 0.0, kF = 0.0;
+	public static double tolerance = 10.0, velo = 10.0, accel = 20.0;
 
 	// Create a new ElevatorFeedforward
 	ElevatorFeedforward feedforward = new ElevatorFeedforward(kS, kG, kV, kA);
@@ -40,7 +42,8 @@ public class LiftSubsystemOther extends SubsystemBase {
 	public void set(double targetPosition) {
 		double lowPos = targetPosition - tolerance, highPos = targetPosition + tolerance;
 		while (liftPos.get(0) >= lowPos && liftPos.get(0) <= highPos) {
-			calculate(velo, accel, targetPosition);
+			double thong = calculate(velo, accel, targetPosition);
+			lift.set(thong);
 		}
 	}
 
