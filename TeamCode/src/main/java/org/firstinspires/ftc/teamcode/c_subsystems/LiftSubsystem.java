@@ -2,62 +2,71 @@ package org.firstinspires.ftc.teamcode.c_subsystems;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.SubsystemBase;
+import com.arcrobotics.ftclib.controller.PIDFController;
+import com.arcrobotics.ftclib.controller.wpilibcontroller.ElevatorFeedforward;
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
-
-import java.util.List;
 
 @Config
 public class LiftSubsystem extends SubsystemBase {
-	MotorGroup lift;
-	public static final double kP = 0.05, T = 5;
-	private              LiftState liftState     = LiftState.FLOOR;
-	private static final int[]     liftPositions = {0, 500, 1500, 3000};
+    MotorGroup lift;
+    private static final int[] liftPositions = {0, 500, 1500, 3000};
+    public static double kP = 0.05, kI = 0.0, kD = 0.0;
+    public static double kS = 0.0, kG = 0.0, kV = 0, kA = 0.0;
+    public static double velo = 10, accel = 20;
+    ElevatorFeedforward ff  = new ElevatorFeedforward(kS, kG, kV, kA);
+    PIDFController pid = new PIDFController(kP, kI, kD, 0);
 
-	/**
-	 * @param lift The MotorGroup housing both lift motors.
-	 */
-	public LiftSubsystem(MotorGroup lift) {
-		this.lift = lift;
-	}
+    /**
+     * @param lift The MotorGroup housing both lift motors.
+     */
+    public LiftSubsystem(MotorGroup lift) {
+        this.lift = lift;
+    }
 
-	@Override
-	public void periodic() {
-		int target = 0;
-		switch (liftState) {
-			case FLOOR:
-				target = 0;
-			case LOW:
-				target = 1;
-			case MID:
-				target = 2;
-			case HIGH:
-				target = 3;
-		}
+    public double getVelocity() {
+        return lift.getVelocities().get(0);
+    }
 
-		lift.setPositionCoefficient(kP);
-		lift.setPositionTolerance(T);
-		lift.set(0);
-		while (!lift.atTargetPosition()) {
-			lift.setTargetPosition(liftPositions[target]);
-			lift.set(0.5);
-		}
-		lift.stopMotor();
-	}
+    public double getPosition() {
+        return lift.getPositions().get(0);
+    }
 
-	/**
-	 * @param liftState The State the lift should take. FLOOR, LOW, MID, HIGH.
-	 */
-	public void set(LiftState liftState) {
-		this.liftState = liftState;
-	}
+    public void setTolerances(double positionTolerance, double velocityTolerance) {
+        pid.setTolerance(positionTolerance, velocityTolerance);
+    }
 
-	public double getVelocity() {
-		List<Double> velocitys = lift.getVelocities();
-		return velocitys.get(0);
-	}
+    public double[] getTolerances(){
+        return pid.getTolerance();
+    }
 
-	public double getPosition() {
-		List<Double> positions = lift.getPositions();
-		return positions.get(0);
-	}
+    public void setTarget(int target) {
+        pid.setSetPoint(target);
+    }
+
+    public double getPositionError(){
+        return pid.getPositionError();
+    }
+
+    public double getTarget(){
+        return pid.getSetPoint();
+    }
+
+    public void setPower(double power){
+        lift.set(power);
+    }
+
+    public void stop(){
+        lift.set(0);
+        lift.stopMotor();
+    }
+
+    public double calculate() {
+        pid.setF(ff.calculate(velo, accel));
+        return pid.calculate(getPosition());
+    }
+
+    public boolean atTargetPosition(){
+        return pid.atSetPoint();
+    }
+
 }

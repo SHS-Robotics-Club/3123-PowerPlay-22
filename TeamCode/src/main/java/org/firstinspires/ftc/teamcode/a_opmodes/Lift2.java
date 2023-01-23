@@ -30,9 +30,9 @@ public class Lift2 extends LinearOpMode {
 	double volt = 0, ffOut, output, achAccel = 0, achVel = 0;
 	FtcDashboard dashboard = FtcDashboard.getInstance();
 	Telemetry    telemetry = dashboard.getTelemetry();
-	Devices      devices   = new Devices(hardwareMap);
-	GamepadEx    gamepadEx = new GamepadEx(gamepad1);
-	List<Double> liftPos   = devices.lift.getPositions(), liftVel = devices.lift.getPositions();
+	Devices devices = null;
+	GamepadEx gamepadEx = null;
+	List<Double> liftPos = null, liftVel = null;
 	double targetPos = 0;
 
 	// Create a new ElevatorFeedforward
@@ -45,6 +45,10 @@ public class Lift2 extends LinearOpMode {
 	// called when init button is  pressed.
 	@Override
 	public void runOpMode() throws InterruptedException {
+		devices = new Devices(hardwareMap);
+		gamepadEx = new GamepadEx(gamepad1);
+		liftPos = devices.lift.getPositions();
+		liftVel = devices.lift.getPositions();
 
 		telemetry.addData("Status", "Initialized");
 

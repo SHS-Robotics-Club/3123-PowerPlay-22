@@ -66,8 +66,9 @@ import java.util.List;
 @TeleOp(name = "Lift", group = ".")
 public class Lift extends OpMode {
     public Lift() throws Exception {
-        
+
     }
+
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -76,7 +77,7 @@ public class Lift extends OpMode {
     public static double kS = 0.0, kG = 0.0, kV = 312 * 2 * Math.PI / 60.0, kA = 0.0;
     public static double velo = 52.48291908330528, accel = 52.48291908330528;
     public static double veloTol = 0.0, posTol = 0.0;
-    double volt = 0, ffOut, output, achAccel = 0, achVel= 0;
+    double volt = 0, ffOut, output, achAccel = 0, achVel = 0;
     Devices devices = null;
     GamepadEx gamepadEx = null;
     List<Double> liftPos = null, liftVel = null;
@@ -100,7 +101,6 @@ public class Lift extends OpMode {
                 volt = Math.min(volt, voltage);
             }
         }
-        Thread liftThread = new LiftThread();
     }
 
     /*
@@ -138,7 +138,7 @@ public class Lift extends OpMode {
         } else if (gamepadEx.getButton(GamepadKeys.Button.DPAD_LEFT)) {
             pid.setSetPoint(1500);
         }
-        
+
 
         while (!pid.atSetPoint()) {
             liftPos = devices.lift.getPositions();
@@ -147,21 +147,9 @@ public class Lift extends OpMode {
             pid.setF(ffOut);
             pid.setTolerance(posTol, veloTol);
             achAccel = ff.maxAchievableAcceleration(volt, liftVel.get(0));
-            output = pid.calculate(
-                    liftPos.get(0)  // the measured value
-            );
+            output = pid.calculate(liftPos.get(0));
             devices.lift.set(output);
-            telemetry.addData("Pos", liftPos.get(0));
-            telemetry.addData("Vel", liftVel.get(0));
-            telemetry.addData("FF", ffOut);
-            telemetry.addData("PID", output);
-            telemetry.addData("Voltage", volt);
-            telemetry.addData("achAcc", achAccel);
-            telemetry.addData("ErrorPos", pid.getPositionError());
-            telemetry.addData("ErrorVel", pid.getVelocityError());
-            telemetry.update();
-
-            if(pid.getPositionError() <= 0 + posTol && pid.getPositionError() >= 0 - posTol){
+            if (pid.getPositionError() <= 0 + posTol && pid.getPositionError() >= 0 - posTol) {
                 break;
             }
         }
@@ -177,21 +165,7 @@ public class Lift extends OpMode {
     @Override
     public void stop() {
     }
-    
-    private class LiftThread extends Thread{
-        public LiftThread(){
-            this.setName("LiftThread");
-        }
-        
-        @Override
-        public void run(){
-            try{
-                while (!isInterrupted()){
-                    idle();
-                }
-            } catch (Exception ignored) {}
-        }
-    }
+
 
     private void idle() {
     }
