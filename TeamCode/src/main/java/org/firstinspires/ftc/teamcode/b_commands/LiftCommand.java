@@ -4,8 +4,7 @@ import com.arcrobotics.ftclib.command.CommandBase;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 
-import org.firstinspires.ftc.teamcode.c_subsystems.LiftSubsystem;
-import org.firstinspires.ftc.teamcode.c_subsystems.LiftSubsystemOtherOther;
+import org.firstinspires.ftc.teamcode.c_subsystems.archive.LiftSubsystemOtherOther;
 
 public class LiftCommand extends CommandBase {
 	private              LiftSubsystemOtherOther liftSubsystem;

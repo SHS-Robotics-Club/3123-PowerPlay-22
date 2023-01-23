@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.a_opmodes;
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.ConditionalCommand;
@@ -14,8 +13,7 @@ import org.firstinspires.ftc.teamcode.b_commands.DriveCommand;
 import org.firstinspires.ftc.teamcode.b_commands.LiftCommand;
 import org.firstinspires.ftc.teamcode.c_subsystems.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.c_subsystems.DriveSubsystem;
-import org.firstinspires.ftc.teamcode.c_subsystems.LiftSubsystemOther;
-import org.firstinspires.ftc.teamcode.c_subsystems.LiftSubsystemOtherOther;
+import org.firstinspires.ftc.teamcode.c_subsystems.archive.LiftSubsystemOtherOther;
 
 //@Disabled
 @Config
@@ -23,8 +21,6 @@ import org.firstinspires.ftc.teamcode.c_subsystems.LiftSubsystemOtherOther;
 public class MainTeleOp extends CommandOpMode {
 	@Override
 	public void initialize() {
-		if (isStopRequested()) return; // Exit program if stop requested??
-
 		// Get Devices
 		final Devices devices = new Devices(hardwareMap);
 

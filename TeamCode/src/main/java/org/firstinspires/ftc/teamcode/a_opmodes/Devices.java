@@ -80,7 +80,7 @@ public class Devices {
 		backLeft.setRunMode(MotorEx.RunMode.VelocityControl);
 		backRight.setRunMode(MotorEx.RunMode.VelocityControl);
 
-		lift.setRunMode(MotorEx.RunMode.VelocityControl);
+		lift.setRunMode(MotorEx.RunMode.PositionControl);
 
 		// Brake when zero power
 		frontLeft.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
