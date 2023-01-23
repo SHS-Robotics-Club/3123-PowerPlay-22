@@ -6,10 +6,6 @@ import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
 
 import java.util.List;
 
-enum LiftState {
-	FLOOR, LOW, MID, HIGH
-}
-
 @Config
 public class LiftSubsystem extends SubsystemBase {
 	MotorGroup lift;
