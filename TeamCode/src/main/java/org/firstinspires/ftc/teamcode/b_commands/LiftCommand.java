@@ -6,76 +6,79 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 
 import org.firstinspires.ftc.teamcode.c_subsystems.LiftSubsystem;
 
-enum LiftStates {
-    READY, MOVING
-}
 
 public class LiftCommand extends CommandBase {
-    public static double posTol = 1;
-    GamepadEx gamepadEx;
-    public int targetPosition = 0;
-    LiftSubsystem lift;
-    LiftStates liftStates;
-    LiftLevels liftLevels;
+	public static double positionTolerance = 1.0, velo = 0.0, accel = 0.0;
+	GamepadEx     gamepadEx;
+	LiftSubsystem lift;
+	LiftStates    liftStates;
+	LiftLevels    liftLevels;
 
-    enum LiftLevels {
-        FLOOR(0), LOW(1000), MED(2000), HIGH(2500);
+	enum LiftStates {
+		READY, MOVING
+	}
 
-        private int levelPos;
+	enum LiftLevels {
+		FLOOR(0), LOW(1000), MED(2000), HIGH(2500);
 
-        LiftLevels(int levelPos) {
-            this.levelPos = levelPos;
-        }
+		private int levelPos;
 
-        public int getLevelPos(){
-            return levelPos;
-        }
+		LiftLevels(int levelPos) {
+			this.levelPos = levelPos;
+		}
 
-    }
+		/**
+		 * @return levelPos Return lift level positions in ticks.
+		 */
+		public int getLevelPos() {
+			return levelPos;
+		}
+	}
 
-    public LiftCommand(LiftSubsystem liftSubsystem, GamepadEx gamepadEx) {
-        lift = liftSubsystem;
-        this.gamepadEx = gamepadEx;
-        liftStates = LiftStates.READY;
-        liftLevels = LiftLevels.FLOOR;
-        addRequirements(liftSubsystem);
-    }
-    @Override
-    public void initialize() {
-        lift.setTolerance(posTol);
-        lift.setSetPoint(0);
-        lift.stop();
-    }
+	public LiftCommand(LiftSubsystem liftSubsystem, GamepadEx gamepadEx) {
+		lift           = liftSubsystem;
+		this.gamepadEx = gamepadEx;
+		addRequirements(liftSubsystem);
+	}
 
-    @Override
-    public void execute() {
-        if (gamepadEx.getButton(GamepadKeys.Button.DPAD_DOWN)) {
-            liftLevels = LiftLevels.FLOOR;
-        } else if (gamepadEx.getButton(GamepadKeys.Button.DPAD_LEFT)) {
-            liftLevels = LiftLevels.LOW;
-        } else if (gamepadEx.getButton(GamepadKeys.Button.DPAD_UP)) {
-            liftLevels = LiftLevels.MED;
-        } else if (gamepadEx.getButton(GamepadKeys.Button.DPAD_RIGHT)) {
-            liftLevels = LiftLevels.HIGH;
-        }
-        lift.getPosition();
-        lift.setSetPoint(liftLevels.getLevelPos());
-        switch (liftStates) {
-            case READY:
-                if (lift.atSetPoint()) {
-                    lift.stop();
-                }
-                if (!lift.atSetPoint()){
-                    liftStates = LiftStates.MOVING;
-                }
-            case MOVING:
-                if (!lift.atSetPoint()) {
-                    lift.set(lift.calculate(lift.getPosition(), 0, 0));
-                }
-                if (lift.atSetPoint()){
-                    liftStates = LiftStates.READY;
-                }
-        }
-    }
+	@Override
+	public void initialize() {
+		liftStates = LiftStates.READY;
+		liftLevels = LiftLevels.FLOOR;
+		lift.setTolerance(positionTolerance);
+		lift.setSetPoint(0);
+		lift.stop();
+	}
+
+	@Override
+	public void execute() {
+		if (gamepadEx.getButton(GamepadKeys.Button.DPAD_DOWN)) {
+			liftLevels = LiftLevels.FLOOR;
+		} else if (gamepadEx.getButton(GamepadKeys.Button.DPAD_LEFT)) {
+			liftLevels = LiftLevels.LOW;
+		} else if (gamepadEx.getButton(GamepadKeys.Button.DPAD_UP)) {
+			liftLevels = LiftLevels.MED;
+		} else if (gamepadEx.getButton(GamepadKeys.Button.DPAD_RIGHT)) {
+			liftLevels = LiftLevels.HIGH;
+		}
+		lift.getPosition();
+		lift.setSetPoint(liftLevels.getLevelPos());
+		switch (liftStates) {
+			case READY:
+				if (lift.atSetPoint()) {
+					lift.stop();
+				}
+				if (!lift.atSetPoint()) {
+					liftStates = LiftStates.MOVING;
+				}
+			case MOVING:
+				if (!lift.atSetPoint()) {
+					lift.set(lift.calculate(0));
+				}
+				if (lift.atSetPoint()) {
+					liftStates = LiftStates.READY;
+				}
+		}
+	}
 
 }

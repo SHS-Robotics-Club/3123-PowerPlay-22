@@ -27,6 +27,7 @@ public class DriveCommand extends CommandBase {
 
 		addRequirements(driveSubsystem);
 	}
+
 	/**
 	 * @param driveSubsystem The drive subsystem this command wil run on.
 	 * @param strafe         The control input for driving left/right.
