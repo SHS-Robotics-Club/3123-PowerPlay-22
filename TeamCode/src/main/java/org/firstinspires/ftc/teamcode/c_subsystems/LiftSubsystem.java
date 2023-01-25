@@ -4,69 +4,204 @@ import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.arcrobotics.ftclib.controller.wpilibcontroller.ElevatorFeedforward;
+import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
 
 @Config
 public class LiftSubsystem extends SubsystemBase {
     MotorGroup lift;
-    private static final int[] liftPositions = {0, 500, 1500, 3000};
-    public static double kP = 0.05, kI = 0.0, kD = 0.0;
-    public static double kS = 0.0, kG = 0.0, kV = 0, kA = 0.0;
-    public static double velo = 10, accel = 20;
-    ElevatorFeedforward ff  = new ElevatorFeedforward(kS, kG, kV, kA);
-    PIDFController pid = new PIDFController(kP, kI, kD, 0);
+    MotorEx liftLeft, liftRight;
+    int targetPosition = 0;
 
-    /**
-     * @param lift The MotorGroup housing both lift motors.
-     */
-    public LiftSubsystem(MotorGroup lift) {
-        this.lift = lift;
+    public static double kP=0.2, kI=0.0, kD=0.0, kS=0.0, kG=0.0, kV=0.0, kA=0.0;
+
+    PIDFController pidf = new PIDFController(kP, kI, kD, 0);
+    ElevatorFeedforward eff = new ElevatorFeedforward(kS, kG, kV, kA);
+
+    public LiftSubsystem(MotorEx liftLeft, MotorEx liftRight) {
+        this.liftLeft = liftLeft;
+        this.liftRight = liftRight;
+
+        lift = new MotorGroup(liftLeft, liftRight);
+        lift.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
     }
 
+    @Override
+    public void periodic() {
+        getPosition();
+        getVelocity();
+        calculate();
+    }
+
+
+    public void set(double output) {
+        lift.set(output);
+    }
+
+    public void stop(){
+        lift.stopMotor();
+    }
+
+    /**
+     * @param velocity the velocity in ticks per second
+     */
+    public void setVelocity(double velocity) {
+        liftLeft.setVelocity(velocity);
+        liftRight.setVelocity(velocity);
+    }
+
+    /**
+     * @return the velocity of the motor in ticks per second
+     */
     public double getVelocity() {
         return lift.getVelocities().get(0);
     }
 
-    public double getPosition() {
+    /**
+     * @return the acceleration of the motor in ticks per second squared
+     */
+    public double getAcceleration() {
+        return liftLeft.getAcceleration();
+    }
+
+    /**
+     * @return the current position of the encoder
+     */
+    public Double getPosition() {
         return lift.getPositions().get(0);
     }
 
-    public void setTolerances(double positionTolerance, double velocityTolerance) {
-        pid.setTolerance(positionTolerance, velocityTolerance);
+    /**
+     * @return the distance traveled by the encoder
+     */
+    public double getDistance() {
+        return liftLeft.getDistance();
     }
 
-    public double[] getTolerances(){
-        return pid.getTolerance();
+    /**
+     * @return the velocity of the encoder adjusted to account for the distance per pulse
+     */
+    public double getRate() {
+        return liftLeft.getRate();
     }
 
-    public void setTarget(int target) {
-        pid.setSetPoint(target);
+    /**
+     * Resets the encoder without having to stop the motor.
+     */
+    public void resetEncoder() {
+        lift.resetEncoder();
     }
 
-    public double getPositionError(){
-        return pid.getPositionError();
+    /**
+     * Sets the distance per pulse of the encoder.
+     *
+     * @param distancePerPulse the desired distance per pulse (in units per tick)
+     */
+    public void setDistancePerPulse(double distancePerPulse) {
+        lift.setDistancePerPulse(distancePerPulse);
     }
 
-    public double getTarget(){
-        return pid.getSetPoint();
+    /**
+     * Corrects for velocity overflow
+     *
+     * @return the corrected velocity
+     */
+    public double getCorrectedVelocity() {
+        return liftLeft.getCorrectedVelocity();
     }
 
-    public void setPower(double power){
-        lift.set(power);
+    public void reset() {
+        pidf.reset();
     }
 
-    public void stop(){
-        lift.set(0);
-        lift.stopMotor();
+    /**
+     * Sets the error which is considered tolerable for use with {@link #atSetPoint()}.
+     *
+     * @param positionTolerance Position error which is tolerable.
+     */
+    public void setTolerance(double positionTolerance) {
+        pidf.setTolerance(positionTolerance);
+    }
+
+    /**
+     * Sets the error which is considered tolerable for use with {@link #atSetPoint()}.
+     *
+     * @param positionTolerance Position error which is tolerable.
+     * @param velocityTolerance Velocity error which is tolerable.
+     */
+    public void setTolerance(double positionTolerance, double velocityTolerance) {
+        pidf.setTolerance(positionTolerance, velocityTolerance);
+    }
+
+    /**
+     * Returns the current setpoint of the PIDFController.
+     *
+     * @return The current setpoint.
+     */
+    public double getSetPoint() {
+        return pidf.getSetPoint();
+    }
+
+    /**
+     * Sets the setpoint for the PIDFController
+     *
+     * @param sp The desired setpoint.
+     */
+    public void setSetPoint(double sp) {
+        pidf.setSetPoint(sp);
+    }
+
+    /**
+     * Returns true if the error is within the percentage of the total input range, determined by
+     * {@link #setTolerance}.
+     *
+     * @return Whether the error is within the acceptable bounds.
+     */
+    public boolean atSetPoint() {
+        return pidf.atSetPoint();
+    }
+
+    /**
+     * @return the PIDF coefficients
+     */
+    public double[] getCoefficients() {
+        return pidf.getCoefficients();
+    }
+
+    /**
+     * @return the positional error e(t)
+     */
+    public double getPositionError() {
+        return pidf.getPositionError();
+    }
+
+    /**
+     * @return the tolerances of the controller
+     */
+    public double[] getTolerance() {
+        return pidf.getTolerance();
+    }
+
+    /**
+     * @return the velocity error e'(t)
+     */
+    public double getVelocityError() {
+        return pidf.getVelocityError();
+    }
+
+    /**
+     * Calculates the control value, u(t).
+     *
+     * @param pv The current measurement of the process variable.
+     * @return the value produced by u(t).
+     */
+    public double calculate(double pv, double velo, double accel) {
+        pidf.setF(eff.calculate(velo, accel));
+        return pidf.calculate(pv);
     }
 
     public double calculate() {
-        pid.setF(ff.calculate(velo, accel));
-        return pid.calculate(getPosition());
-    }
-
-    public boolean atTargetPosition(){
-        return pid.atSetPoint();
+        return pidf.calculate();
     }
 
 }

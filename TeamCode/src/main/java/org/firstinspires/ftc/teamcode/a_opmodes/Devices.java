@@ -62,7 +62,8 @@ public class Devices {
 		liftRight = new MotorEx(hardwareMap, "lftR", MotorEx.GoBILDA.RPM_312);
 
 		// Set lift setting before group else it tis broken
-		liftLeft.setInverted(true);
+		liftLeft.setInverted(false);
+		liftRight.setInverted(true);
 		liftLeft.resetEncoder();
 		liftRight.resetEncoder();
 
