@@ -2,25 +2,19 @@ package org.firstinspires.ftc.teamcode.a_opmodes;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.CommandOpMode;
-import com.arcrobotics.ftclib.command.ConditionalCommand;
-import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
-import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.b_commands.DriveCommand;
 import org.firstinspires.ftc.teamcode.b_commands.Lift3Command;
-import org.firstinspires.ftc.teamcode.b_commands.LiftCommand;
-import org.firstinspires.ftc.teamcode.c_subsystems.ClawSubsystem;
-import org.firstinspires.ftc.teamcode.c_subsystems.DriveSubsystem;
+import org.firstinspires.ftc.teamcode.b_commands.Lift3CommandBB;
 import org.firstinspires.ftc.teamcode.c_subsystems.Lift3Subsystem;
-import org.firstinspires.ftc.teamcode.c_subsystems.LiftSubsystem;
+import org.firstinspires.ftc.teamcode.c_subsystems.Lift3SubsystemBB;
 
 //@Disabled
 @Config
-@TeleOp(name = "LiftTeleOp", group = ".")
-public class LiftTeleOp extends CommandOpMode {
+@TeleOp(name = "LiftTeleOpBB", group = ".")
+public class LiftTeleOpBB extends CommandOpMode {
     @Override
     public void initialize() {
         if (isStopRequested()) return;
@@ -30,9 +24,9 @@ public class LiftTeleOp extends CommandOpMode {
         GamepadEx gPad1 = new GamepadEx(gamepad1);
 
         // Define Systems ----------------------------------------------------------------------------------------------------
-        Lift3Subsystem liftSubsystem = new Lift3Subsystem(devices.lift);
+        Lift3SubsystemBB liftSubsystem = new Lift3SubsystemBB(devices.liftLeft, devices.liftRight);
 
-        Lift3Command liftCommand = new Lift3Command(liftSubsystem, gPad1);
+        Lift3CommandBB liftCommand = new Lift3CommandBB(liftSubsystem, gPad1);
 
         register(liftSubsystem);
 /*        gPad1.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whenPressed(new LiftCommand(liftSubsystem, 0).withTimeout(5000));

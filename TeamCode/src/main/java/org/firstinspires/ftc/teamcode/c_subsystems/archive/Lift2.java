@@ -1,10 +1,11 @@
-package org.firstinspires.ftc.teamcode.a_opmodes;
+package org.firstinspires.ftc.teamcode.c_subsystems.archive;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.arcrobotics.ftclib.controller.wpilibcontroller.ElevatorFeedforward;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -13,10 +14,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.a_opmodes.Devices;
 
 import java.util.List;
 
-@TeleOp(name = "Drive Tank Multi-Thread", group = "Exercises")
+@Disabled
+@TeleOp(name = "Lift Multi-Thread", group = ".")
 //@Disabled
 public class Lift2 extends LinearOpMode {
 	// Declare OpMode members.

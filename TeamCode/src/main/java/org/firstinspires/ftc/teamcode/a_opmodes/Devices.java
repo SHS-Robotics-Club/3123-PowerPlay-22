@@ -66,7 +66,7 @@ public class Devices {
 		liftLeft.resetEncoder();
 		liftRight.resetEncoder();
 
-		lift = new MotorGroup(liftLeft, liftRight);
+		//lift = new MotorGroup(liftLeft, liftRight);
 
 		// Reset encoders
 		frontLeft.resetEncoder();
@@ -75,7 +75,7 @@ public class Devices {
 		backRight.resetEncoder();
 
 		// Set RunMode for motors (RawPower, VelocityControl, PositionControl)
-		lift.setRunMode(MotorEx.RunMode.PositionControl);
+		//lift.setRunMode(MotorEx.RunMode.PositionControl);
 
 		// Brake when zero power
 		frontLeft.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
@@ -83,7 +83,7 @@ public class Devices {
 		backLeft.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
 		backRight.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
 
-		lift.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
+		//lift.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
 
 		// SERVOS ----------------------------------------------------------------------------------------------------
 		// Map
