@@ -12,13 +12,13 @@ public class LiftCommand extends CommandBase {
 	GamepadEx     gamepadEx;
 	LiftSubsystem lift;
 	LiftStates    liftStates;
-	LiftLevels    liftLevels;
+	public static LiftLevels    liftLevels;
 
 	enum LiftStates {
 		READY, MOVING
 	}
 
-	enum LiftLevels {
+	public enum LiftLevels {
 		FLOOR(0), LOW(1000), MED(2000), HIGH(2500);
 
 		private int levelPos;
@@ -52,7 +52,7 @@ public class LiftCommand extends CommandBase {
 
 	@Override
 	public void execute() {
-		if (gamepadEx.getButton(GamepadKeys.Button.DPAD_DOWN)) {
+/*		if (gamepadEx.getButton(GamepadKeys.Button.DPAD_DOWN)) {
 			liftLevels = LiftLevels.FLOOR;
 		} else if (gamepadEx.getButton(GamepadKeys.Button.DPAD_LEFT)) {
 			liftLevels = LiftLevels.LOW;
@@ -60,7 +60,7 @@ public class LiftCommand extends CommandBase {
 			liftLevels = LiftLevels.MED;
 		} else if (gamepadEx.getButton(GamepadKeys.Button.DPAD_RIGHT)) {
 			liftLevels = LiftLevels.HIGH;
-		}
+		}*/
 		lift.getPosition();
 		lift.setSetPoint(liftLevels.getLevelPos());
 		switch (liftStates) {

@@ -10,7 +10,6 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
-import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.teamcode.b_commands.DriveCommand;
 import org.firstinspires.ftc.teamcode.b_commands.LiftCommand;
 import org.firstinspires.ftc.teamcode.c_subsystems.ClawSubsystem;
@@ -34,10 +33,10 @@ public class MainTeleOp extends CommandOpMode {
 		// Define Systems ----------------------------------------------------------------------------------------------------
 		DriveSubsystem driveSubsystem = new DriveSubsystem(devices.frontLeft, devices.frontRight, devices.backLeft, devices.backRight);
 		ClawSubsystem  claw           = new ClawSubsystem(devices.clawLeft, devices.clawRight);
-		LiftSubsystem  liftSubsystem  = new LiftSubsystem(devices.liftLeft, devices.liftRight, getBatteryVoltage());
+		LiftSubsystem liftSubsystem  = new LiftSubsystem(devices.liftLeft, devices.liftRight);
 
 		DriveCommand driveCommand = new DriveCommand(driveSubsystem, gPad1::getLeftX, gPad1::getLeftY, gPad1::getRightX, 1);
-		LiftCommand  liftCommand  = new LiftCommand(liftSubsystem, gPad1);
+		LiftCommand liftCommand  = new LiftCommand(liftSubsystem, gPad1);
 
 		// CONTROLS ----------------------------------------------------------------------------------------------------
 		// X Button = Claw Open/Close
@@ -51,18 +50,19 @@ public class MainTeleOp extends CommandOpMode {
 				     }
 		     ));
 
-		// Register and Schedule ----------------------------------------------------------------------------------------------------
-		register(driveSubsystem);
-		driveSubsystem.setDefaultCommand(driveCommand);
-		schedule(new RunCommand(() -> {
-			// Telemetry
-			telemetry.addData("voltage", "%.1f volts", new Func<Double>() {
-				@Override public Double value() {
-					return getBatteryVoltage();
-				}
-			});
+		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whenPressed(new RunCommand(() -> LiftCommand.liftLevels = LiftCommand.LiftLevels.FLOOR));
+		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(new RunCommand(() -> LiftCommand.liftLevels = LiftCommand.LiftLevels.LOW));
+		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenPressed(new RunCommand(() -> LiftCommand.liftLevels = LiftCommand.LiftLevels.MED));
+		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT).whenPressed(new RunCommand(() -> LiftCommand.liftLevels = LiftCommand.LiftLevels.HIGH));
 
-		}));
+		// Register and Schedule ----------------------------------------------------------------------------------------------------
+		register(driveSubsystem, liftSubsystem);
+		schedule(driveCommand.alongWith(liftCommand, new RunCommand(() -> {
+			// Telemetry
+			telemetry.update();
+			telemetry.addData("LiftPos", liftSubsystem.getPosition());
+			telemetry.addData("voltage", "%.1f volts", getBatteryVoltage());
+		})));
 
 	}
 

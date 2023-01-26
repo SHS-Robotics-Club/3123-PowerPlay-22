@@ -25,7 +25,7 @@ public class LiftTuner extends CommandOpMode {
 		GamepadEx     gPad1   = new GamepadEx(gamepad1);
 
 		// Define Systems ----------------------------------------------------------------------------------------------------
-		LiftSubsystem liftSubsystem = new LiftSubsystem(devices.liftLeft, devices.liftRight, getBatteryVoltage());
+		LiftSubsystem liftSubsystem = new LiftSubsystem(devices.liftLeft, devices.liftRight);
 
 		LiftCommand liftCommand = new LiftCommand(liftSubsystem, gPad1);
 
@@ -34,6 +34,11 @@ public class LiftTuner extends CommandOpMode {
         gPad1.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed();
         gPad1.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenPressed();
         gPad1.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT).whenPressed();*/
+
+		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whenPressed(new RunCommand(() -> LiftCommand.liftLevels = LiftCommand.LiftLevels.FLOOR));
+		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(new RunCommand(() -> LiftCommand.liftLevels = LiftCommand.LiftLevels.LOW));
+		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenPressed(new RunCommand(() -> LiftCommand.liftLevels = LiftCommand.LiftLevels.MED));
+		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT).whenPressed(new RunCommand(() -> LiftCommand.liftLevels = LiftCommand.LiftLevels.HIGH));
 
 		schedule(liftCommand.alongWith(new RunCommand(() -> {
 			// Telemetry

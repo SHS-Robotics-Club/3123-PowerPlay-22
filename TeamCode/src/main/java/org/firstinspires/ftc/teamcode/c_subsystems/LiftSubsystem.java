@@ -19,7 +19,7 @@ public class LiftSubsystem extends SubsystemBase {
 	PIDFController      pidf = new PIDFController(kP, kI, kD, 0);
 	ElevatorFeedforward eff  = new ElevatorFeedforward(kS, kG, kV, kA);
 
-	public LiftSubsystem(MotorEx liftLeft, MotorEx liftRight, double botVoltage) {
+	public LiftSubsystem(MotorEx liftLeft, MotorEx liftRight) {
 		this.liftLeft  = liftLeft;
 		this.liftRight = liftRight;
 
@@ -199,7 +199,7 @@ public class LiftSubsystem extends SubsystemBase {
 	 * @return the value produced by u(t).
 	 */
 	public double calculate(double veloSetPoint) {
-		pidf.setF(eff.calculate(veloSetPoint, eff.maxAchievableAcceleration(botVoltage, veloSetPoint)));
+		pidf.setF(eff.calculate(veloSetPoint));
 		return pidf.calculate(getPosition());
 	}
 
