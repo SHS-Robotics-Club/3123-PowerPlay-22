@@ -37,20 +37,12 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
-import com.qualcomm.robotcore.util.RobotLog;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.c_subsystems.auto.AprilTagDetectionPipeline;
-import org.firstinspires.ftc.teamcode.c_subsystems.auto.AprilTagDetectionSubsystem;
 import org.firstinspires.ftc.teamcode.d_roadrunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.d_roadrunner.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.d_roadrunner.trajectorysequence.TrajectorySequenceRunner;
 import org.firstinspires.ftc.teamcode.d_roadrunner.util.LynxModuleUtil;
-import org.openftc.apriltag.AprilTagDetection;
-import org.openftc.easyopencv.OpenCvCamera;
-import org.openftc.easyopencv.OpenCvCameraFactory;
-import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -78,19 +70,6 @@ public class MecanumDrive extends com.acmerobotics.roadrunner.drive.MecanumDrive
 	private IMU           imu;
 	private VoltageSensor batteryVoltageSensor;
 
-
-	public  OpenCvCamera              camera;
-	public AprilTagDetectionPipeline aprilTagPipeline;
-
-	//TODO: Update camera variables.
-	private static int CAM_WIDTH = 1280, CAM_HEIGHT = 720; //720p
-	private static double
-			fx      = 1552.74274588,
-			fy      = 1552.74274588,
-			cx      = 793.573231003,
-			cy      = 202.006088244,
-			tagSize = 0.4;
-
 	public MecanumDrive(HardwareMap hardwareMap) {
 		super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
@@ -113,23 +92,6 @@ public class MecanumDrive extends com.acmerobotics.roadrunner.drive.MecanumDrive
 				RevHubOrientationOnRobot.LogoFacingDirection.UP,
 				RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
 		imu.initialize(parameters);
-
-		int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-		camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-		camera.setPipeline(aprilTagPipeline = new AprilTagDetectionPipeline(tagSize, fx, fy, cx, cy));
-
-		camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-			@Override
-			public void onOpened() {
-				camera.startStreaming(CAM_WIDTH, CAM_HEIGHT, OpenCvCameraRotation.UPRIGHT);
-
-			}
-
-			@Override
-			public void onError(int errorCode) {
-				RobotLog.addGlobalWarningMessage("Warning: Camera device failed to open with EasyOpenCv error: " + ((errorCode == -1) ? "CAMERA_OPEN_ERROR_FAILURE_TO_OPEN_CAMERA_DEVICE" : "CAMERA_OPEN_ERROR_POSTMORTEM_OPMODE")); //Warn the user about the issue
-			}
-		});
 
 		leftFront  = hardwareMap.get(DcMotorEx.class, "fL");
 		leftRear   = hardwareMap.get(DcMotorEx.class, "bL");
@@ -162,43 +124,6 @@ public class MecanumDrive extends com.acmerobotics.roadrunner.drive.MecanumDrive
 		// for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
 
 		trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
-	}
-
-	public int getTagId() {
-		ArrayList<AprilTagDetection> currentDetections = aprilTagPipeline.getLatestDetections();
-		AprilTagDetection            tagOfInterest     = null;
-		boolean                      tagFound          = false;
-
-		if (currentDetections.size() != 0) {
-			for (AprilTagDetection tag : aprilTagPipeline.getLatestDetections()) {
-				if (tag.id >= 1 && tag.id <= 3) {
-					tagOfInterest = tag;
-					tagFound = true;
-					break;
-				}
-			}
-		}
-
-		if(tagFound){
-			return tagOfInterest.id;
-		} else {
-			return -1;
-		}
-	}
-
-	public enum ParkingZone {
-		LEFT, CENTER, RIGHT
-	}
-
-	public AprilTagDetectionSubsystem.ParkingZone getParkZone() {
-		switch (getTagId()) {
-			case 1:
-				return AprilTagDetectionSubsystem.ParkingZone.LEFT;
-			case 3:
-				return AprilTagDetectionSubsystem.ParkingZone.RIGHT;
-			default:
-				return AprilTagDetectionSubsystem.ParkingZone.CENTER;
-		}
 	}
 
 	public static TrajectoryVelocityConstraint getVelocityConstraint(double maxVel, double maxAngularVel, double trackWidth) {

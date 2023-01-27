@@ -12,10 +12,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import org.firstinspires.ftc.teamcode.d_roadrunner.drive.MecanumDrive;
 import org.firstinspires.ftc.teamcode.d_roadrunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.d_roadrunner.trajectorysequence.TrajectorySequenceBuilder;
-import org.openftc.apriltag.AprilTagDetection;
-import org.openftc.easyopencv.OpenCvCamera;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,14 +28,6 @@ public class MecanumSubsystem extends SubsystemBase {
 	public MecanumSubsystem(MecanumDrive drive, boolean isFieldCentric) {
 		this.drive   = drive;
 		fieldCentric = isFieldCentric;
-	}
-
-	public OpenCvCamera getCamera(){
-		return drive.camera;
-	}
-
-	public AprilTagDetectionSubsystem.ParkingZone getParkZone() {
-		return drive.getParkZone();
 	}
 
 	public void setMode(DcMotor.RunMode mode) {

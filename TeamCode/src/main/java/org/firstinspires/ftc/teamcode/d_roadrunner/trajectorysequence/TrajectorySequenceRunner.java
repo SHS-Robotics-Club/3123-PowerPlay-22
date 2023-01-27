@@ -43,7 +43,7 @@ public class TrajectorySequenceRunner {
 
 	private final PIDFController turnController;
 
-	private final NanoClock clock;
+	private final NanoClock          clock;
 	private final FtcDashboard       dashboard;
 	private final LinkedList<Pose2d> poseHistory = new LinkedList<>();
 	List<TrajectoryMarker> remainingMarkers = new ArrayList<>();
@@ -51,7 +51,7 @@ public class TrajectorySequenceRunner {
 	private double             currentSegmentStartTime;
 	private int                currentSegmentIndex;
 	private int                lastSegmentIndex;
-	private Pose2d lastPoseError = new Pose2d();
+	private Pose2d             lastPoseError = new Pose2d();
 
 	public TrajectorySequenceRunner(TrajectoryFollower follower, PIDCoefficients headingPIDCoefficients) {
 		this.follower = follower;

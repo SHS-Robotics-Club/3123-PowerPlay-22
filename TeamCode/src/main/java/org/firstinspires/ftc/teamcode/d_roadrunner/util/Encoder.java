@@ -9,14 +9,15 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
  * slot's motor direction
  */
 public class Encoder {
-	private final static int CPS_STEP = 0x10000;
-	private DcMotorEx motor;
-	private NanoClock clock;
-	private Direction direction;
-	private int      lastPosition;
-	private int      velocityEstimateIdx;
-	private double[] velocityEstimates;
-	private double   lastUpdateTime;
+	private final static int       CPS_STEP = 0x10000;
+	private              DcMotorEx motor;
+	private              NanoClock clock;
+	private              Direction direction;
+	private              int       lastPosition;
+	private              int       velocityEstimateIdx;
+	private              double[]  velocityEstimates;
+	private              double    lastUpdateTime;
+
 	public Encoder(DcMotorEx motor, NanoClock clock) {
 		this.motor = motor;
 		this.clock = clock;
@@ -27,6 +28,7 @@ public class Encoder {
 		this.velocityEstimates = new double[3];
 		this.lastUpdateTime    = clock.seconds();
 	}
+
 	public Encoder(DcMotorEx motor) {
 		this(motor, NanoClock.system());
 	}

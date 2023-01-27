@@ -13,24 +13,18 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import java.util.ArrayList;
 
 
-
 public class AprilTagSubsystem extends SubsystemBase {
+	public static ParkingZone lastParkingZone = ParkingZone.NONE;
 	private final HardwareMap      hardwareMap;
-	private final int WIDTH;
-	private final int HEIGHT;
-	private final Object sync   = new Object();
+	private final int              WIDTH;
+	private final int              HEIGHT;
+	private final Object           sync   = new Object();
+	public        Status           status = Status.NOT_CONFIGURED;
 	private       OpenCvCamera     camera;
 	private       String           cameraName;
-	private       AprilTagDetectionPipeline aprilTagPipeline;
-	private       Status status = Status.NOT_CONFIGURED;
-	// Metres
-	private double tagSize;
-	// Pixels
-	private double fx, fy, cx, cy;
-
-	public enum Status {
-		NOT_CONFIGURED, INITIALIZING, RUNNING, FAILURE;
-	}
+	private       AprilTagPipeline aprilTagPipeline;
+	private       double           tagSize; // Metres
+	private       double           fx, fy, cx, cy;// Pixels
 
 	public AprilTagSubsystem(HardwareMap hardwareMap, String cameraName, int width, int height, double tagSize, double fx, double fy, double cx, double cy) {
 		this.hardwareMap = hardwareMap;
@@ -52,13 +46,14 @@ public class AprilTagSubsystem extends SubsystemBase {
 	}
 
 	public void init() {
+		lastParkingZone = ParkingZone.NONE;
 		synchronized (sync) {
 			if (status == Status.NOT_CONFIGURED) {
 				int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 
 				camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, cameraName), cameraMonitorViewId);
 
-				camera.setPipeline(aprilTagPipeline = new AprilTagDetectionPipeline(tagSize, fx, fy, cx, cy));
+				camera.setPipeline(aprilTagPipeline = new AprilTagPipeline(tagSize, fx, fy, cx, cy));
 
 				status = Status.INITIALIZING;
 
@@ -89,25 +84,19 @@ public class AprilTagSubsystem extends SubsystemBase {
 		return camera;
 	}
 
-	public int getPlacementId() {
+	public int getZoneId() {
 		ArrayList<AprilTagDetection> currentDetections = aprilTagPipeline.getLatestDetections();
 		AprilTagDetection            tagOfInterest     = null;
 		boolean                      tagFound          = false;
 
 		if (currentDetections.size() != 0) {
-			tagFound = true;
-		}
-
-		// TODO: Change April Tag Ids based on if u want to change them
-		for (AprilTagDetection tag : currentDetections) {
-			if (tag.id >= 1 && tag.id <= 3) {
-				tagOfInterest = tag;
-				break;
+			for (AprilTagDetection tag : currentDetections) {
+				if (tag.id >= 1 && tag.id <= 3) {
+					tagOfInterest = tag;
+					tagFound      = true;
+					break;
+				}
 			}
-		}
-
-		if (tagOfInterest == null) {
-			tagFound = false;
 		}
 
 		if (tagFound) {
@@ -117,21 +106,39 @@ public class AprilTagSubsystem extends SubsystemBase {
 		}
 	}
 
-	// TODO: You can change the IDs to different April Tags in the 36h11 family
-	public Placement getPlacement() {
-		switch (getPlacementId()) {
-			case 1:
-				return Placement.LEFT;
-			case 3:
-				return Placement.RIGHT;
-			default:
-				return Placement.CENTER;
+	public ParkingZone getParkingZone() {
+		if (lastParkingZone == ParkingZone.NONE) {
+			switch (getZoneId()) {
+				case 1:
+					return ParkingZone.LEFT;
+				case 2:
+					return ParkingZone.CENTER;
+				case 3:
+					return ParkingZone.RIGHT;
+				default:
+					return ParkingZone.NONE;
+			}
+		} else {
+			return lastParkingZone;
+		}
+
+	}
+
+	public boolean foundZone() {
+		if (getParkingZone() == ParkingZone.NONE) {
+			return false;
+		} else {
+			lastParkingZone = getParkingZone();
+			status          = AprilTagSubsystem.Status.STOPPED;
+			return true;
 		}
 	}
 
-	public enum Placement {
-		LEFT, CENTER, RIGHT
+	public enum Status {
+		NOT_CONFIGURED, INITIALIZING, RUNNING, FAILURE, STOPPED
 	}
 
-
+	public enum ParkingZone {
+		LEFT, CENTER, RIGHT, NONE
+	}
 }

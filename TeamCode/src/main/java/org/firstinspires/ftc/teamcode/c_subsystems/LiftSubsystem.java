@@ -12,10 +12,10 @@ public class LiftSubsystem extends SubsystemBase {
 	public static double kP = 0.2, kI = 0.0, kD = 0.0, kS = 0.0, kG = 0.0, kV = 0.0, kA = 0.0;
 	MotorGroup lift;
 	MotorEx    liftLeft, liftRight;
-	double botVoltage;
-	int    targetPosition = 0;
-	PIDFController      pidf = new PIDFController(kP, kI, kD, 0);
-	ElevatorFeedforward eff  = new ElevatorFeedforward(kS, kG, kV, kA);
+	double              botVoltage;
+	int                 targetPosition = 0;
+	PIDFController      pidf           = new PIDFController(kP, kI, kD, 0);
+	ElevatorFeedforward eff            = new ElevatorFeedforward(kS, kG, kV, kA);
 
 	public LiftSubsystem(MotorEx liftLeft, MotorEx liftRight) {
 		this.liftLeft  = liftLeft;
@@ -191,9 +191,7 @@ public class LiftSubsystem extends SubsystemBase {
 	/**
 	 * Calculates the control value, u(t).
 	 *
-	 * @param pv            The current measurement of the process variable.
 	 * @param veloSetPoint  VelocitySetPoint
-	 * @param accelSetPoint Acceleration set point
 	 * @return the value produced by u(t).
 	 */
 	public double calculate(double veloSetPoint) {
