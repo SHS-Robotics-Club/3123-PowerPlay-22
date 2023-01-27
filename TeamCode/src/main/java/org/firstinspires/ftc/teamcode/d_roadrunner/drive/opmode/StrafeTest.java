@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.d_roadrunner.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.d_roadrunner.drive.MecanumDrive;
 
 /*
  * This is a simple routine to test translational drive capabilities.
@@ -19,30 +19,30 @@ import org.firstinspires.ftc.teamcode.d_roadrunner.drive.SampleMecanumDrive;
 @Config
 @Autonomous(group = "drive")
 public class StrafeTest extends LinearOpMode {
-    public static double DISTANCE = 60; // in
+	public static double DISTANCE = 60; // in
 
-    @Override
-    public void runOpMode() throws InterruptedException {
-        Telemetry telemetry = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
+	@Override
+	public void runOpMode() throws InterruptedException {
+		Telemetry telemetry = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+		MecanumDrive drive = new MecanumDrive(hardwareMap);
 
-        Trajectory trajectory = drive.trajectoryBuilder(new Pose2d())
-                .strafeRight(DISTANCE)
-                .build();
+		Trajectory trajectory = drive.trajectoryBuilder(new Pose2d())
+				.strafeRight(DISTANCE)
+				.build();
 
-        waitForStart();
+		waitForStart();
 
-        if (isStopRequested()) return;
+		if (isStopRequested()) return;
 
-        drive.followTrajectory(trajectory);
+		drive.followTrajectory(trajectory);
 
-        Pose2d poseEstimate = drive.getPoseEstimate();
-        telemetry.addData("finalX", poseEstimate.getX());
-        telemetry.addData("finalY", poseEstimate.getY());
-        telemetry.addData("finalHeading", poseEstimate.getHeading());
-        telemetry.update();
+		Pose2d poseEstimate = drive.getPoseEstimate();
+		telemetry.addData("finalX", poseEstimate.getX());
+		telemetry.addData("finalY", poseEstimate.getY());
+		telemetry.addData("finalHeading", poseEstimate.getHeading());
+		telemetry.update();
 
-        while (!isStopRequested() && opModeIsActive()) ;
-    }
+		while (!isStopRequested() && opModeIsActive()) ;
+	}
 }

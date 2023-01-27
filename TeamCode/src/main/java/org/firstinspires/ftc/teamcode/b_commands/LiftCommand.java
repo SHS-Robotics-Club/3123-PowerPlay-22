@@ -2,38 +2,16 @@ package org.firstinspires.ftc.teamcode.b_commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
-import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 
 import org.firstinspires.ftc.teamcode.c_subsystems.LiftSubsystem;
 
 
 public class LiftCommand extends CommandBase {
 	public static double positionTolerance = 1.0, velo = 0.0, accel = 0.0;
+	public static LiftLevels liftLevels;
 	GamepadEx     gamepadEx;
 	LiftSubsystem lift;
 	LiftStates    liftStates;
-	public static LiftLevels    liftLevels;
-
-	enum LiftStates {
-		READY, MOVING
-	}
-
-	public enum LiftLevels {
-		FLOOR(0), LOW(1000), MED(2000), HIGH(2500);
-
-		private int levelPos;
-
-		LiftLevels(int levelPos) {
-			this.levelPos = levelPos;
-		}
-
-		/**
-		 * @return levelPos Return lift level positions in ticks.
-		 */
-		public int getLevelPos() {
-			return levelPos;
-		}
-	}
 
 	public LiftCommand(LiftSubsystem liftSubsystem, GamepadEx gamepadEx) {
 		lift           = liftSubsystem;
@@ -78,6 +56,27 @@ public class LiftCommand extends CommandBase {
 				if (lift.atSetPoint()) {
 					liftStates = LiftStates.READY;
 				}
+		}
+	}
+
+	enum LiftStates {
+		READY, MOVING
+	}
+
+	public enum LiftLevels {
+		FLOOR(0), LOW(1000), MED(2000), HIGH(2500);
+
+		private int levelPos;
+
+		LiftLevels(int levelPos) {
+			this.levelPos = levelPos;
+		}
+
+		/**
+		 * @return levelPos Return lift level positions in ticks.
+		 */
+		public int getLevelPos() {
+			return levelPos;
 		}
 	}
 

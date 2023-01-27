@@ -9,13 +9,11 @@ import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
 
 @Config
 public class LiftSubsystem extends SubsystemBase {
+	public static double kP = 0.2, kI = 0.0, kD = 0.0, kS = 0.0, kG = 0.0, kV = 0.0, kA = 0.0;
 	MotorGroup lift;
 	MotorEx    liftLeft, liftRight;
 	double botVoltage;
 	int    targetPosition = 0;
-
-	public static double kP = 0.2, kI = 0.0, kD = 0.0, kS = 0.0, kG = 0.0, kV = 0.0, kA = 0.0;
-
 	PIDFController      pidf = new PIDFController(kP, kI, kD, 0);
 	ElevatorFeedforward eff  = new ElevatorFeedforward(kS, kG, kV, kA);
 
@@ -44,18 +42,18 @@ public class LiftSubsystem extends SubsystemBase {
 	}
 
 	/**
+	 * @return the velocity of the motor in ticks per second
+	 */
+	public double getVelocity() {
+		return lift.getVelocities().get(0);
+	}
+
+	/**
 	 * @param velocity the velocity in ticks per second
 	 */
 	public void setVelocity(double velocity) {
 		liftLeft.setVelocity(velocity);
 		liftRight.setVelocity(velocity);
-	}
-
-	/**
-	 * @return the velocity of the motor in ticks per second
-	 */
-	public double getVelocity() {
-		return lift.getVelocities().get(0);
 	}
 
 	/**
@@ -119,15 +117,6 @@ public class LiftSubsystem extends SubsystemBase {
 	 * Sets the error which is considered tolerable for use with {@link #atSetPoint()}.
 	 *
 	 * @param positionTolerance Position error which is tolerable.
-	 */
-	public void setTolerance(double positionTolerance) {
-		pidf.setTolerance(positionTolerance);
-	}
-
-	/**
-	 * Sets the error which is considered tolerable for use with {@link #atSetPoint()}.
-	 *
-	 * @param positionTolerance Position error which is tolerable.
 	 * @param velocityTolerance Velocity error which is tolerable.
 	 */
 	public void setTolerance(double positionTolerance, double velocityTolerance) {
@@ -181,6 +170,15 @@ public class LiftSubsystem extends SubsystemBase {
 	 */
 	public double[] getTolerance() {
 		return pidf.getTolerance();
+	}
+
+	/**
+	 * Sets the error which is considered tolerable for use with {@link #atSetPoint()}.
+	 *
+	 * @param positionTolerance Position error which is tolerable.
+	 */
+	public void setTolerance(double positionTolerance) {
+		pidf.setTolerance(positionTolerance);
 	}
 
 	/**

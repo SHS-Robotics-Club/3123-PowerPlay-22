@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.d_roadrunner.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.d_roadrunner.drive.MecanumDrive;
 
 /*
  * This is an example of a more complex path to really test the tuning.
@@ -15,26 +15,26 @@ import org.firstinspires.ftc.teamcode.d_roadrunner.drive.SampleMecanumDrive;
 @Disabled
 @Autonomous(group = "drive")
 public class SplineTest extends LinearOpMode {
-    @Override
-    public void runOpMode() throws InterruptedException {
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+	@Override
+	public void runOpMode() throws InterruptedException {
+		MecanumDrive drive = new MecanumDrive(hardwareMap);
 
-        waitForStart();
+		waitForStart();
 
-        if (isStopRequested()) return;
+		if (isStopRequested()) return;
 
-        Trajectory traj = drive.trajectoryBuilder(new Pose2d())
-                .splineTo(new Vector2d(30, 30), 0)
-                .build();
+		Trajectory traj = drive.trajectoryBuilder(new Pose2d())
+				.splineTo(new Vector2d(30, 30), 0)
+				.build();
 
-        drive.followTrajectory(traj);
+		drive.followTrajectory(traj);
 
-        sleep(2000);
+		sleep(2000);
 
-        drive.followTrajectory(
-                drive.trajectoryBuilder(traj.end(), true)
-                        .splineTo(new Vector2d(0, 0), Math.toRadians(180))
-                        .build()
-        );
-    }
+		drive.followTrajectory(
+				drive.trajectoryBuilder(traj.end(), true)
+						.splineTo(new Vector2d(0, 0), Math.toRadians(180))
+						.build()
+		);
+	}
 }

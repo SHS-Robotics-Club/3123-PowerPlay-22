@@ -33,22 +33,22 @@ public class MainTeleOp extends CommandOpMode {
 		// Define Systems ----------------------------------------------------------------------------------------------------
 		DriveSubsystem driveSubsystem = new DriveSubsystem(devices.frontLeft, devices.frontRight, devices.backLeft, devices.backRight);
 		ClawSubsystem  claw           = new ClawSubsystem(devices.clawLeft, devices.clawRight);
-		LiftSubsystem liftSubsystem  = new LiftSubsystem(devices.liftLeft, devices.liftRight);
+		LiftSubsystem  liftSubsystem  = new LiftSubsystem(devices.liftLeft, devices.liftRight);
 
 		DriveCommand driveCommand = new DriveCommand(driveSubsystem, gPad1::getLeftX, gPad1::getLeftY, gPad1::getRightX, 1);
-		LiftCommand liftCommand  = new LiftCommand(liftSubsystem, gPad1);
+		LiftCommand  liftCommand  = new LiftCommand(liftSubsystem, gPad1);
 
 		// CONTROLS ----------------------------------------------------------------------------------------------------
 		// X Button = Claw Open/Close
 		gPad1.getGamepadButton(GamepadKeys.Button.X)
-		     .whenPressed(new ConditionalCommand(
-				     new InstantCommand(claw::open, claw),
-				     new InstantCommand(claw::close, claw),
-				     () -> {
-					     claw.toggle();
-					     return claw.isOpen();
-				     }
-		     ));
+				.whenPressed(new ConditionalCommand(
+						new InstantCommand(claw::open, claw),
+						new InstantCommand(claw::close, claw),
+						() -> {
+							claw.toggle();
+							return claw.isOpen();
+						}
+				));
 
 		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whenPressed(new RunCommand(() -> LiftCommand.liftLevels = LiftCommand.LiftLevels.FLOOR));
 		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(new RunCommand(() -> LiftCommand.liftLevels = LiftCommand.LiftLevels.LOW));

@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.e_vision.AprilTagPipeline;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -13,26 +12,25 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
 
-public enum Status {
-	NOT_CONFIGURED, INITIALIZING, RUNNING, FAILURE;
-}
+
 
 public class AprilTagSubsystem extends SubsystemBase {
-	private       OpenCvCamera     camera;
-	private       String           cameraName;
-	private       AprilTagPipeline aprilTagPipeline;
 	private final HardwareMap      hardwareMap;
-
 	private final int WIDTH;
 	private final int HEIGHT;
-
-	private       Status status = Status.NOT_CONFIGURED;
 	private final Object sync   = new Object();
-
+	private       OpenCvCamera     camera;
+	private       String           cameraName;
+	private       AprilTagDetectionPipeline aprilTagPipeline;
+	private       Status status = Status.NOT_CONFIGURED;
 	// Metres
 	private double tagSize;
 	// Pixels
 	private double fx, fy, cx, cy;
+
+	public enum Status {
+		NOT_CONFIGURED, INITIALIZING, RUNNING, FAILURE;
+	}
 
 	public AprilTagSubsystem(HardwareMap hardwareMap, String cameraName, int width, int height, double tagSize, double fx, double fy, double cx, double cy) {
 		this.hardwareMap = hardwareMap;
@@ -60,7 +58,7 @@ public class AprilTagSubsystem extends SubsystemBase {
 
 				camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, cameraName), cameraMonitorViewId);
 
-				camera.setPipeline(aprilTagPipeline = new AprilTagPipeline(tagSize, fx, fy, cx, cy));
+				camera.setPipeline(aprilTagPipeline = new AprilTagDetectionPipeline(tagSize, fx, fy, cx, cy));
 
 				status = Status.INITIALIZING;
 
@@ -118,9 +116,6 @@ public class AprilTagSubsystem extends SubsystemBase {
 			return -1;
 		}
 	}
-	public enum Placement {
-		LEFT, CENTER, RIGHT
-	}
 
 	// TODO: You can change the IDs to different April Tags in the 36h11 family
 	public Placement getPlacement() {
@@ -132,6 +127,10 @@ public class AprilTagSubsystem extends SubsystemBase {
 			default:
 				return Placement.CENTER;
 		}
+	}
+
+	public enum Placement {
+		LEFT, CENTER, RIGHT
 	}
 
 

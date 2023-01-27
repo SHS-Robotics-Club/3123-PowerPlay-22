@@ -8,7 +8,6 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
-import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.teamcode.b_commands.LiftCommand;
 import org.firstinspires.ftc.teamcode.c_subsystems.LiftSubsystem;
 
@@ -30,10 +29,6 @@ public class LiftTuner extends CommandOpMode {
 		LiftCommand liftCommand = new LiftCommand(liftSubsystem, gPad1);
 
 		register(liftSubsystem);
-/*       gPad1.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whenPressed();
-        gPad1.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed();
-        gPad1.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenPressed();
-        gPad1.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT).whenPressed();*/
 
 		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whenPressed(new RunCommand(() -> LiftCommand.liftLevels = LiftCommand.LiftLevels.FLOOR));
 		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(new RunCommand(() -> LiftCommand.liftLevels = LiftCommand.LiftLevels.LOW));
@@ -47,6 +42,7 @@ public class LiftTuner extends CommandOpMode {
 			telemetry.addData("voltage", "%.1f volts", getBatteryVoltage());
 		})));
 	}
+
 	// Computes the current battery voltage
 	double getBatteryVoltage() {
 		double result = Double.POSITIVE_INFINITY;

@@ -9,25 +9,36 @@ import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
-import org.firstinspires.ftc.teamcode.d_roadrunner.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.d_roadrunner.drive.MecanumDrive;
 import org.firstinspires.ftc.teamcode.d_roadrunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.d_roadrunner.trajectorysequence.TrajectorySequenceBuilder;
+import org.openftc.apriltag.AprilTagDetection;
+import org.openftc.easyopencv.OpenCvCamera;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A subsystem that uses the {@link SampleMecanumDrive} class.
- * This periodically calls {@link SampleMecanumDrive#update()} which runs the internal
+ * A subsystem that uses the {@link MecanumDrive} class.
+ * This periodically calls {@link MecanumDrive#update()} which runs the internal
  * state machine for the mecanum drive. All movement/following is async to fit the paradigm.
  */
 public class MecanumSubsystem extends SubsystemBase {
 
-	private final SampleMecanumDrive drive;
-	private final boolean fieldCentric;
+	private final MecanumDrive drive;
+	private final boolean      fieldCentric;
 
-	public MecanumSubsystem(SampleMecanumDrive drive, boolean isFieldCentric) {
+	public MecanumSubsystem(MecanumDrive drive, boolean isFieldCentric) {
 		this.drive   = drive;
 		fieldCentric = isFieldCentric;
+	}
+
+	public OpenCvCamera getCamera(){
+		return drive.camera;
+	}
+
+	public AprilTagDetectionSubsystem.ParkingZone getParkZone() {
+		return drive.getParkZone();
 	}
 
 	public void setMode(DcMotor.RunMode mode) {
@@ -36,10 +47,6 @@ public class MecanumSubsystem extends SubsystemBase {
 
 	public void setPIDFCoefficients(DcMotor.RunMode mode, PIDFCoefficients coefficients) {
 		drive.setPIDFCoefficients(mode, coefficients);
-	}
-
-	public void setPoseEstimate(Pose2d pose) {
-		drive.setPoseEstimate(pose);
 	}
 
 	public void update() {
@@ -64,6 +71,10 @@ public class MecanumSubsystem extends SubsystemBase {
 
 	public Pose2d getPoseEstimate() {
 		return drive.getPoseEstimate();
+	}
+
+	public void setPoseEstimate(Pose2d pose) {
+		drive.setPoseEstimate(pose);
 	}
 
 	public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
