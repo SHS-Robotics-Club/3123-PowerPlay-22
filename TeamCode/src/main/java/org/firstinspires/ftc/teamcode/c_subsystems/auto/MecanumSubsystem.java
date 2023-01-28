@@ -9,21 +9,23 @@ import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
-import org.firstinspires.ftc.teamcode.d_roadrunner.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.d_roadrunner.drive.MecanumDrive;
+import org.firstinspires.ftc.teamcode.d_roadrunner.trajectorysequence.TrajectorySequence;
+import org.firstinspires.ftc.teamcode.d_roadrunner.trajectorysequence.TrajectorySequenceBuilder;
 
 import java.util.List;
 
 /**
- * A subsystem that uses the {@link SampleMecanumDrive} class.
- * This periodically calls {@link SampleMecanumDrive#update()} which runs the internal
+ * A subsystem that uses the {@link MecanumDrive} class.
+ * This periodically calls {@link MecanumDrive#update()} which runs the internal
  * state machine for the mecanum drive. All movement/following is async to fit the paradigm.
  */
 public class MecanumSubsystem extends SubsystemBase {
 
-	private final SampleMecanumDrive drive;
-	private final boolean fieldCentric;
+	private final MecanumDrive drive;
+	private final boolean      fieldCentric;
 
-	public MecanumSubsystem(SampleMecanumDrive drive, boolean isFieldCentric) {
+	public MecanumSubsystem(MecanumDrive drive, boolean isFieldCentric) {
 		this.drive   = drive;
 		fieldCentric = isFieldCentric;
 	}
@@ -34,10 +36,6 @@ public class MecanumSubsystem extends SubsystemBase {
 
 	public void setPIDFCoefficients(DcMotor.RunMode mode, PIDFCoefficients coefficients) {
 		drive.setPIDFCoefficients(mode, coefficients);
-	}
-
-	public void setPoseEstimate(Pose2d pose) {
-		drive.setPoseEstimate(pose);
 	}
 
 	public void update() {
@@ -64,6 +62,10 @@ public class MecanumSubsystem extends SubsystemBase {
 		return drive.getPoseEstimate();
 	}
 
+	public void setPoseEstimate(Pose2d pose) {
+		drive.setPoseEstimate(pose);
+	}
+
 	public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
 		return drive.trajectoryBuilder(startPose);
 	}
@@ -76,8 +78,16 @@ public class MecanumSubsystem extends SubsystemBase {
 		return drive.trajectoryBuilder(startPose, startHeading);
 	}
 
+	public TrajectorySequenceBuilder trajectorySequenceBuilder(Pose2d startPose) {
+		return drive.trajectorySequenceBuilder(startPose);
+	}
+
 	public void followTrajectory(Trajectory trajectory) {
 		drive.followTrajectoryAsync(trajectory);
+	}
+
+	public void followTrajectorySequence(TrajectorySequence trajectory) {
+		drive.followTrajectorySequenceAsync(trajectory);
 	}
 
 	public boolean isBusy() {
@@ -86,10 +96,6 @@ public class MecanumSubsystem extends SubsystemBase {
 
 	public void turn(double radians) {
 		drive.turnAsync(radians);
-	}
-
-	public void strafe(double strafeX, double strafeY) {
-		drive.strafeAsync(strafeX, strafeY);
 	}
 
 	public List<Double> getWheelVelocities() {

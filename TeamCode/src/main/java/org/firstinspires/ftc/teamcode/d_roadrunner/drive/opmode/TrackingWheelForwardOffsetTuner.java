@@ -11,8 +11,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.MovingStatistics;
 import com.qualcomm.robotcore.util.RobotLog;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.internal.system.Misc;
-import org.firstinspires.ftc.teamcode.d_roadrunner.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.d_roadrunner.drive.MecanumDrive;
 import org.firstinspires.ftc.teamcode.d_roadrunner.drive.StandardTrackingWheelLocalizer;
 
 /**
@@ -26,7 +27,7 @@ import org.firstinspires.ftc.teamcode.d_roadrunner.drive.StandardTrackingWheelLo
  * offset. We can compute this offset by calculating (change in y position) / (change in heading)
  * which returns the radius if the angle (change in heading) is in radians. This is based
  * on the arc length formula of length = theta * radius.
- *
+ * <p>
  * To run this routine, simply adjust the desired angle and specify the number of trials
  * and the desired delay. Then, run the procedure. Once it finishes, it will print the
  * average of all the calculated forward offsets derived from the calculation. This calculated
@@ -34,72 +35,72 @@ import org.firstinspires.ftc.teamcode.d_roadrunner.drive.StandardTrackingWheelLo
  * for the forward offset. You can run this procedure as many times as necessary until a
  * satisfactory result is produced.
  */
-//@Disabled
+@Disabled
 @Config
-@Autonomous(group="drive")
+@Autonomous(group = "drive")
 public class TrackingWheelForwardOffsetTuner extends LinearOpMode {
-    public static double ANGLE = 180; // deg
-    public static int NUM_TRIALS = 5;
-    public static int DELAY = 1000; // ms
+	public static double ANGLE      = 180; // deg
+	public static int    NUM_TRIALS = 5;
+	public static int    DELAY      = 1000; // ms
 
-    @Override
-    public void runOpMode() throws InterruptedException {
-        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+	@Override
+	public void runOpMode() throws InterruptedException {
+		Telemetry telemetry = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+		MecanumDrive drive = new MecanumDrive(hardwareMap);
 
-        if (!(drive.getLocalizer() instanceof StandardTrackingWheelLocalizer)) {
-            RobotLog.setGlobalErrorMsg("StandardTrackingWheelLocalizer is not being set in the "
-                    + "drive class. Ensure that \"setLocalizer(new StandardTrackingWheelLocalizer"
-                    + "(hardwareMap));\" is called in SampleMecanumDrive.java");
-        }
+		if (!(drive.getLocalizer() instanceof StandardTrackingWheelLocalizer)) {
+			RobotLog.setGlobalErrorMsg("StandardTrackingWheelLocalizer is not being set in the "
+					                           + "drive class. Ensure that \"setLocalizer(new StandardTrackingWheelLocalizer"
+					                           + "(hardwareMap));\" is called in SampleMecanumDrive.java");
+		}
 
-        telemetry.addLine("Press play to begin the forward offset tuner");
-        telemetry.addLine("Make sure your robot has enough clearance to turn smoothly");
-        telemetry.update();
+		telemetry.addLine("Press play to begin the forward offset tuner");
+		telemetry.addLine("Make sure your robot has enough clearance to turn smoothly");
+		telemetry.update();
 
-        waitForStart();
+		waitForStart();
 
-        if (isStopRequested()) return;
+		if (isStopRequested()) return;
 
-        telemetry.clearAll();
-        telemetry.addLine("Running...");
-        telemetry.update();
+		telemetry.clearAll();
+		telemetry.addLine("Running...");
+		telemetry.update();
 
-        MovingStatistics forwardOffsetStats = new MovingStatistics(NUM_TRIALS);
-        for (int i = 0; i < NUM_TRIALS; i++) {
-            drive.setPoseEstimate(new Pose2d());
+		MovingStatistics forwardOffsetStats = new MovingStatistics(NUM_TRIALS);
+		for (int i = 0; i < NUM_TRIALS; i++) {
+			drive.setPoseEstimate(new Pose2d());
 
-            // it is important to handle heading wraparounds
-            double headingAccumulator = 0;
-            double lastHeading = 0;
+			// it is important to handle heading wraparounds
+			double headingAccumulator = 0;
+			double lastHeading        = 0;
 
-            drive.turnAsync(Math.toRadians(ANGLE));
+			drive.turnAsync(Math.toRadians(ANGLE));
 
-            while (!isStopRequested() && drive.isBusy()) {
-                double heading = drive.getPoseEstimate().getHeading();
-                headingAccumulator += Angle.norm(heading - lastHeading);
-                lastHeading = heading;
+			while (!isStopRequested() && drive.isBusy()) {
+				double heading = drive.getPoseEstimate().getHeading();
+				headingAccumulator += Angle.norm(heading - lastHeading);
+				lastHeading = heading;
 
-                drive.update();
-            }
+				drive.update();
+			}
 
-            double forwardOffset = StandardTrackingWheelLocalizer.FORWARD_OFFSET +
-                    drive.getPoseEstimate().getY() / headingAccumulator;
-            forwardOffsetStats.add(forwardOffset);
+			double forwardOffset = StandardTrackingWheelLocalizer.FORWARD_OFFSET +
+					drive.getPoseEstimate().getY() / headingAccumulator;
+			forwardOffsetStats.add(forwardOffset);
 
-            sleep(DELAY);
-        }
+			sleep(DELAY);
+		}
 
-        telemetry.clearAll();
-        telemetry.addLine("Tuning complete");
-        telemetry.addLine(Misc.formatInvariant("Effective forward offset = %.2f (SE = %.3f)",
-                forwardOffsetStats.getMean(),
-                forwardOffsetStats.getStandardDeviation() / Math.sqrt(NUM_TRIALS)));
-        telemetry.update();
+		telemetry.clearAll();
+		telemetry.addLine("Tuning complete");
+		telemetry.addLine(Misc.formatInvariant("Effective forward offset = %.2f (SE = %.3f)",
+		                                       forwardOffsetStats.getMean(),
+		                                       forwardOffsetStats.getStandardDeviation() / Math.sqrt(NUM_TRIALS)));
+		telemetry.update();
 
-        while (!isStopRequested()) {
-            idle();
-        }
-    }
+		while (!isStopRequested()) {
+			idle();
+		}
+	}
 }

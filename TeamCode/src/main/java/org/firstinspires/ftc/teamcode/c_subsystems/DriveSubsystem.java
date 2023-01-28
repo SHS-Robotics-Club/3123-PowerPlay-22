@@ -5,21 +5,26 @@ import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 
 public class DriveSubsystem extends SubsystemBase {
-    private MotorEx frontLeft, frontRight, backLeft, backRight;
-    private MecanumDrive mecanumDrive;
+	private MotorEx frontLeft, frontRight, backLeft, backRight;
+	private MecanumDrive mecanumDrive;
 
-    public DriveSubsystem(MotorEx fL, MotorEx fR, MotorEx bL, MotorEx bR) {
-        frontLeft = fL;
-        frontRight = fR;
-        backLeft = bL;
-        backRight = bR;
+	/**
+	 * @param frontLeft  The Front Left drive motor object.
+	 * @param frontRight The Front Right drive motor object.
+	 * @param backLeft   The Back Left drive motor object.
+	 * @param backRight  The Back Right drive motor object.
+	 */
+	public DriveSubsystem(MotorEx frontLeft, MotorEx frontRight, MotorEx backLeft, MotorEx backRight) {
+		this.frontLeft  = frontLeft;
+		this.frontRight = frontRight;
+		this.backLeft   = backLeft;
+		this.backRight  = backRight;
 
-        mecanumDrive = new MecanumDrive(frontLeft, frontRight, backLeft, backRight);
+		mecanumDrive = new MecanumDrive(frontLeft, frontRight, backLeft, backRight);
+	}
 
-    }
-
-    // Method which runs the subsystem
-    public void drive(double strafeSpeed, double forwardSpeed, double turnSpeed) {
-        mecanumDrive.driveRobotCentric(-strafeSpeed, -forwardSpeed, -turnSpeed, true);
-    }
+	// Method which runs the subsystem
+	public void drive(double strafeSpeed, double forwardSpeed, double turnSpeed) {
+		mecanumDrive.driveRobotCentric(-strafeSpeed, -forwardSpeed, -turnSpeed, true);
+	}
 }
