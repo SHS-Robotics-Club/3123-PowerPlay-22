@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.a_opmodes.Devices;
 import org.firstinspires.ftc.teamcode.b_commands.LiftCommand;
 import org.firstinspires.ftc.teamcode.b_commands.auto.ParkCommand;
 import org.firstinspires.ftc.teamcode.c_subsystems.ClawSubsystem;
+import org.firstinspires.ftc.teamcode.c_subsystems.LiftSubsystem;
 import org.firstinspires.ftc.teamcode.c_subsystems.auto.AprilTagSubsystem;
 import org.firstinspires.ftc.teamcode.c_subsystems.auto.MecanumSubsystem;
 import org.firstinspires.ftc.teamcode.d_roadrunner.drive.MecanumDrive;
@@ -44,11 +45,6 @@ public class AutoConfig {
 
 		CLAW_OPEN  = new InstantCommand(claw::close, claw);
 		CLAW_CLOSE = new InstantCommand(claw::open, claw);
-
-		LIFT_FLOOR = new RunCommand(() -> LiftCommand.liftLevels = LiftCommand.LiftLevels.FLOOR);
-		LIFT_LOW   = new RunCommand(() -> LiftCommand.liftLevels = LiftCommand.LiftLevels.LOW);
-		LIFT_MED   = new RunCommand(() -> LiftCommand.liftLevels = LiftCommand.LiftLevels.MED);
-		LIFT_HIGH  = new RunCommand(() -> LiftCommand.liftLevels = LiftCommand.LiftLevels.HIGH);
 
 		PARK_GROUP = new SequentialCommandGroup(
 				CLAW_CLOSE,

@@ -54,10 +54,10 @@ public class MainTeleOp extends CommandOpMode {
 						}
 				));
 
-		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whenPressed(new RunCommand(() -> LiftCommand.liftLevels = LiftCommand.LiftLevels.FLOOR));
-		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(new RunCommand(() -> LiftCommand.liftLevels = LiftCommand.LiftLevels.LOW));
-		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenPressed(new RunCommand(() -> LiftCommand.liftLevels = LiftCommand.LiftLevels.MED));
-		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT).whenPressed(new RunCommand(() -> LiftCommand.liftLevels = LiftCommand.LiftLevels.HIGH));
+		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whenPressed(new InstantCommand(() -> liftCommand.setLiftLevels(LiftCommand.LiftLevels.FLOOR)));
+		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(new InstantCommand(() -> liftCommand.setLiftLevels(LiftCommand.LiftLevels.LOW)));
+		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenPressed(new InstantCommand(() -> liftCommand.setLiftLevels(LiftCommand.LiftLevels.MED)));
+		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT).whenPressed(new InstantCommand(() -> liftCommand.setLiftLevels(LiftCommand.LiftLevels.HIGH)));
 
 		// Register and Schedule ----------------------------------------------------------------------------------------------------
 		register(driveSubsystem, liftSubsystem);

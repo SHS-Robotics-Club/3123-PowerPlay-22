@@ -55,10 +55,6 @@ public class ParkCommand extends CommandBase {
 						.forward(24)
 						.strafeRight(24)
 						.build();
-			case CENTER:
-				return drive.trajectorySequenceBuilder(startPose)
-						.forward(24)
-						.build();
 			default:
 				return drive.trajectorySequenceBuilder(startPose)
 						.forward(24)
