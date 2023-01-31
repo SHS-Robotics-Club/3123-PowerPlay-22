@@ -28,6 +28,7 @@ public class DriveCommand extends CommandBase {
 		addRequirements(driveSubsystem);
 	}
 
+	//TODO: Test lift slowdown
 	/**
 	 * @param driveSubsystem The drive subsystem this command wil run on.
 	 * @param strafe         The control input for driving left/right.

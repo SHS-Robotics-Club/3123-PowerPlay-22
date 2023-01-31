@@ -60,6 +60,7 @@ public class MainTeleOp extends CommandOpMode {
 		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT).whenPressed(new InstantCommand(() -> liftCommand.setLiftLevels(LiftCommand.LiftLevels.HIGH)));
 
 
+		//TODO: Test lift lowering
 		gPad1.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
 				.whenPressed(new InstantCommand(() -> liftSubsystem.setLower(true)))
 				.whenReleased(new InstantCommand(() -> liftSubsystem.setLower(false)));

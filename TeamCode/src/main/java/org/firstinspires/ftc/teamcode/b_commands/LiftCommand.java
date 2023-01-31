@@ -47,6 +47,7 @@ public class LiftCommand extends CommandBase {
 				}
 			case MOVING:
 				if (!lift.atSetPoint()) {
+					//TODO: Set tp velocity control?
 					lift.set(lift.calculate(0));
 				}
 				if (lift.atSetPoint()) {
