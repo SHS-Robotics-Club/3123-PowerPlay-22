@@ -8,10 +8,11 @@ import org.firstinspires.ftc.teamcode.c_subsystems.LiftSubsystem;
 
 public class LiftCommand extends CommandBase {
 	public static double positionTolerance = 1.0, velo = 0.0, accel = 0.0;
+	public static int lowerAmmount = 100;
 	GamepadEx     gamepadEx;
 	LiftSubsystem lift;
 	LiftStates    liftStates;
-	LiftLevels liftLevels;
+	LiftLevels    liftLevels;
 
 	public LiftCommand(LiftSubsystem liftSubsystem, GamepadEx gamepadEx) {
 		lift           = liftSubsystem;
@@ -35,7 +36,7 @@ public class LiftCommand extends CommandBase {
 	@Override
 	public void execute() {
 		lift.getPosition();
-		lift.setSetPoint(liftLevels.getLevelPos());
+		lift.setSetPoint(liftLevels.getLevelPos(lift.getLower()));
 		switch (liftStates) {
 			case READY:
 				if (lift.atSetPoint()) {
@@ -67,8 +68,12 @@ public class LiftCommand extends CommandBase {
 			this.levelPos = levelPos;
 		}
 
-		public int getLevelPos() {
-			return levelPos;
+		public int getLevelPos(boolean lower) {
+			if (lower) {
+				return levelPos - lowerAmmount;
+			} else {
+				return levelPos;
+			}
 		}
 	}
 }

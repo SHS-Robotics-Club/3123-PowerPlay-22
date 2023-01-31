@@ -10,6 +10,7 @@ import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
 @Config
 public class LiftSubsystem extends SubsystemBase {
 	public static double kP = 0.01, kI = 0.0, kD = 0.0001, kS = 0.0, kG = 0.0, kV = 0.0, kA = 0.0;
+	boolean lower = false;
 	MotorGroup lift;
 	MotorEx    liftLeft, liftRight;
 	double              botVoltage;
@@ -30,6 +31,14 @@ public class LiftSubsystem extends SubsystemBase {
 		getPosition();
 		getVelocity();
 		calculate();
+	}
+
+	public void setLower(boolean lower){
+		this.lower = lower;
+	}
+
+	public boolean getLower(){
+		return lower;
 	}
 
 	public void set(double output) {

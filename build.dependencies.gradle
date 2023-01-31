@@ -33,8 +33,6 @@ dependencies {
 
     api 'org.firstinspires.ftc:gameAssets-PowerPlay:1.0.0'
 
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-
     implementation('com.acmerobotics.dashboard:dashboard:0.4.8') {
         exclude group: 'org.firstinspires.ftc'
     }

@@ -40,8 +40,6 @@ public class Devices {
 	// MISC DEFINITIONS
 	public FtcDashboard dashboard = FtcDashboard.getInstance(); //FTC Dashboard Instance
 	public List<LynxModule> revHubs; //Lynx Module for REV Hubs
-	public VoltageSensor    sensor;
-	Telemetry dashboardTelemetry = dashboard.getTelemetry();
 
 	public Devices(HardwareMap hardwareMap) {
 		// Bulk Read
@@ -98,10 +96,5 @@ public class Devices {
 		// Default POS
 		clawLeft.turnToAngle(0);
 		clawRight.turnToAngle(0);
-
-		// VOLTAGE ----------------------------------------------------------------------------------------------------
-		for (VoltageSensor sensor : hardwareMap.voltageSensor) {
-			double voltage = sensor.getVoltage();
-		}
 	}
 }

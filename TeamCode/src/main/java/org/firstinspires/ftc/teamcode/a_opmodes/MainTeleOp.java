@@ -9,6 +9,7 @@ import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
+import com.arcrobotics.ftclib.gamepad.TriggerReader;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
@@ -58,6 +59,13 @@ public class MainTeleOp extends CommandOpMode {
 		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(new InstantCommand(() -> liftCommand.setLiftLevels(LiftCommand.LiftLevels.LOW)));
 		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenPressed(new InstantCommand(() -> liftCommand.setLiftLevels(LiftCommand.LiftLevels.MED)));
 		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT).whenPressed(new InstantCommand(() -> liftCommand.setLiftLevels(LiftCommand.LiftLevels.HIGH)));
+
+
+		gPad1.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
+				.whenPressed(new InstantCommand(() -> liftSubsystem.setLower(true)))
+				.whenReleased(new InstantCommand(() -> liftSubsystem.setLower(false)));
+
+
 
 		// Register and Schedule ----------------------------------------------------------------------------------------------------
 		register(driveSubsystem, liftSubsystem);
