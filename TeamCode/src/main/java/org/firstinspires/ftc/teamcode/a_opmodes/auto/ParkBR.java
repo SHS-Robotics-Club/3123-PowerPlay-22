@@ -26,7 +26,7 @@ public class ParkBR extends CommandOpMode {
 		schedule(new RunCommand(() -> {
 			         dashboard.startCameraStream(auto.aprilTag.getCamera(), 0);
 			         telemetry.addData("Zone", auto.aprilTag.getParkingZone());
-			telemetry.addData("Zone Status", auto.aprilTag.getStatus());
+			         telemetry.addData("Zone Status", auto.aprilTag.getStatus());
 			         telemetry.update();
 		         }).alongWith(auto.PARK_GROUP)
 		);

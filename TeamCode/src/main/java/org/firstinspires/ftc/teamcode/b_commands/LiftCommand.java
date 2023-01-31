@@ -55,6 +55,10 @@ public class LiftCommand extends CommandBase {
 		}
 	}
 
+	public LiftLevels getLevel() {
+		return liftLevels;
+	}
+
 	enum LiftStates {
 		READY, MOVING
 	}

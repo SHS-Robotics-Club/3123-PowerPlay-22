@@ -10,13 +10,11 @@ import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
 @Config
 public class LiftSubsystem extends SubsystemBase {
 	public static double kP = 0.01, kI = 0.0, kD = 0.0001, kS = 0.0, kG = 0.0, kV = 0.0, kA = 0.0;
-	boolean lower = false;
+	boolean    lower = false;
 	MotorGroup lift;
 	MotorEx    liftLeft, liftRight;
-	double              botVoltage;
-	int                 targetPosition = 0;
-	PIDFController      pidf           = new PIDFController(kP, kI, kD, 0);
-	ElevatorFeedforward eff            = new ElevatorFeedforward(kS, kG, kV, kA);
+	PIDFController      pidf = new PIDFController(kP, kI, kD, 0);
+	ElevatorFeedforward eff  = new ElevatorFeedforward(kS, kG, kV, kA);
 
 	public LiftSubsystem(MotorEx liftLeft, MotorEx liftRight) {
 		this.liftLeft  = liftLeft;
@@ -33,12 +31,12 @@ public class LiftSubsystem extends SubsystemBase {
 		calculate();
 	}
 
-	public void setLower(boolean lower){
-		this.lower = lower;
+	public boolean getLower() {
+		return lower;
 	}
 
-	public boolean getLower(){
-		return lower;
+	public void setLower(boolean lower) {
+		this.lower = lower;
 	}
 
 	public void set(double output) {
@@ -199,7 +197,7 @@ public class LiftSubsystem extends SubsystemBase {
 	/**
 	 * Calculates the control value, u(t).
 	 *
-	 * @param veloSetPoint  VelocitySetPoint
+	 * @param veloSetPoint VelocitySetPoint
 	 * @return the value produced by u(t).
 	 */
 	public double calculate(double veloSetPoint) {

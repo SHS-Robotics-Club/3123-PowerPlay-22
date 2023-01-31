@@ -33,6 +33,31 @@ public class DriveCommand extends CommandBase {
 	 * @param strafe         The control input for driving left/right.
 	 * @param forward        The control input for driving forwards/backwards.
 	 * @param turn           The control input for turning.
+	 * @param liftLevel      Set multiplier.
+	 */
+	public DriveCommand(DriveSubsystem driveSubsystem, DoubleSupplier strafe, DoubleSupplier forward, DoubleSupplier turn, LiftCommand.LiftLevels liftLevel) {
+		this.driveSubsystem = driveSubsystem;
+		this.strafe         = strafe;
+		this.forward        = forward;
+		this.turn           = turn;
+
+		switch (liftLevel) {
+			case MED:
+				this.multiplier = 0.9;
+			case HIGH:
+				this.multiplier = 0.8;
+			default:
+				this.multiplier = 1;
+		}
+
+		addRequirements(driveSubsystem);
+	}
+
+	/**
+	 * @param driveSubsystem The drive subsystem this command wil run on.
+	 * @param strafe         The control input for driving left/right.
+	 * @param forward        The control input for driving forwards/backwards.
+	 * @param turn           The control input for turning.
 	 */
 	public DriveCommand(DriveSubsystem driveSubsystem, DoubleSupplier strafe, DoubleSupplier forward, DoubleSupplier turn) {
 		this.driveSubsystem = driveSubsystem;

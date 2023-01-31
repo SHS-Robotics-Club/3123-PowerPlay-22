@@ -14,12 +14,12 @@ import java.util.ArrayList;
 
 
 public class AprilTagSubsystem extends SubsystemBase {
-	public static ParkingZone lastParkingZone = ParkingZone.NONE;
+	public static ParkingZone      lastParkingZone = ParkingZone.NONE;
 	private final HardwareMap      hardwareMap;
 	private final int              WIDTH;
 	private final int              HEIGHT;
-	private final Object           sync   = new Object();
-	public        Status           status = Status.NOT_CONFIGURED;
+	private final Object           sync            = new Object();
+	public        Status           status          = Status.NOT_CONFIGURED;
 	private       OpenCvCamera     camera;
 	private       String           cameraName;
 	private       AprilTagPipeline aprilTagPipeline;

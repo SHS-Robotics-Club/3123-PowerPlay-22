@@ -38,9 +38,9 @@ import org.openftc.easyopencv.OpenCvPipeline;
 import java.util.ArrayList;
 
 public class AprilTagPipeline extends OpenCvPipeline {
-	private final Object                       detectionsUpdateSync = new Object();
-	private final Object  decimationSync = new Object();
-	Mat cameraMatrix;
+	private final Object detectionsUpdateSync = new Object();
+	private final Object decimationSync       = new Object();
+	Mat    cameraMatrix;
 	Scalar blue  = new Scalar(7, 197, 235, 255);
 	Scalar red   = new Scalar(255, 0, 0, 255);
 	Scalar green = new Scalar(0, 255, 0, 255);
@@ -54,11 +54,11 @@ public class AprilTagPipeline extends OpenCvPipeline {
 	double tagsizeX;
 	double tagsizeY;
 	private long                         nativeApriltagPtr;
-	private Mat                          grey       = new Mat();
-	private ArrayList<AprilTagDetection> detections = new ArrayList<>();
-	private       ArrayList<AprilTagDetection> detectionsUpdate     = new ArrayList<>();
-	private       float   decimation;
-	private       boolean needToSetDecimation;
+	private Mat                          grey             = new Mat();
+	private ArrayList<AprilTagDetection> detections       = new ArrayList<>();
+	private ArrayList<AprilTagDetection> detectionsUpdate = new ArrayList<>();
+	private float                        decimation;
+	private boolean                      needToSetDecimation;
 
 	public AprilTagPipeline(double tagsize, double fx, double fy, double cx, double cy) {
 		this.tagsize  = tagsize;

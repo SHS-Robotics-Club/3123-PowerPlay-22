@@ -9,7 +9,6 @@ import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
-import com.arcrobotics.ftclib.gamepad.TriggerReader;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
@@ -38,8 +37,8 @@ public class MainTeleOp extends CommandOpMode {
 		ClawSubsystem  claw           = new ClawSubsystem(devices.clawLeft, devices.clawRight);
 		LiftSubsystem  liftSubsystem  = new LiftSubsystem(devices.liftLeft, devices.liftRight);
 
-		DriveCommand driveCommand = new DriveCommand(driveSubsystem, gPad1::getLeftX, gPad1::getLeftY, gPad1::getRightX, 1);
 		LiftCommand  liftCommand  = new LiftCommand(liftSubsystem, gPad1);
+		DriveCommand driveCommand = new DriveCommand(driveSubsystem, gPad1::getLeftX, gPad1::getLeftY, gPad1::getRightX, liftCommand.getLevel());
 
 		telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
@@ -64,7 +63,6 @@ public class MainTeleOp extends CommandOpMode {
 		gPad1.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
 				.whenPressed(new InstantCommand(() -> liftSubsystem.setLower(true)))
 				.whenReleased(new InstantCommand(() -> liftSubsystem.setLower(false)));
-
 
 
 		// Register and Schedule ----------------------------------------------------------------------------------------------------

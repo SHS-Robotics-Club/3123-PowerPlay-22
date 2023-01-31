@@ -24,9 +24,7 @@ import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.VoltageSensor;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 import java.util.List;
@@ -38,7 +36,7 @@ public class Devices {
 	public CRServo spool; // CR Servo
 
 	// MISC DEFINITIONS
-	public FtcDashboard dashboard = FtcDashboard.getInstance(); //FTC Dashboard Instance
+	public FtcDashboard     dashboard = FtcDashboard.getInstance(); //FTC Dashboard Instance
 	public List<LynxModule> revHubs; //Lynx Module for REV Hubs
 
 	public Devices(HardwareMap hardwareMap) {
