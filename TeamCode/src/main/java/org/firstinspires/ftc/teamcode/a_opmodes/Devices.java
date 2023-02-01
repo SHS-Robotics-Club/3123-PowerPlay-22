@@ -71,7 +71,18 @@ public class Devices {
 		backRight.resetEncoder();
 
 		// Set RunMode for motors (RawPower, VelocityControl, PositionControl)
+		frontLeft.setRunMode(MotorEx.RunMode.VelocityControl);
+		frontRight.setRunMode(MotorEx.RunMode.VelocityControl);
+		backLeft.setRunMode(MotorEx.RunMode.VelocityControl);
+		backRight.setRunMode(MotorEx.RunMode.VelocityControl);
+
 		lift.setRunMode(MotorEx.RunMode.VelocityControl);
+
+		//PID
+		frontLeft.setVeloCoefficients(0, 0, 0);
+		frontRight.setVeloCoefficients(0, 0, 0);
+		backLeft.setVeloCoefficients(0, 0, 0);
+		backRight.setVeloCoefficients(0, 0, 0);
 
 		// Brake when zero power
 		frontLeft.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);

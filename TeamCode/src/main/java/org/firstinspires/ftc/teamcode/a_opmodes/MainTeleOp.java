@@ -50,15 +50,6 @@ public class MainTeleOp extends CommandOpMode {
 			     return claw.isOpen();
 		     }));
 
-/*		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
-		     .whenPressed(new RunCommand(() -> lift.setSetPoint(LiftSubsystem.LiftLevels.FLOOR.getLevelPos(lift.getLower()))));
-		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_LEFT)
-		     .whenPressed(new RunCommand(() -> lift.setSetPoint(LiftSubsystem.LiftLevels.LOW.getLevelPos(lift.getLower()))));
-		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_UP)
-		     .whenPressed(new RunCommand(() -> lift.setSetPoint(LiftSubsystem.LiftLevels.MED.getLevelPos(lift.getLower()))));
-		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT)
-		     .whenPressed(new RunCommand(() -> lift.setSetPoint(LiftSubsystem.LiftLevels.HIGH.getLevelPos(lift.getLower()))));*/
-
 		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
 		     .whenPressed(new InstantCommand(() -> liftLevels = LiftSubsystem.LiftLevels.FLOOR));
 		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_LEFT)
@@ -68,8 +59,6 @@ public class MainTeleOp extends CommandOpMode {
 		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT)
 		     .whenPressed(new InstantCommand(() -> liftLevels = LiftSubsystem.LiftLevels.HIGH));
 
-
-		//TODO: Test lift lowering
 		gPad1.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
 		     .whenPressed(new InstantCommand(() -> lift.setLower(true)))
 		     .whenReleased(new InstantCommand(() -> lift.setLower(false)));
