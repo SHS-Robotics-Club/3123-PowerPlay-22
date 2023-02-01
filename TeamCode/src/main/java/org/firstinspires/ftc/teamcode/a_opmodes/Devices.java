@@ -20,7 +20,6 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.arcrobotics.ftclib.hardware.ServoEx;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.CRServo;
-import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
 import com.qualcomm.hardware.lynx.LynxModule;
@@ -72,7 +71,7 @@ public class Devices {
 		backRight.resetEncoder();
 
 		// Set RunMode for motors (RawPower, VelocityControl, PositionControl)
-		lift.setRunMode(MotorEx.RunMode.PositionControl);
+		lift.setRunMode(MotorEx.RunMode.VelocityControl);
 
 		// Brake when zero power
 		frontLeft.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);

@@ -18,8 +18,7 @@ public class DriveCommand extends CommandBase {
 	 * @param turn           The control input for turning.
 	 * @param multiplier     A multiplier for bot speed.
 	 */
-	public DriveCommand(DriveSubsystem driveSubsystem, DoubleSupplier strafe,
-	                    DoubleSupplier forward, DoubleSupplier turn, double multiplier) {
+	public DriveCommand(DriveSubsystem driveSubsystem, DoubleSupplier strafe, DoubleSupplier forward, DoubleSupplier turn, double multiplier) {
 		this.driveSubsystem = driveSubsystem;
 		this.strafe         = strafe;
 		this.forward        = forward;
@@ -35,8 +34,7 @@ public class DriveCommand extends CommandBase {
 	 * @param forward        The control input for driving forwards/backwards.
 	 * @param turn           The control input for turning.
 	 */
-	public DriveCommand(DriveSubsystem driveSubsystem, DoubleSupplier strafe,
-	                    DoubleSupplier forward, DoubleSupplier turn) {
+	public DriveCommand(DriveSubsystem driveSubsystem, DoubleSupplier strafe, DoubleSupplier forward, DoubleSupplier turn) {
 		this.driveSubsystem = driveSubsystem;
 		this.strafe         = strafe;
 		this.forward        = forward;
@@ -48,8 +46,8 @@ public class DriveCommand extends CommandBase {
 
 	@Override
 	public void execute() {
-		driveSubsystem.drive(strafe.getAsDouble() * 0.9 * multiplier,
-		                     forward.getAsDouble() * 0.9 * multiplier,
-		                     turn.getAsDouble() * 0.8 * multiplier);
+		driveSubsystem.drive(
+				strafe.getAsDouble() * 0.9 * multiplier,
+				forward.getAsDouble() * 0.9 * multiplier, turn.getAsDouble() * 0.8 * multiplier);
 	}
 }

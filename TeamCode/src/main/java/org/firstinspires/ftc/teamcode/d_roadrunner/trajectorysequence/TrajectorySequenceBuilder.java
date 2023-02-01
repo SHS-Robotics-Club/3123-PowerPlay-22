@@ -730,11 +730,11 @@ public class TrajectorySequenceBuilder {
 			if (segment instanceof TrajectorySegment) {
 				TrajectorySegment thisSegment = (TrajectorySegment) segment;
 
-				double   displacement    =
+				double displacement =
 						thisSegment.getTrajectory().getPath().project(point, 0.25);
-				Vector2d projectedPoint  =
+				Vector2d projectedPoint =
 						thisSegment.getTrajectory().getPath().get(displacement).vec();
-				double   distanceToPoint = point.minus(projectedPoint).norm();
+				double distanceToPoint = point.minus(projectedPoint).norm();
 
 				double totalDisplacement = 0.0;
 

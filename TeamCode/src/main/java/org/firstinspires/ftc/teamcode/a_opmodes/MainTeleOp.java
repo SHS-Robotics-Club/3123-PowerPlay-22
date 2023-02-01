@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.a_opmodes;
 
-import static org.firstinspires.ftc.teamcode.b_commands.LiftCommand.liftLevels;
+import static org.firstinspires.ftc.teamcode.c_subsystems.LiftSubsystem.liftLevels;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -15,12 +15,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.teamcode.b_commands.DriveCommand;
-import org.firstinspires.ftc.teamcode.b_commands.LiftCommand;
-import org.firstinspires.ftc.teamcode.b_commands.LiftCommandNormal;
 import org.firstinspires.ftc.teamcode.c_subsystems.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.c_subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.c_subsystems.LiftSubsystem;
-import org.firstinspires.ftc.teamcode.c_subsystems.LiftSubsystemNormal;
 
 //@Disabled
 @Config
@@ -37,14 +34,11 @@ public class MainTeleOp extends CommandOpMode {
 		GamepadEx gPad1 = new GamepadEx(gamepad1);
 
 		// Define Systems ----------------------------------------------------------------------------------------------------
-		DriveSubsystem driveSubsystem = new DriveSubsystem(devices.frontLeft, devices.frontRight, devices.backLeft, devices.backRight);
-		ClawSubsystem claw          = new ClawSubsystem(devices.clawLeft, devices.clawRight);
-//		LiftSubsystem liftSubsystem = new LiftSubsystem(devices.lift);
-		LiftSubsystemNormal liftSubsystem = new LiftSubsystemNormal(devices.lift);
+		DriveSubsystem drive = new DriveSubsystem(devices.frontLeft, devices.frontRight, devices.backLeft, devices.backRight);
+		ClawSubsystem  claw  = new ClawSubsystem(devices.clawLeft, devices.clawRight);
+		LiftSubsystem  lift  = new LiftSubsystem(devices.lift);
 
-//		LiftCommand liftCommand = new LiftCommand(liftSubsystem, gPad1);
-		LiftCommandNormal liftCommand = new LiftCommandNormal(liftSubsystem);
-		DriveCommand driveCommand = new DriveCommand(driveSubsystem, gPad1::getLeftX, gPad1::getLeftY, gPad1::getRightX, liftLevels.getDriveMult());
+		DriveCommand driveCommand = new DriveCommand(drive, gPad1::getLeftX, gPad1::getLeftY, gPad1::getRightX, liftLevels.getDriveMult());
 
 		telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
@@ -56,30 +50,39 @@ public class MainTeleOp extends CommandOpMode {
 			     return claw.isOpen();
 		     }));
 
-		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
-		     .whenPressed(new InstantCommand(() -> liftCommand.setLiftLevels(LiftCommandNormal.LiftLevels.FLOOR)));
+/*		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
+		     .whenPressed(new RunCommand(() -> lift.setSetPoint(LiftSubsystem.LiftLevels.FLOOR.getLevelPos(lift.getLower()))));
 		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_LEFT)
-		     .whenPressed(new InstantCommand(() -> liftCommand.setLiftLevels(LiftCommandNormal.LiftLevels.LOW)));
+		     .whenPressed(new RunCommand(() -> lift.setSetPoint(LiftSubsystem.LiftLevels.LOW.getLevelPos(lift.getLower()))));
 		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_UP)
-		     .whenPressed(new InstantCommand(() -> liftCommand.setLiftLevels(LiftCommandNormal.LiftLevels.MED)));
+		     .whenPressed(new RunCommand(() -> lift.setSetPoint(LiftSubsystem.LiftLevels.MED.getLevelPos(lift.getLower()))));
 		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT)
-		     .whenPressed(new InstantCommand(() -> liftCommand.setLiftLevels(LiftCommandNormal.LiftLevels.HIGH)));
+		     .whenPressed(new RunCommand(() -> lift.setSetPoint(LiftSubsystem.LiftLevels.HIGH.getLevelPos(lift.getLower()))));*/
+
+		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
+		     .whenPressed(new InstantCommand(() -> liftLevels = LiftSubsystem.LiftLevels.FLOOR));
+		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_LEFT)
+		     .whenPressed(new InstantCommand(() -> liftLevels = LiftSubsystem.LiftLevels.LOW));
+		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_UP)
+		     .whenPressed(new InstantCommand(() -> liftLevels = LiftSubsystem.LiftLevels.MED));
+		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT)
+		     .whenPressed(new InstantCommand(() -> liftLevels = LiftSubsystem.LiftLevels.HIGH));
 
 
 		//TODO: Test lift lowering
 		gPad1.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-		     .whenPressed(new InstantCommand(() -> liftSubsystem.setLower(true)))
-		     .whenReleased(new InstantCommand(() -> liftSubsystem.setLower(false)));
+		     .whenPressed(new InstantCommand(() -> lift.setLower(true)))
+		     .whenReleased(new InstantCommand(() -> lift.setLower(false)));
 
 
 		// Register and Schedule ----------------------------------------------------------------------------------------------------
-		register(driveSubsystem, liftSubsystem);
-		schedule(driveCommand.alongWith(liftCommand, new RunCommand(() -> {
+		register(drive, lift);
+		schedule(driveCommand.alongWith(new RunCommand(() -> {
 			// Telemetry
 			telemetry.update();
-			telemetry.addData("LiftPos", liftSubsystem.getPosition());
-			telemetry.addData("LiftVel", liftSubsystem.getVelocity());
-			telemetry.addData("LiftError", liftSubsystem.getPositionError());
+			telemetry.addData("LiftPos", lift.getPosition());
+			telemetry.addData("LiftVel", lift.getVelocity());
+			telemetry.addData("LiftError", lift.getPositionError());
 			telemetry.addData("voltage", "%.1f volts", getBatteryVoltage());
 		})));
 

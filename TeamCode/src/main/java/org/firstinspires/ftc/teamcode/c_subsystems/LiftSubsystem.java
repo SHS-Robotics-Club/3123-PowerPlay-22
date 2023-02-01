@@ -8,7 +8,8 @@ import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
 
 @Config
 public class LiftSubsystem extends SubsystemBase {
-	public static double kP = 0.01, kI = 0.0, kD = 0.0001, kS = 0.0, kG = 0.0, kV = 0.0, kA = 0.0;
+	public static double kP = 0.01, kI = 0.0, kD = 0.0001, kS = 0.0, kG = 0.0, kV = 0.0, kA = 0.0, positionTolerance = 5.0;
+	public static LiftLevels liftLevels = LiftLevels.FLOOR;
 	boolean             lower = false;
 	MotorGroup          lift;
 	PIDFController      pidf  = new PIDFController(kP, kI, kD, 0);
@@ -16,6 +17,10 @@ public class LiftSubsystem extends SubsystemBase {
 
 	public LiftSubsystem(MotorGroup lift) {
 		this.lift = lift;
+
+		setTolerance(positionTolerance);
+		setSetPoint(0);
+		stop();
 	}
 
 	@Override
@@ -23,6 +28,7 @@ public class LiftSubsystem extends SubsystemBase {
 		getPosition();
 		getVelocity();
 		calculate();
+		updatePosition();
 	}
 
 	public boolean getLower() {
@@ -38,6 +44,7 @@ public class LiftSubsystem extends SubsystemBase {
 	}
 
 	public void stop() {
+		set(0);
 		lift.stopMotor();
 	}
 
@@ -177,16 +184,44 @@ public class LiftSubsystem extends SubsystemBase {
 	/**
 	 * Calculates the control value, u(t).
 	 *
-	 * @param veloSetPoint VelocitySetPoint
 	 * @return the value produced by u(t).
 	 */
-	public double calculate(double veloSetPoint) {
-		pidf.setF(eff.calculate(veloSetPoint));
+	public double calculate() {
+		pidf.setF(eff.calculate(50));
 		return pidf.calculate(getPosition());
 	}
 
-	public double calculate() {
-		return pidf.calculate();
+	public void updatePosition(){
+		setSetPoint(liftLevels.getLevelPos(getLower()));
+		getPosition();
+		if (atSetPoint()) {
+			stop();
+		} else if (!atSetPoint()) {
+			lift.set(calculate());
+		}
 	}
 
+	public enum LiftLevels {
+		FLOOR(0, 1.0), LOW(2000, 1.0), MED(2990, 0.9), HIGH(3265, 0.8);
+
+		private final int    levelPos;
+		private final double driveMult;
+
+		LiftLevels(int levelPos, double driveMult) {
+			this.levelPos  = levelPos;
+			this.driveMult = driveMult;
+		}
+
+		public int getLevelPos(boolean lower) {
+			if (lower) {
+				return levelPos - 200;
+			} else {
+				return levelPos;
+			}
+		}
+
+		public double getDriveMult() {
+			return driveMult;
+		}
+	}
 }

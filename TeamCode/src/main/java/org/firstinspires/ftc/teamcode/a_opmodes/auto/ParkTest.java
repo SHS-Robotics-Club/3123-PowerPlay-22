@@ -30,10 +30,10 @@ public class ParkTest extends CommandOpMode {
 
 		Devices devices = new Devices(hardwareMap);
 
-		MecanumSubsystem  mecanumSubsystem =
+		MecanumSubsystem mecanumSubsystem =
 				new MecanumSubsystem(new MecanumDrive(hardwareMap), true);
-		ClawSubsystem     claw             = new ClawSubsystem(devices.clawLeft, devices.clawRight);
-		AprilTagSubsystem tagSubsystem     =
+		ClawSubsystem claw = new ClawSubsystem(devices.clawLeft, devices.clawRight);
+		AprilTagSubsystem tagSubsystem =
 				new AprilTagSubsystem(hardwareMap, "Webcam 1", 1280, 720, 0.4, 1552.74274588,
 				                      1552.74274588, 793.573231003, 202.006088244);
 
