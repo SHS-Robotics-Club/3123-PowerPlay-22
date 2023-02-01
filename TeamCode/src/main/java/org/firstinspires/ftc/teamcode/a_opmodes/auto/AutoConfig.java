@@ -33,7 +33,8 @@ public class AutoConfig {
 
 		drive    = new MecanumSubsystem(new MecanumDrive(hardwareMap), true);
 		claw     = new ClawSubsystem(devices.clawLeft, devices.clawRight);
-		aprilTag = new AprilTagSubsystem(hardwareMap, "Webcam 1", 1280, 720, 0.4, 1552.74274588, 1552.74274588, 793.573231003, 202.006088244);
+		aprilTag = new AprilTagSubsystem(hardwareMap, "Webcam 1", 1280, 720, 0.4, 1552.74274588,
+		                                 1552.74274588, 793.573231003, 202.006088244);
 
 		aprilTag.init();
 

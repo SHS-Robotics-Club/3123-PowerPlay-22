@@ -2,21 +2,23 @@ package org.firstinspires.ftc.teamcode.b_commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.c_subsystems.LiftSubsystem;
+import org.firstinspires.ftc.teamcode.c_subsystems.LiftSubsystemNormal;
 
 
-public class LiftCommand extends CommandBase {
+@Disabled
+public class LiftCommandNormal extends CommandBase {
+	public static double kP = 0.01, kI = 0.0, kD = 0.0001, kS = 0.0, kV = 0.0, kA = 0.0;
 	public static double     positionTolerance = 1.0;
 	public static int        lowerAmmount      = 100;
 	public static LiftLevels liftLevels        = LiftLevels.FLOOR;
-	GamepadEx     gamepadEx;
-	LiftSubsystem lift;
+	LiftSubsystemNormal lift;
 	LiftStates    liftStates;
 
-	public LiftCommand(LiftSubsystem liftSubsystem, GamepadEx gamepadEx) {
+	public LiftCommandNormal(LiftSubsystemNormal liftSubsystem) {
 		lift           = liftSubsystem;
-		this.gamepadEx = gamepadEx;
 		addRequirements(liftSubsystem);
 	}
 
@@ -25,32 +27,33 @@ public class LiftCommand extends CommandBase {
 		liftStates = LiftStates.READY;
 		liftLevels = LiftLevels.FLOOR;
 		lift.setTolerance(positionTolerance);
-		lift.setSetPoint(0);
+		lift.setCoeff(kP);
+		lift.setTargetPosition(0);
 		lift.stop();
 	}
 
 	public void setLiftLevels(LiftLevels liftLevels) {
-		LiftCommand.liftLevels = liftLevels;
+		LiftCommandNormal.liftLevels = liftLevels;
 	}
 
 	@Override
 	public void execute() {
 		lift.getPosition();
-		lift.setSetPoint(liftLevels.getLevelPos(lift.getLower()));
+		lift.setTargetPosition(liftLevels.getLevelPos(lift.getLower()));
 		switch (liftStates) {
 			case READY:
-				if (lift.atSetPoint()) {
+				if (lift.atTargetPosition()) {
 					lift.stop();
 				}
-				if (!lift.atSetPoint()) {
+				if (!lift.atTargetPosition()) {
 					liftStates = LiftStates.MOVING;
 				}
 			case MOVING:
-				if (!lift.atSetPoint()) {
+				if (!lift.atTargetPosition()) {
 					//TODO: Set tp velocity control?
-					lift.set(lift.calculate(50));
+					lift.set(1);
 				}
-				if (lift.atSetPoint()) {
+				if (lift.atTargetPosition()) {
 					liftStates = LiftStates.READY;
 				}
 		}

@@ -74,12 +74,13 @@ public class TrackingWheelLateralDistanceTuner extends LinearOpMode {
 
 		if (!(drive.getLocalizer() instanceof StandardTrackingWheelLocalizer)) {
 			RobotLog.setGlobalErrorMsg("StandardTrackingWheelLocalizer is not being set in the "
-					                           + "drive class. Ensure that \"setLocalizer(new StandardTrackingWheelLocalizer"
-					                           + "(hardwareMap));\" is called in SampleMecanumDrive.java");
+			                           +
+			                           "drive class. Ensure that \"setLocalizer(new StandardTrackingWheelLocalizer"
+			                           + "(hardwareMap));\" is called in SampleMecanumDrive.java");
 		}
 
 		telemetry.addLine("Prior to beginning the routine, please read the directions "
-				                  + "located in the comments of the opmode file.");
+		                  + "located in the comments of the opmode file.");
 		telemetry.addLine("Press play to begin the tuning routine.");
 		telemetry.addLine("");
 		telemetry.addLine("Press Y/△ to stop the routine.");
@@ -124,7 +125,8 @@ public class TrackingWheelLateralDistanceTuner extends LinearOpMode {
 		telemetry.clearAll();
 		telemetry.addLine("Localizer's total heading: " + Math.toDegrees(headingAccumulator) + "°");
 		telemetry.addLine("Effective LATERAL_DISTANCE: " +
-				                  (headingAccumulator / (NUM_TURNS * Math.PI * 2)) * StandardTrackingWheelLocalizer.LATERAL_DISTANCE);
+		                  (headingAccumulator / (NUM_TURNS * Math.PI * 2)) *
+		                  StandardTrackingWheelLocalizer.LATERAL_DISTANCE);
 
 		telemetry.update();
 

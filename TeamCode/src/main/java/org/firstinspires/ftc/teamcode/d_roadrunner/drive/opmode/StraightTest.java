@@ -21,13 +21,14 @@ public class StraightTest extends LinearOpMode {
 
 	@Override
 	public void runOpMode() throws InterruptedException {
-		Telemetry telemetry = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
+		Telemetry telemetry =
+				new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
 
 		MecanumDrive drive = new MecanumDrive(hardwareMap);
 
 		Trajectory trajectory = drive.trajectoryBuilder(new Pose2d())
-				.forward(DISTANCE)
-				.build();
+		                             .forward(DISTANCE)
+		                             .build();
 
 		waitForStart();
 

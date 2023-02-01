@@ -44,10 +44,11 @@ public class AutomaticFeedforwardTuner extends LinearOpMode {
 	public void runOpMode() throws InterruptedException {
 		if (RUN_USING_ENCODER) {
 			RobotLog.setGlobalErrorMsg("Feedforward constants usually don't need to be tuned " +
-					                           "when using the built-in drive motor velocity PID.");
+			                           "when using the built-in drive motor velocity PID.");
 		}
 
-		Telemetry telemetry = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
+		Telemetry telemetry =
+				new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
 
 		MecanumDrive drive = new MecanumDrive(hardwareMap);
 
@@ -137,7 +138,8 @@ public class AutomaticFeedforwardTuner extends LinearOpMode {
 		telemetry.addLine("Quasi-static ramp up test complete");
 		if (fitIntercept) {
 			telemetry.addLine(Misc.formatInvariant("kV = %.5f, kStatic = %.5f (R^2 = %.2f)",
-			                                       rampResult.kV, rampResult.kStatic, rampResult.rSquare));
+			                                       rampResult.kV, rampResult.kStatic,
+			                                       rampResult.rSquare));
 		} else {
 			telemetry.addLine(Misc.formatInvariant("kV = %.5f (R^2 = %.2f)",
 			                                       rampResult.kStatic, rampResult.rSquare));

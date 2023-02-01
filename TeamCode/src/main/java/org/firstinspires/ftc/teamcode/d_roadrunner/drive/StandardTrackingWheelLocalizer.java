@@ -42,7 +42,7 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
 				new Pose2d(0, LATERAL_DISTANCE / 2, 0), // left
 				new Pose2d(0, -LATERAL_DISTANCE / 2, 0), // right
 				new Pose2d(FORWARD_OFFSET, 0, Math.toRadians(90)) // front
-		));
+		                   ));
 
 		leftEncoder  = new Encoder(hardwareMap.get(DcMotorEx.class, "leftEncoder"));
 		rightEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "rightEncoder"));
@@ -62,7 +62,7 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
 				encoderTicksToInches(leftEncoder.getCurrentPosition()),
 				encoderTicksToInches(rightEncoder.getCurrentPosition()),
 				encoderTicksToInches(frontEncoder.getCurrentPosition())
-		);
+		                    );
 	}
 
 	@NonNull
@@ -76,6 +76,6 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
 				encoderTicksToInches(leftEncoder.getRawVelocity()),
 				encoderTicksToInches(rightEncoder.getRawVelocity()),
 				encoderTicksToInches(frontEncoder.getRawVelocity())
-		);
+		                    );
 	}
 }

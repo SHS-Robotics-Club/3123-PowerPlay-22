@@ -14,7 +14,8 @@ public class DriveSubsystem extends SubsystemBase {
 	 * @param backLeft   The Back Left drive motor object.
 	 * @param backRight  The Back Right drive motor object.
 	 */
-	public DriveSubsystem(MotorEx frontLeft, MotorEx frontRight, MotorEx backLeft, MotorEx backRight) {
+	public DriveSubsystem(MotorEx frontLeft, MotorEx frontRight, MotorEx backLeft,
+	                      MotorEx backRight) {
 		this.frontLeft  = frontLeft;
 		this.frontRight = frontRight;
 		this.backLeft   = backLeft;

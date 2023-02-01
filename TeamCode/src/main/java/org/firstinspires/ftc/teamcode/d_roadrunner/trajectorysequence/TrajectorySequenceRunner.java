@@ -53,7 +53,8 @@ public class TrajectorySequenceRunner {
 	private int                lastSegmentIndex;
 	private Pose2d             lastPoseError = new Pose2d();
 
-	public TrajectorySequenceRunner(TrajectoryFollower follower, PIDCoefficients headingPIDCoefficients) {
+	public TrajectorySequenceRunner(TrajectoryFollower follower,
+	                                PIDCoefficients headingPIDCoefficients) {
 		this.follower = follower;
 
 		turnController = new PIDFController(headingPIDCoefficients);
@@ -113,7 +114,8 @@ public class TrajectorySequenceRunner {
 				remainingMarkers.clear();
 
 				remainingMarkers.addAll(currentSegment.getMarkers());
-				Collections.sort(remainingMarkers, (t1, t2) -> Double.compare(t1.getTime(), t2.getTime()));
+				Collections.sort(remainingMarkers,
+				                 (t1, t2) -> Double.compare(t1.getTime(), t2.getTime()));
 			}
 
 			double deltaTime = now - currentSegmentStartTime;
@@ -136,7 +138,8 @@ public class TrajectorySequenceRunner {
 
 				targetPose = currentTrajectory.get(deltaTime);
 			} else if (currentSegment instanceof TurnSegment) {
-				MotionState targetState = ((TurnSegment) currentSegment).getMotionProfile().get(deltaTime);
+				MotionState targetState =
+						((TurnSegment) currentSegment).getMotionProfile().get(deltaTime);
 
 				turnController.setTargetPosition(targetState.getX());
 
@@ -201,7 +204,7 @@ public class TrajectorySequenceRunner {
 			Canvas fieldOverlay,
 			TrajectorySequence sequence, SequenceSegment currentSegment,
 			Pose2d targetPose, Pose2d poseEstimate
-	) {
+	                 ) {
 		if (sequence != null) {
 			for (int i = 0; i < sequence.size(); i++) {
 				SequenceSegment segment = sequence.get(i);
@@ -210,7 +213,9 @@ public class TrajectorySequenceRunner {
 					fieldOverlay.setStrokeWidth(1);
 					fieldOverlay.setStroke(COLOR_INACTIVE_TRAJECTORY);
 
-					DashboardUtil.drawSampledPath(fieldOverlay, ((TrajectorySegment) segment).getTrajectory().getPath());
+					DashboardUtil.drawSampledPath(fieldOverlay,
+					                              ((TrajectorySegment) segment).getTrajectory()
+					                                                           .getPath());
 				} else if (segment instanceof TurnSegment) {
 					Pose2d pose = segment.getStartPose();
 

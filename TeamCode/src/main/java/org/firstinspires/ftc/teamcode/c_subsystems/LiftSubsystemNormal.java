@@ -5,16 +5,17 @@ import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.arcrobotics.ftclib.controller.wpilibcontroller.ElevatorFeedforward;
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
+@Disabled
 @Config
-public class LiftSubsystem extends SubsystemBase {
-	public static double kP = 0.01, kI = 0.0, kD = 0.0001, kS = 0.0, kG = 0.0, kV = 0.0, kA = 0.0;
+public class LiftSubsystemNormal extends SubsystemBase {
+	//public static double kP = 0.01, kI = 0.0, kD = 0.0001, kS = 0.0, kV = 0.0;
+	private int targetPosition;
 	boolean             lower = false;
 	MotorGroup          lift;
-	PIDFController      pidf  = new PIDFController(kP, kI, kD, 0);
-	ElevatorFeedforward eff   = new ElevatorFeedforward(kS, kG, kV, kA);
 
-	public LiftSubsystem(MotorGroup lift) {
+	public LiftSubsystemNormal(MotorGroup lift) {
 		this.lift = lift;
 	}
 
@@ -22,7 +23,6 @@ public class LiftSubsystem extends SubsystemBase {
 	public void periodic() {
 		getPosition();
 		getVelocity();
-		calculate();
 	}
 
 	public boolean getLower() {
@@ -33,11 +33,16 @@ public class LiftSubsystem extends SubsystemBase {
 		this.lower = lower;
 	}
 
+	public void setCoeff(double kP){
+		lift.setPositionCoefficient(kP);
+	}
+
 	public void set(double output) {
 		lift.set(output);
 	}
 
 	public void stop() {
+		//set(0);
 		lift.stopMotor();
 	}
 
@@ -95,18 +100,14 @@ public class LiftSubsystem extends SubsystemBase {
 		lift.setDistancePerPulse(distancePerPulse);
 	}
 
-	public void reset() {
-		pidf.reset();
-	}
-
 	/**
-	 * Sets the error which is considered tolerable for use with {@link #atSetPoint()}.
+	 * Sets the setpoint for the PIDFController
 	 *
-	 * @param positionTolerance Position error which is tolerable.
-	 * @param velocityTolerance Velocity error which is tolerable.
+	 * @param targetPosition The desired setpoint.
 	 */
-	public void setTolerance(double positionTolerance, double velocityTolerance) {
-		pidf.setTolerance(positionTolerance, velocityTolerance);
+	public void setTargetPosition(int targetPosition) {
+		this.targetPosition = targetPosition;
+		lift.setTargetPosition(targetPosition);
 	}
 
 	/**
@@ -114,17 +115,17 @@ public class LiftSubsystem extends SubsystemBase {
 	 *
 	 * @return The current setpoint.
 	 */
-	public double getSetPoint() {
-		return pidf.getSetPoint();
+	public double getTargetPosition() {
+		return targetPosition;
 	}
 
 	/**
-	 * Sets the setpoint for the PIDFController
+	 * Sets the error which is considered tolerable for use with {@link #atTargetPosition()}.
 	 *
-	 * @param sp The desired setpoint.
+	 * @param positionTolerance Position error which is tolerable.
 	 */
-	public void setSetPoint(double sp) {
-		pidf.setSetPoint(sp);
+	public void setTolerance(double positionTolerance) {
+		lift.setPositionTolerance(positionTolerance);
 	}
 
 	/**
@@ -133,60 +134,15 @@ public class LiftSubsystem extends SubsystemBase {
 	 *
 	 * @return Whether the error is within the acceptable bounds.
 	 */
-	public boolean atSetPoint() {
-		return pidf.atSetPoint();
-	}
-
-	/**
-	 * @return the PIDF coefficients
-	 */
-	public double[] getCoefficients() {
-		return pidf.getCoefficients();
+	public boolean atTargetPosition() {
+		return lift.atTargetPosition();
 	}
 
 	/**
 	 * @return the positional error e(t)
 	 */
 	public double getPositionError() {
-		return pidf.getPositionError();
-	}
-
-	/**
-	 * @return the tolerances of the controller
-	 */
-	public double[] getTolerance() {
-		return pidf.getTolerance();
-	}
-
-	/**
-	 * Sets the error which is considered tolerable for use with {@link #atSetPoint()}.
-	 *
-	 * @param positionTolerance Position error which is tolerable.
-	 */
-	public void setTolerance(double positionTolerance) {
-		pidf.setTolerance(positionTolerance);
-	}
-
-	/**
-	 * @return the velocity error e'(t)
-	 */
-	public double getVelocityError() {
-		return pidf.getVelocityError();
-	}
-
-	/**
-	 * Calculates the control value, u(t).
-	 *
-	 * @param veloSetPoint VelocitySetPoint
-	 * @return the value produced by u(t).
-	 */
-	public double calculate(double veloSetPoint) {
-		pidf.setF(eff.calculate(veloSetPoint));
-		return pidf.calculate(getPosition());
-	}
-
-	public double calculate() {
-		return pidf.calculate();
+		return getPosition() - targetPosition;
 	}
 
 }

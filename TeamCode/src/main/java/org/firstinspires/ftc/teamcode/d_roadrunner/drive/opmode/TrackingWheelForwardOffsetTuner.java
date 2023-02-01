@@ -45,14 +45,16 @@ public class TrackingWheelForwardOffsetTuner extends LinearOpMode {
 
 	@Override
 	public void runOpMode() throws InterruptedException {
-		Telemetry telemetry = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
+		Telemetry telemetry =
+				new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
 
 		MecanumDrive drive = new MecanumDrive(hardwareMap);
 
 		if (!(drive.getLocalizer() instanceof StandardTrackingWheelLocalizer)) {
 			RobotLog.setGlobalErrorMsg("StandardTrackingWheelLocalizer is not being set in the "
-					                           + "drive class. Ensure that \"setLocalizer(new StandardTrackingWheelLocalizer"
-					                           + "(hardwareMap));\" is called in SampleMecanumDrive.java");
+			                           +
+			                           "drive class. Ensure that \"setLocalizer(new StandardTrackingWheelLocalizer"
+			                           + "(hardwareMap));\" is called in SampleMecanumDrive.java");
 		}
 
 		telemetry.addLine("Press play to begin the forward offset tuner");
@@ -86,7 +88,7 @@ public class TrackingWheelForwardOffsetTuner extends LinearOpMode {
 			}
 
 			double forwardOffset = StandardTrackingWheelLocalizer.FORWARD_OFFSET +
-					drive.getPoseEstimate().getY() / headingAccumulator;
+			                       drive.getPoseEstimate().getY() / headingAccumulator;
 			forwardOffsetStats.add(forwardOffset);
 
 			sleep(DELAY);
@@ -96,7 +98,8 @@ public class TrackingWheelForwardOffsetTuner extends LinearOpMode {
 		telemetry.addLine("Tuning complete");
 		telemetry.addLine(Misc.formatInvariant("Effective forward offset = %.2f (SE = %.3f)",
 		                                       forwardOffsetStats.getMean(),
-		                                       forwardOffsetStats.getStandardDeviation() / Math.sqrt(NUM_TRIALS)));
+		                                       forwardOffsetStats.getStandardDeviation() /
+		                                       Math.sqrt(NUM_TRIALS)));
 		telemetry.update();
 
 		while (!isStopRequested()) {

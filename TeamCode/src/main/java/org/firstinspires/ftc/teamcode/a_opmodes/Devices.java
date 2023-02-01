@@ -20,6 +20,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.arcrobotics.ftclib.hardware.ServoEx;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.CRServo;
+import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
 import com.qualcomm.hardware.lynx.LynxModule;
@@ -57,13 +58,12 @@ public class Devices {
 		liftLeft  = new MotorEx(hardwareMap, "lftL", MotorEx.GoBILDA.RPM_312);
 		liftRight = new MotorEx(hardwareMap, "lftR", MotorEx.GoBILDA.RPM_312);
 
-		// Set lift setting before group else it tis broken
 		liftLeft.setInverted(false);
 		liftRight.setInverted(true);
 		liftLeft.resetEncoder();
 		liftRight.resetEncoder();
 
-		//lift = new MotorGroup(liftLeft, liftRight);
+		lift = new MotorGroup(liftLeft, liftRight);
 
 		// Reset encoders
 		frontLeft.resetEncoder();
@@ -72,7 +72,7 @@ public class Devices {
 		backRight.resetEncoder();
 
 		// Set RunMode for motors (RawPower, VelocityControl, PositionControl)
-		//lift.setRunMode(MotorEx.RunMode.PositionControl);
+		lift.setRunMode(MotorEx.RunMode.PositionControl);
 
 		// Brake when zero power
 		frontLeft.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
@@ -80,7 +80,7 @@ public class Devices {
 		backLeft.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
 		backRight.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
 
-		//lift.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
+		lift.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
 
 		// SERVOS ----------------------------------------------------------------------------------------------------
 		// Map

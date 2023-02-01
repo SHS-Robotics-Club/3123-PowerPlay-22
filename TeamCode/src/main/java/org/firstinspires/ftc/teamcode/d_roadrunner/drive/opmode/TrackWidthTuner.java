@@ -34,7 +34,8 @@ public class TrackWidthTuner extends LinearOpMode {
 
 	@Override
 	public void runOpMode() throws InterruptedException {
-		Telemetry telemetry = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
+		Telemetry telemetry =
+				new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
 
 		MecanumDrive drive = new MecanumDrive(hardwareMap);
 		// TODO: if you haven't already, set the localizer to something that doesn't depend on
@@ -70,7 +71,8 @@ public class TrackWidthTuner extends LinearOpMode {
 				drive.update();
 			}
 
-			double trackWidth = DriveConstants.TRACK_WIDTH * Math.toRadians(ANGLE) / headingAccumulator;
+			double trackWidth =
+					DriveConstants.TRACK_WIDTH * Math.toRadians(ANGLE) / headingAccumulator;
 			trackWidthStats.add(trackWidth);
 
 			sleep(DELAY);
@@ -80,7 +82,8 @@ public class TrackWidthTuner extends LinearOpMode {
 		telemetry.addLine("Tuning complete");
 		telemetry.addLine(Misc.formatInvariant("Effective track width = %.2f (SE = %.3f)",
 		                                       trackWidthStats.getMean(),
-		                                       trackWidthStats.getStandardDeviation() / Math.sqrt(NUM_TRIALS)));
+		                                       trackWidthStats.getStandardDeviation() /
+		                                       Math.sqrt(NUM_TRIALS)));
 		telemetry.update();
 
 		while (!isStopRequested()) {

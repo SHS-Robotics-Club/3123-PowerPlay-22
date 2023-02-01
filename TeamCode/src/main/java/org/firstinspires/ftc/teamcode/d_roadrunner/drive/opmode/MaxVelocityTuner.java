@@ -44,7 +44,8 @@ public class MaxVelocityTuner extends LinearOpMode {
 
 		batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
 
-		Telemetry telemetry = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
+		Telemetry telemetry =
+				new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
 
 		telemetry.addLine("Your bot will go at full speed for " + RUNTIME + " seconds.");
 		telemetry.addLine("Please ensure you have enough space cleared.");
@@ -63,7 +64,8 @@ public class MaxVelocityTuner extends LinearOpMode {
 		while (!isStopRequested() && timer.seconds() < RUNTIME) {
 			drive.updatePoseEstimate();
 
-			Pose2d poseVelo = Objects.requireNonNull(drive.getPoseVelocity(), "poseVelocity() must not be null. Ensure that the getWheelVelocities() method has been overridden in your localizer.");
+			Pose2d poseVelo = Objects.requireNonNull(drive.getPoseVelocity(),
+			                                         "poseVelocity() must not be null. Ensure that the getWheelVelocities() method has been overridden in your localizer.");
 
 			maxVelocity = Math.max(poseVelo.vec().norm(), maxVelocity);
 		}
@@ -74,13 +76,15 @@ public class MaxVelocityTuner extends LinearOpMode {
 
 		telemetry.addData("Max Velocity", maxVelocity);
 		telemetry.addData("Max Recommended Velocity", maxVelocity * 0.8);
-		telemetry.addData("Voltage Compensated kF", effectiveKf * batteryVoltageSensor.getVoltage() / 12);
+		telemetry.addData("Voltage Compensated kF",
+		                  effectiveKf * batteryVoltageSensor.getVoltage() / 12);
 		telemetry.update();
 
 		while (!isStopRequested() && opModeIsActive()) idle();
 	}
 
 	private double veloInchesToTicks(double inchesPerSec) {
-		return inchesPerSec / (2 * Math.PI * DriveConstants.WHEEL_RADIUS) / DriveConstants.GEAR_RATIO * DriveConstants.TICKS_PER_REV;
+		return inchesPerSec / (2 * Math.PI * DriveConstants.WHEEL_RADIUS) /
+		       DriveConstants.GEAR_RATIO * DriveConstants.TICKS_PER_REV;
 	}
 }

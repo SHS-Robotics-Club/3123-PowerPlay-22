@@ -30,8 +30,8 @@ public class RegressionUtil {
 		for (int i = 1; i < x.size() - 1; i++) {
 			deriv.add(
 					(y.get(i + 1) - y.get(i - 1)) /
-							(x.get(i + 1) - x.get(i - 1))
-			);
+					(x.get(i + 1) - x.get(i - 1))
+			         );
 		}
 		// copy endpoints to pad output
 		deriv.add(0, deriv.get(0));

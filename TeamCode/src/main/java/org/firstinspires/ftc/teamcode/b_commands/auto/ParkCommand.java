@@ -13,7 +13,8 @@ public class ParkCommand extends CommandBase {
 	private final AprilTagSubsystem tagSubsystem;
 	StartingZone startingZone;
 
-	public ParkCommand(MecanumSubsystem drive, AprilTagSubsystem tagSubsystem, StartingZone startingZone) {
+	public ParkCommand(MecanumSubsystem drive, AprilTagSubsystem tagSubsystem,
+	                   StartingZone startingZone) {
 		this.drive        = drive;
 		this.tagSubsystem = tagSubsystem;
 		this.startingZone = startingZone;
@@ -23,7 +24,8 @@ public class ParkCommand extends CommandBase {
 
 	@Override
 	public void initialize() {
-		TrajectorySequence park = getParkTrajectory(startingZone.getStartPose(), tagSubsystem.getParkingZone());
+		TrajectorySequence park =
+				getParkTrajectory(startingZone.getStartPose(), tagSubsystem.getParkingZone());
 		drive.followTrajectorySequence(park);
 	}
 
@@ -44,22 +46,23 @@ public class ParkCommand extends CommandBase {
 		return Thread.currentThread().isInterrupted() || !drive.isBusy();
 	}
 
-	public TrajectorySequence getParkTrajectory(Pose2d startPose, AprilTagSubsystem.ParkingZone zone) {
+	public TrajectorySequence getParkTrajectory(Pose2d startPose,
+	                                            AprilTagSubsystem.ParkingZone zone) {
 		switch (zone) {
 			case LEFT:
 				return drive.trajectorySequenceBuilder(startPose)
-						.forward(24)
-						.strafeLeft(24)
-						.build();
+				            .forward(24)
+				            .strafeLeft(24)
+				            .build();
 			case RIGHT:
 				return drive.trajectorySequenceBuilder(startPose)
-						.forward(24)
-						.strafeRight(24)
-						.build();
+				            .forward(24)
+				            .strafeRight(24)
+				            .build();
 			default:
 				return drive.trajectorySequenceBuilder(startPose)
-						.forward(24)
-						.build();
+				            .forward(24)
+				            .build();
 		}
 	}
 

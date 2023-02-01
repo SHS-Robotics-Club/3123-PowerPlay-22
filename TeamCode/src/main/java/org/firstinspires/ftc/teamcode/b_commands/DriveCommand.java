@@ -18,7 +18,8 @@ public class DriveCommand extends CommandBase {
 	 * @param turn           The control input for turning.
 	 * @param multiplier     A multiplier for bot speed.
 	 */
-	public DriveCommand(DriveSubsystem driveSubsystem, DoubleSupplier strafe, DoubleSupplier forward, DoubleSupplier turn, double multiplier) {
+	public DriveCommand(DriveSubsystem driveSubsystem, DoubleSupplier strafe,
+	                    DoubleSupplier forward, DoubleSupplier turn, double multiplier) {
 		this.driveSubsystem = driveSubsystem;
 		this.strafe         = strafe;
 		this.forward        = forward;
@@ -28,39 +29,14 @@ public class DriveCommand extends CommandBase {
 		addRequirements(driveSubsystem);
 	}
 
-	//TODO: Test lift slowdown
-	/**
-	 * @param driveSubsystem The drive subsystem this command wil run on.
-	 * @param strafe         The control input for driving left/right.
-	 * @param forward        The control input for driving forwards/backwards.
-	 * @param turn           The control input for turning.
-	 * @param liftLevel      Set multiplier.
-	 */
-	public DriveCommand(DriveSubsystem driveSubsystem, DoubleSupplier strafe, DoubleSupplier forward, DoubleSupplier turn, LiftCommand.LiftLevels liftLevel) {
-		this.driveSubsystem = driveSubsystem;
-		this.strafe         = strafe;
-		this.forward        = forward;
-		this.turn           = turn;
-
-		switch (liftLevel) {
-			case MED:
-				this.multiplier = 0.9;
-			case HIGH:
-				this.multiplier = 0.8;
-			default:
-				this.multiplier = 1;
-		}
-
-		addRequirements(driveSubsystem);
-	}
-
 	/**
 	 * @param driveSubsystem The drive subsystem this command wil run on.
 	 * @param strafe         The control input for driving left/right.
 	 * @param forward        The control input for driving forwards/backwards.
 	 * @param turn           The control input for turning.
 	 */
-	public DriveCommand(DriveSubsystem driveSubsystem, DoubleSupplier strafe, DoubleSupplier forward, DoubleSupplier turn) {
+	public DriveCommand(DriveSubsystem driveSubsystem, DoubleSupplier strafe,
+	                    DoubleSupplier forward, DoubleSupplier turn) {
 		this.driveSubsystem = driveSubsystem;
 		this.strafe         = strafe;
 		this.forward        = forward;

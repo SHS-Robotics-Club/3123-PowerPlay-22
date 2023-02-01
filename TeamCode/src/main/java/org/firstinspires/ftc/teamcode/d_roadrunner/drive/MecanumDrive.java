@@ -53,10 +53,14 @@ import java.util.List;
  */
 @Config
 public class MecanumDrive extends com.acmerobotics.roadrunner.drive.MecanumDrive {
-	private static final TrajectoryVelocityConstraint     VEL_CONSTRAINT     = getVelocityConstraint(MAX_VEL, MAX_ANG_VEL, TRACK_WIDTH);
-	private static final TrajectoryAccelerationConstraint ACCEL_CONSTRAINT   = getAccelerationConstraint(MAX_ACCEL);
-	public static        PIDCoefficients                  TRANSLATIONAL_PID  = new PIDCoefficients(0, 0, 0);
-	public static        PIDCoefficients                  HEADING_PID        = new PIDCoefficients(0, 0, 0);
+	private static final TrajectoryVelocityConstraint     VEL_CONSTRAINT     =
+			getVelocityConstraint(MAX_VEL, MAX_ANG_VEL, TRACK_WIDTH);
+	private static final TrajectoryAccelerationConstraint ACCEL_CONSTRAINT   =
+			getAccelerationConstraint(MAX_ACCEL);
+	public static        PIDCoefficients                  TRANSLATIONAL_PID  =
+			new PIDCoefficients(0, 0, 0);
+	public static        PIDCoefficients                  HEADING_PID        =
+			new PIDCoefficients(0, 0, 0);
 	public static        double                           LATERAL_MULTIPLIER = 1;
 	public static        double                           VX_WEIGHT          = 1;
 	public static        double                           VY_WEIGHT          = 1;
@@ -126,11 +130,13 @@ public class MecanumDrive extends com.acmerobotics.roadrunner.drive.MecanumDrive
 		trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
 	}
 
-	public static TrajectoryVelocityConstraint getVelocityConstraint(double maxVel, double maxAngularVel, double trackWidth) {
+	public static TrajectoryVelocityConstraint getVelocityConstraint(double maxVel,
+	                                                                 double maxAngularVel,
+	                                                                 double trackWidth) {
 		return new MinVelocityConstraint(Arrays.asList(
 				new AngularVelocityConstraint(maxAngularVel),
 				new MecanumVelocityConstraint(maxVel, trackWidth)
-		));
+		                                              ));
 	}
 
 	public static TrajectoryAccelerationConstraint getAccelerationConstraint(double maxAccel) {
@@ -162,7 +168,7 @@ public class MecanumDrive extends com.acmerobotics.roadrunner.drive.MecanumDrive
 				trajectorySequenceBuilder(getPoseEstimate())
 						.turn(angle)
 						.build()
-		);
+		                                                      );
 	}
 
 	public void turn(double angle) {
@@ -175,7 +181,7 @@ public class MecanumDrive extends com.acmerobotics.roadrunner.drive.MecanumDrive
 				trajectorySequenceBuilder(trajectory.start())
 						.addTrajectory(trajectory)
 						.build()
-		);
+		                                                      );
 	}
 
 	public void followTrajectory(Trajectory trajectory) {
@@ -239,11 +245,11 @@ public class MecanumDrive extends com.acmerobotics.roadrunner.drive.MecanumDrive
 		Pose2d vel = drivePower;
 
 		if (Math.abs(drivePower.getX()) + Math.abs(drivePower.getY())
-				+ Math.abs(drivePower.getHeading()) > 1) {
+		    + Math.abs(drivePower.getHeading()) > 1) {
 			// re-normalize the powers according to the weights
 			double denom = VX_WEIGHT * Math.abs(drivePower.getX())
-					+ VY_WEIGHT * Math.abs(drivePower.getY())
-					+ OMEGA_WEIGHT * Math.abs(drivePower.getHeading());
+			               + VY_WEIGHT * Math.abs(drivePower.getY())
+			               + OMEGA_WEIGHT * Math.abs(drivePower.getHeading());
 
 			vel = new Pose2d(
 					VX_WEIGHT * drivePower.getX(),

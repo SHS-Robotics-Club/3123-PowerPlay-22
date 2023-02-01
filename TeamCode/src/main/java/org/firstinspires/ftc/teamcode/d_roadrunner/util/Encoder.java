@@ -58,7 +58,8 @@ public class Encoder {
 	}
 
 	private int getMultiplier() {
-		return getDirection().getMultiplier() * (motor.getDirection() == DcMotorSimple.Direction.FORWARD ? 1 : -1);
+		return getDirection().getMultiplier() *
+		       (motor.getDirection() == DcMotorSimple.Direction.FORWARD ? 1 : -1);
 	}
 
 	/**
@@ -101,8 +102,10 @@ public class Encoder {
 	 */
 	public double getCorrectedVelocity() {
 		double median = velocityEstimates[0] > velocityEstimates[1]
-				? Math.max(velocityEstimates[1], Math.min(velocityEstimates[0], velocityEstimates[2]))
-				: Math.max(velocityEstimates[0], Math.min(velocityEstimates[1], velocityEstimates[2]));
+		                ? Math.max(velocityEstimates[1],
+		                           Math.min(velocityEstimates[0], velocityEstimates[2]))
+		                : Math.max(velocityEstimates[0],
+		                           Math.min(velocityEstimates[1], velocityEstimates[2]));
 		return inverseOverflow(getRawVelocity(), median);
 	}
 
