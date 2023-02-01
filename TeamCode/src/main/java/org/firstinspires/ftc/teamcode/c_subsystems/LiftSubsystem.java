@@ -201,6 +201,16 @@ public class LiftSubsystem extends SubsystemBase {
 		}
 	}
 
+	public static final double liftMath = 29.8 * Math.PI / 537.7; //0.174110809001
+
+	public double tickToMil(double ticks){
+		return ticks * liftMath;
+	}
+
+	public double milToTicks(double mil){
+		return mil / liftMath;
+	}
+
 	public enum LiftLevels {
 		FLOOR(0, 1.0), LOW(2000, 1.0), MED(2990, 0.9), HIGH(3265, 0.8);
 
