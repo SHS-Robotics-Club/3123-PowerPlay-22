@@ -58,10 +58,10 @@ public class MecanumDrive extends com.acmerobotics.roadrunner.drive.MecanumDrive
 	private static final TrajectoryAccelerationConstraint ACCEL_CONSTRAINT   =
 			getAccelerationConstraint(MAX_ACCEL);
 	public static        PIDCoefficients                  TRANSLATIONAL_PID  =
-			new PIDCoefficients(0, 0, 0);
+			new PIDCoefficients(0.9, 0, 0.1);
 	public static        PIDCoefficients                  HEADING_PID        =
-			new PIDCoefficients(0, 0, 0);
-	public static        double                           LATERAL_MULTIPLIER = 1;
+			new PIDCoefficients(5.5, 0, 0.1);
+	public static        double                           LATERAL_MULTIPLIER = 1.7;
 	public static        double                           VX_WEIGHT          = 1;
 	public static        double                           VY_WEIGHT          = 1;
 	public static        double                           OMEGA_WEIGHT       = 1;
@@ -89,13 +89,13 @@ public class MecanumDrive extends com.acmerobotics.roadrunner.drive.MecanumDrive
 		}
 
 		// TODO: adjust the names of the following hardware devices to match your configuration
-		imu = hardwareMap.get(IMU.class, "imu");
+/*		imu = hardwareMap.get(IMU.class, "imu");
 		// TODO: Adjust the orientations here to match your robot. See the FTC SDK documentation for
 		// details
 		IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
 				RevHubOrientationOnRobot.LogoFacingDirection.UP,
 				RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
-		imu.initialize(parameters);
+		imu.initialize(parameters);*/
 
 		leftFront  = hardwareMap.get(DcMotorEx.class, "fL");
 		leftRear   = hardwareMap.get(DcMotorEx.class, "bL");
@@ -126,6 +126,7 @@ public class MecanumDrive extends com.acmerobotics.roadrunner.drive.MecanumDrive
 
 		// TODO: if desired, use setLocalizer() to change the localization method
 		// for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
+		setLocalizer(new OdometryPodLocalizer(hardwareMap));
 
 		trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
 	}
@@ -290,11 +291,8 @@ public class MecanumDrive extends com.acmerobotics.roadrunner.drive.MecanumDrive
 
 	@Override
 	public double getRawExternalHeading() {
-		return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+		return 0;
+				//imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 	}
 
-	@Override
-	public Double getExternalHeadingVelocity() {
-		return (double) imu.getRobotAngularVelocity(AngleUnit.RADIANS).zRotationRate;
-	}
 }

@@ -1,8 +1,8 @@
 repositories {
     mavenCentral()
     google() // Needed for androidx
-    maven { url = 'https://maven.brott.dev/' }
     maven { url 'https://jitpack.com' }
+    maven { url = 'https://maven.brott.dev/' }
 }
 
 dependencies {
@@ -36,5 +36,4 @@ dependencies {
     implementation('com.acmerobotics.dashboard:dashboard:0.4.8') {
         exclude group: 'org.firstinspires.ftc'
     }
-
 }

@@ -3,10 +3,6 @@ package org.firstinspires.ftc.teamcode.a_opmodes;
 /*
  * TYPE			NAME			ID		    DESCRIPTION
  * ------------------------------------------------------------
- * MOTOR		frontLeft		fL		    Front Left Mecanum
- * MOTOR		frontRight		fR          Front Right Mecanum
- * MOTOR		backLeft		bL		    Back Left Mecanum
- * MOTOR		backRight		bR		    Back Right Mecanum
  * MOTOR		liftLeft		liftL		Lift Motor Left
  * MOTOR		liftRight		liftR		Lift Motor Right
  *
@@ -30,7 +26,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import java.util.List;
 
 public class Devices {
-	public MotorEx frontLeft, frontRight, backLeft, backRight, liftLeft, liftRight;// Motors
+	public MotorEx liftLeft, liftRight;// Motors
 	public MotorGroup lift;// Motor Group
 	public ServoEx    clawLeft, clawRight; // Servos
 	public CRServo spool; // CR Servo
@@ -49,47 +45,20 @@ public class Devices {
 
 		// MOTORS ----------------------------------------------------------------------------------------------------
 		// Map
-		frontLeft  = new MotorEx(hardwareMap, "fL", MotorEx.GoBILDA.RPM_312);
-		frontRight = new MotorEx(hardwareMap, "fR", MotorEx.GoBILDA.RPM_312);
-		backLeft   = new MotorEx(hardwareMap, "bL", MotorEx.GoBILDA.RPM_312);
-		backRight  = new MotorEx(hardwareMap, "bR", MotorEx.GoBILDA.RPM_312);
+		liftLeft  = new MotorEx(hardwareMap, "liftL", MotorEx.GoBILDA.RPM_312);
+		liftRight = new MotorEx(hardwareMap, "encoderRearLift", MotorEx.GoBILDA.RPM_312);
 
-		liftLeft  = new MotorEx(hardwareMap, "lftL", MotorEx.GoBILDA.RPM_312);
-		liftRight = new MotorEx(hardwareMap, "lftR", MotorEx.GoBILDA.RPM_312);
-
-		liftLeft.setInverted(false);
-		liftRight.setInverted(true);
+		// Reset encoders and set direction
+		liftLeft.setInverted(true);
 		liftLeft.resetEncoder();
-		liftRight.resetEncoder();
 
+		// Group lift motors
 		lift = new MotorGroup(liftLeft, liftRight);
 
-		// Reset encoders
-		frontLeft.resetEncoder();
-		frontRight.resetEncoder();
-		backLeft.resetEncoder();
-		backRight.resetEncoder();
-
 		// Set RunMode for motors (RawPower, VelocityControl, PositionControl)
-		frontLeft.setRunMode(MotorEx.RunMode.VelocityControl);
-		frontRight.setRunMode(MotorEx.RunMode.VelocityControl);
-		backLeft.setRunMode(MotorEx.RunMode.VelocityControl);
-		backRight.setRunMode(MotorEx.RunMode.VelocityControl);
-
 		lift.setRunMode(MotorEx.RunMode.VelocityControl);
 
-		//PID
-		frontLeft.setVeloCoefficients(0, 0, 0);
-		frontRight.setVeloCoefficients(0, 0, 0);
-		backLeft.setVeloCoefficients(0, 0, 0);
-		backRight.setVeloCoefficients(0, 0, 0);
-
-		// Brake when zero power
-		frontLeft.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
-		frontRight.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
-		backLeft.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
-		backRight.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
-
+		// Break
 		lift.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
 
 		// SERVOS ----------------------------------------------------------------------------------------------------

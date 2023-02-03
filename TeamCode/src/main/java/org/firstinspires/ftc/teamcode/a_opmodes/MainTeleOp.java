@@ -14,10 +14,12 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
-import org.firstinspires.ftc.teamcode.b_commands.DriveCommand;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.b_commands.MecanumCommand;
 import org.firstinspires.ftc.teamcode.c_subsystems.ClawSubsystem;
-import org.firstinspires.ftc.teamcode.c_subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.c_subsystems.LiftSubsystem;
+import org.firstinspires.ftc.teamcode.c_subsystems.MecanumSubsystem;
+import org.firstinspires.ftc.teamcode.d_roadrunner.drive.MecanumDrive;
 
 //@Disabled
 @Config
@@ -34,11 +36,11 @@ public class MainTeleOp extends CommandOpMode {
 		GamepadEx gPad1 = new GamepadEx(gamepad1);
 
 		// Define Systems ----------------------------------------------------------------------------------------------------
-		DriveSubsystem drive = new DriveSubsystem(devices.frontLeft, devices.frontRight, devices.backLeft, devices.backRight);
-		ClawSubsystem  claw  = new ClawSubsystem(devices.clawLeft, devices.clawRight);
-		LiftSubsystem  lift  = new LiftSubsystem(devices.lift);
+		MecanumSubsystem drive = new MecanumSubsystem(new MecanumDrive(hardwareMap), false);
+		ClawSubsystem    claw  = new ClawSubsystem(devices.clawLeft, devices.clawRight);
+		LiftSubsystem    lift  = new LiftSubsystem(devices.lift, devices.spool);
 
-		DriveCommand driveCommand = new DriveCommand(drive, gPad1::getLeftX, gPad1::getLeftY, gPad1::getRightX, liftLevels.getDriveMult());
+		MecanumCommand driveCommand = new MecanumCommand(drive, gPad1::getLeftY, gPad1::getLeftX, gPad1::getRightX, liftLevels.getDriveMult());
 
 		telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
@@ -60,19 +62,34 @@ public class MainTeleOp extends CommandOpMode {
 		     .whenPressed(new InstantCommand(() -> liftLevels = LiftSubsystem.LiftLevels.HIGH));
 
 		gPad1.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-		     .whenPressed(new InstantCommand(() -> lift.setLower(true)))
-		     .whenReleased(new InstantCommand(() -> lift.setLower(false)));
+		     .whenPressed(new InstantCommand(() -> lift.lowerLift(true)))
+		     .whenReleased(new InstantCommand(() -> lift.lowerLift(false)));
 
 
 		// Register and Schedule ----------------------------------------------------------------------------------------------------
 		register(drive, lift);
 		schedule(driveCommand.alongWith(new RunCommand(() -> {
+			double forward = (-gPad1.getLeftY() * 0.9) * liftLevels.getDriveMult();
+			double turn    = (gPad1.getLeftX() * 0.9) * liftLevels.getDriveMult();
+			double strafe  = (gPad1.getRightX() * 0.8) * liftLevels.getDriveMult();
+
+			double forwardValue = driveCommand.applyDeadzoneExponentiation(-gPad1.getLeftY(), 0.1, 1.5);
+			double turnValue    = driveCommand.applyDeadzoneExponentiation(gPad1.getRightX(), 0.1, 1.5);
+			double strafeValue  = driveCommand.applyDeadzoneExponentiation(gPad1.getLeftX(), 0.15, 1.5);
+
 			// Telemetry
 			telemetry.update();
 			telemetry.addData("LiftPos", lift.getPosition());
 			telemetry.addData("LiftVel", lift.getVelocity());
 			telemetry.addData("LiftError", lift.getPositionError());
-			telemetry.addData("voltage", "%.1f volts", getBatteryVoltage());
+			telemetry.addLine("Controlls");
+			telemetry.addData("LeftY", -gPad1.getLeftY());
+			telemetry.addData("LeftYMod", driveCommand.returnForward());
+/*			telemetry.addData("LeftX", strafe);
+			telemetry.addData("LeftXMod", strafeValue);
+			telemetry.addData("RightX", turn);
+			telemetry.addData("RightXMod", turnValue);*/
+//			telemetry.addData("voltage", "%.1f volts", getBatteryVoltage());
 		})));
 
 	}

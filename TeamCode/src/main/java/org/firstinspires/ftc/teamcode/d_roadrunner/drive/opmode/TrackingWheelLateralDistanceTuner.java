@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.teamcode.d_roadrunner.drive.MecanumDrive;
-import org.firstinspires.ftc.teamcode.d_roadrunner.drive.StandardTrackingWheelLocalizer;
+import org.firstinspires.ftc.teamcode.d_roadrunner.drive.OdometryPodLocalizer;
 
 /**
  * Opmode designed to assist the user in tuning the `StandardTrackingWheelLocalizer`'s
@@ -62,7 +62,7 @@ import org.firstinspires.ftc.teamcode.d_roadrunner.drive.StandardTrackingWheelLo
  * slightly but your heading will still be fine. This does not affect your overall tracking
  * precision. The heading should still line up.
  */
-@Disabled
+//@Disabled
 @Config
 @TeleOp(group = "drive")
 public class TrackingWheelLateralDistanceTuner extends LinearOpMode {
@@ -72,7 +72,7 @@ public class TrackingWheelLateralDistanceTuner extends LinearOpMode {
 	public void runOpMode() throws InterruptedException {
 		MecanumDrive drive = new MecanumDrive(hardwareMap);
 
-		if (!(drive.getLocalizer() instanceof StandardTrackingWheelLocalizer)) {
+		if (!(drive.getLocalizer() instanceof OdometryPodLocalizer)) {
 			RobotLog.setGlobalErrorMsg("StandardTrackingWheelLocalizer is not being set in the "
 			                           +
 			                           "drive class. Ensure that \"setLocalizer(new StandardTrackingWheelLocalizer"
@@ -126,7 +126,7 @@ public class TrackingWheelLateralDistanceTuner extends LinearOpMode {
 		telemetry.addLine("Localizer's total heading: " + Math.toDegrees(headingAccumulator) + "°");
 		telemetry.addLine("Effective LATERAL_DISTANCE: " +
 		                  (headingAccumulator / (NUM_TURNS * Math.PI * 2)) *
-		                  StandardTrackingWheelLocalizer.LATERAL_DISTANCE);
+		                  OdometryPodLocalizer.LATERAL_DISTANCE);
 
 		telemetry.update();
 

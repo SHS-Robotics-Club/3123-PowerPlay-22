@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.c_subsystems.auto;
+package org.firstinspires.ftc.teamcode.c_subsystems;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;

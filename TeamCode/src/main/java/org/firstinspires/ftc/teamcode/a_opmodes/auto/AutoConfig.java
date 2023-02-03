@@ -9,8 +9,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.a_opmodes.Devices;
 import org.firstinspires.ftc.teamcode.b_commands.auto.ParkCommand;
 import org.firstinspires.ftc.teamcode.c_subsystems.ClawSubsystem;
+import org.firstinspires.ftc.teamcode.c_subsystems.MecanumSubsystem;
 import org.firstinspires.ftc.teamcode.c_subsystems.auto.AprilTagSubsystem;
-import org.firstinspires.ftc.teamcode.c_subsystems.auto.MecanumSubsystem;
 import org.firstinspires.ftc.teamcode.d_roadrunner.drive.MecanumDrive;
 
 public class AutoConfig {
