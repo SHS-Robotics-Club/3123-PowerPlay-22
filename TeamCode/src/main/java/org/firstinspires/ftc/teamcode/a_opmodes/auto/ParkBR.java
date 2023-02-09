@@ -10,7 +10,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.b_commands.auto.ParkCommand;
 
 
-@Autonomous(name = "P: BLUE_RIGHT", group = "Parking", preselectTeleOp = "CommandTeleOp")
+@Autonomous(name = "P: BLUE_RIGHT", group = "Parking", preselectTeleOp = "MainTeleOp")
 public class ParkBR extends CommandOpMode {
 	@Override
 	public void initialize() {

@@ -1,10 +1,18 @@
 package org.firstinspires.ftc.teamcode.b_commands.auto;
 
+import static org.openftc.apriltag.ApriltagDetectionJNI.getPoseEstimate;
+
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.arcrobotics.ftclib.command.CommandBase;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.c_subsystems.MecanumSubsystem;
 import org.firstinspires.ftc.teamcode.c_subsystems.auto.AprilTagSubsystem;
+import org.firstinspires.ftc.teamcode.d_roadrunner.drive.MecanumDrive;
 import org.firstinspires.ftc.teamcode.d_roadrunner.trajectorysequence.TrajectorySequence;
 
 public class ParkCommand extends CommandBase {
@@ -19,7 +27,7 @@ public class ParkCommand extends CommandBase {
 		this.tagSubsystem = tagSubsystem;
 		this.startingZone = startingZone;
 
-		addRequirements(drive);
+		//addRequirements(drive);
 	}
 
 	@Override
@@ -48,6 +56,11 @@ public class ParkCommand extends CommandBase {
 
 	public TrajectorySequence getParkTrajectory(Pose2d startPose,
 	                                            AprilTagSubsystem.ParkingZone zone) {
+
+		//startPose = new Pose2d(0, 0, Math.toRadians(0));
+
+		drive.setPoseEstimate(startPose);
+
 		switch (zone) {
 			case LEFT:
 				return drive.trajectorySequenceBuilder(startPose)
@@ -67,10 +80,10 @@ public class ParkCommand extends CommandBase {
 	}
 
 	public enum StartingZone {
-		RED_LEFT(startX, -startY, startH),
+		RED_LEFT(-startX, -startY, startH),
 		RED_RIGHT(startX, -startY, startH),
-		BLUE_LEFT(startX, -startY, startH),
-		BLUE_RIGHT(startX, -startY, startH);
+		BLUE_LEFT(startX, startY, -startH),
+		BLUE_RIGHT(-startX, startY, -startH);
 
 		private final int X, Y, H;
 

@@ -21,14 +21,18 @@ public class LiftSubsystem extends SubsystemBase {
 	ElevatorFeedforward eff   = new ElevatorFeedforward(kS, kG, kV, kA);
 
 	public LiftSubsystem(MotorGroup lift, CRServo spool) {
-		this.lift    = lift;
-		this.spool   = spool;
+		this.lift  = lift;
+		this.spool = spool;
+
+		liftLevels = LiftLevels.FLOOR;
 
 		setTolerance(positionTolerance, velocityTolerance);
 	}
 
 	@Override
 	public void periodic() {
+		setSpool(1);
+		calculate();
 		checkPosition();
 	}
 
@@ -141,6 +145,15 @@ public class LiftSubsystem extends SubsystemBase {
 		return pidf.atSetPoint();
 	}
 
+	public static final double liftMath = 29.8 * Math.PI / 537.7; //0.174110809001
+
+	public double tickToMil(double ticks) {
+		return ticks * liftMath;
+	}
+
+	public double milToTicks(double mil) {
+		return mil / liftMath;
+	}
 
 	/**
 	 * @return the positional error e(t)
@@ -174,10 +187,8 @@ public class LiftSubsystem extends SubsystemBase {
 		getPosition();
 		if (atSetPoint()) {
 			stop();
-			stopSpool();
 		} else if (!atSetPoint()) {
 			set(calculate());
-			setSpool(1);
 		}
 	}
 
@@ -189,7 +200,7 @@ public class LiftSubsystem extends SubsystemBase {
 	}
 
 	public enum LiftLevels {
-		FLOOR(0, 1.0), LOW(450, 1.0), MED(2990, 0.8), HIGH(2250, 0.7);
+		FLOOR(0, 1.0), LOW(1290 , 1.0), MED(1760, 0.8), HIGH(2250, 0.7);
 
 		private final int    levelPos;
 		private final double driveMult;

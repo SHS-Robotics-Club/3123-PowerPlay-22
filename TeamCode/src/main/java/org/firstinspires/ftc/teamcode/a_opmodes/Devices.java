@@ -71,7 +71,7 @@ public class Devices {
 		clawRight.setInverted(true);
 
 		// Default POS
-		clawLeft.turnToAngle(0);
-		clawRight.turnToAngle(0);
+		clawLeft.turnToAngle(30);
+		clawRight.turnToAngle(30);
 	}
 }
