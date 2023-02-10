@@ -18,6 +18,7 @@ import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.CRServo;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
+import com.outoftheboxrobotics.photoncore.PhotonCore;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -36,6 +37,7 @@ public class Devices {
 	public List<LynxModule> revHubs; //Lynx Module for REV Hubs
 
 	public Devices(HardwareMap hardwareMap) {
+		PhotonCore.enable();
 		// Bulk Read
 		revHubs = hardwareMap.getAll(LynxModule.class);
 
