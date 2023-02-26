@@ -25,12 +25,16 @@ public class crash extends CommandOpMode {
 
 		AutoConfig auto = new AutoConfig(hardwareMap, ParkCommand.StartingZone.BLUE_LEFT);
 
-		auto.drive.setPoseEstimate(new Pose2d(-35.00, -65.00, Math.toRadians(90.00)));
+		auto.drive.setPoseEstimate(new Pose2d(-27.23, -37.45, Math.toRadians(72.37)));
 
-		TrajectorySequence auto1 = auto.drive.trajectorySequenceBuilder(new Pose2d(-35.00, -65.00, Math.toRadians(90.00)))
-		                                     .splineTo(new Vector2d(-36.18, -34.01), Math.toRadians(90.00))
-		                                     .splineTo(new Vector2d(-27.80, -9.89), Math.toRadians(60.00))
-		                                     .build();
+		TrajectorySequence auto1 = auto.drive.trajectorySequenceBuilder(new Pose2d(-27.23, -37.45, Math.toRadians(72.37)))
+		                                .splineTo(new Vector2d(-29.76, -34.08), Math.toRadians(95.81))
+		                                .splineTo(new Vector2d(-31.65, 22.91), Math.toRadians(73.07))
+		                                .splineTo(new Vector2d(12.27, 21.65), Math.toRadians(-9.46))
+		                                .splineTo(new Vector2d(18.49, -8.37), Math.toRadians(-88.83))
+		                                .splineTo(new Vector2d(16.80, -29.23), Math.toRadians(230.06))
+		                                .splineTo(new Vector2d(-25.76, -51.88), Math.toRadians(240.64))
+		                                .build();
 
 		if (isStopRequested()) return;
 
@@ -43,9 +47,9 @@ public class crash extends CommandOpMode {
 				         .alongWith(auto.DETECTOR_WAIT).withTimeout(1)
 				         .andThen(auto.CLAW_CLOSE)
 				         .andThen(new TrajectoryFollowerCommand(auto.drive, auto1))
-				         .andThen(auto.LIFT_HIGH)
+/*				         .andThen(auto.LIFT_HIGH)
 				         .andThen(auto.CLAW_OPEN)
-				         .andThen(auto.LIFT_FLOOR)
+				         .andThen(auto.LIFT_FLOOR)*/
 		        );
 
 	}

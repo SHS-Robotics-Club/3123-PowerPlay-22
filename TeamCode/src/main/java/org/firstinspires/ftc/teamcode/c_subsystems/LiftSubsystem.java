@@ -14,7 +14,8 @@ public class LiftSubsystem extends SubsystemBase {
 	public static double positionTolerance = 5.0, velocityTolerance = 1.0;
 	public static double     ffVelocity = 50;
 	public static LiftLevels liftLevels = LiftLevels.FLOOR;
-	boolean             lower = false;
+	public static int     mod   = 0;
+	static        boolean lower = false;
 	MotorGroup          lift;
 	CRServo             spool;
 	PIDFController      pidf  = new PIDFController(kP, kI, kD, 0);
@@ -36,11 +37,11 @@ public class LiftSubsystem extends SubsystemBase {
 		checkPosition();
 	}
 
-	public void lowerLift(boolean lower) {
+	public void lower(boolean lower) {
 		this.lower = lower;
 	}
 
-	public boolean checkLowered() {
+	public static boolean checkLowered() {
 		return lower;
 	}
 
@@ -183,13 +184,49 @@ public class LiftSubsystem extends SubsystemBase {
 	 * Checks if the lift is where it should be.
 	 */
 	public void checkPosition() {
-		setSetPoint(liftLevels.getLevelPos(checkLowered()));
+		setSetPoint(liftLevels.getLevelPos());
 		getPosition();
 		if (atSetPoint()) {
 			stop();
 		} else if (!atSetPoint()) {
 			set(calculate());
 		}
+	}
+
+	public void LiftUp(int ammount){
+		mod =+ ammount;
+	}
+
+	public void LiftDown(int ammount){
+		mod =- ammount;
+	}
+
+	public void floor(){
+		liftLevels = LiftLevels.FLOOR;
+		resetMod();
+	}
+
+	public void low(){
+		liftLevels = LiftLevels.LOW;
+		resetMod();
+	}
+
+	public void med(){
+		liftLevels = LiftLevels.MED;
+		resetMod();
+	}
+
+	public void high(){
+		liftLevels = LiftLevels.HIGH;
+		resetMod();
+	}
+
+	void resetMod (){
+		mod = 0;
+	}
+
+	public int getMod (){
+		return mod;
 	}
 
 	/**
@@ -210,11 +247,15 @@ public class LiftSubsystem extends SubsystemBase {
 			this.driveMult = driveMult;
 		}
 
-		public int getLevelPos(boolean lower) {
-			if (lower) {
-				return levelPos - 200;
-			} else {
+		public int getLevelPosRaw() {
 				return levelPos;
+		}
+
+		public int getLevelPos() {
+			if (LiftSubsystem.checkLowered()) {
+				return levelPos + LiftSubsystem.mod - 200;
+			} else {
+				return levelPos + LiftSubsystem.mod;
 			}
 		}
 

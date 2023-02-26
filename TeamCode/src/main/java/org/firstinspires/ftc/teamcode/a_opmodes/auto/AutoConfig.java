@@ -3,14 +3,11 @@ package org.firstinspires.ftc.teamcode.a_opmodes.auto;
 import static org.firstinspires.ftc.teamcode.c_subsystems.LiftSubsystem.liftLevels;
 
 import com.arcrobotics.ftclib.command.InstantCommand;
-import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
-import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.a_opmodes.Devices;
-import org.firstinspires.ftc.teamcode.b_commands.MecanumCommand;
 import org.firstinspires.ftc.teamcode.b_commands.auto.ParkCommand;
 import org.firstinspires.ftc.teamcode.c_subsystems.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.c_subsystems.LiftSubsystem;
@@ -56,8 +53,8 @@ public class AutoConfig {
 		LIFT_MED = new InstantCommand(() -> liftLevels = LiftSubsystem.LiftLevels.MED);
 		LIFT_HIGH = new InstantCommand(() -> liftLevels = LiftSubsystem.LiftLevels.HIGH);
 
-		LIFT_LOWER_T = new InstantCommand(() -> lift.lowerLift(true));
-		LIFT_LOWER_F = new InstantCommand(() -> lift.lowerLift(false));
+		LIFT_LOWER_T = new InstantCommand(() -> lift.lower(true));
+		LIFT_LOWER_F = new InstantCommand(() -> lift.lower(false));
 
 		PARK_GROUP = new SequentialCommandGroup(
 				CLAW_CLOSE,

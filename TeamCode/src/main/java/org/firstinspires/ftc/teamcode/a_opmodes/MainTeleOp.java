@@ -12,11 +12,10 @@ import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.VoltageSensor;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.b_commands.MecanumCommand;
 import org.firstinspires.ftc.teamcode.c_subsystems.ClawSubsystem;
+import org.firstinspires.ftc.teamcode.c_subsystems.GamepadTrigger;
 import org.firstinspires.ftc.teamcode.c_subsystems.LiftSubsystem;
 import org.firstinspires.ftc.teamcode.c_subsystems.MecanumSubsystem;
 import org.firstinspires.ftc.teamcode.d_roadrunner.drive.MecanumDrive;
@@ -36,7 +35,7 @@ public class MainTeleOp extends CommandOpMode {
 		GamepadEx gPad1 = new GamepadEx(gamepad1);
 
 		// Define Systems ----------------------------------------------------------------------------------------------------
-		MecanumSubsystem drive = new MecanumSubsystem(new MecanumDrive(hardwareMap), false);
+		MecanumSubsystem drive = new MecanumSubsystem(new MecanumDrive(hardwareMap), true);
 		ClawSubsystem    claw  = new ClawSubsystem(devices.clawLeft, devices.clawRight);
 		LiftSubsystem    lift  = new LiftSubsystem(devices.lift, devices.spool);
 
@@ -46,64 +45,33 @@ public class MainTeleOp extends CommandOpMode {
 
 		// CONTROLS ----------------------------------------------------------------------------------------------------
 		// X Button = Claw Open/Close
-		gPad1.getGamepadButton(GamepadKeys.Button.X)
-		     .whenPressed(new ConditionalCommand(new InstantCommand(claw::open, claw), new InstantCommand(claw::close, claw), () -> {
-			     claw.toggle();
-			     return claw.isOpen();
-		     }));
+		gPad1.getGamepadButton(GamepadKeys.Button.X).whenPressed(new ConditionalCommand(new InstantCommand(claw::open, claw), new InstantCommand(claw::close, claw), () -> {
+			claw.toggle();
+			return claw.isOpen();
+		}));
 
-		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
-		     .whenPressed(new InstantCommand(() -> liftLevels = LiftSubsystem.LiftLevels.FLOOR));
-		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_LEFT)
-		     .whenPressed(new InstantCommand(() -> liftLevels = LiftSubsystem.LiftLevels.LOW));
-		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_UP)
-		     .whenPressed(new InstantCommand(() -> liftLevels = LiftSubsystem.LiftLevels.MED));
-		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT)
-		     .whenPressed(new InstantCommand(() -> liftLevels = LiftSubsystem.LiftLevels.HIGH));
+		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whenPressed(new InstantCommand(lift::floor, lift));
+		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(new InstantCommand(lift::low, lift));
+		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenPressed(new InstantCommand(lift::med, lift));
+		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT).whenPressed(new InstantCommand(lift::high, lift));
 
-		gPad1.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-		     .whenPressed(new InstantCommand(() -> lift.lowerLift(true)))
-		     .whenReleased(new InstantCommand(() -> lift.lowerLift(false)));
+		gPad1.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).whenPressed(new InstantCommand(() -> lift.lower(true))).whenReleased(new InstantCommand(() -> lift.lower(false)));
+
+		new GamepadTrigger(gPad1, GamepadKeys.Trigger.LEFT_TRIGGER).whileHeld(new RunCommand(() -> lift.LiftDown(50)));
+		new GamepadTrigger(gPad1, GamepadKeys.Trigger.RIGHT_TRIGGER).whileHeld(new RunCommand(() -> lift.LiftUp(50)));
 
 
 		// Register and Schedule ----------------------------------------------------------------------------------------------------
+		gPad1.readButtons();
 		register(drive, lift);
 		schedule(driveCommand.alongWith(new RunCommand(() -> {
-			double forward = (-gPad1.getLeftY() * 0.9) * liftLevels.getDriveMult();
-			double turn    = (gPad1.getLeftX() * 0.9) * liftLevels.getDriveMult();
-			double strafe  = (gPad1.getRightX() * 0.8) * liftLevels.getDriveMult();
-
-			double forwardValue = driveCommand.applyDeadzoneExponentiation(-gPad1.getLeftY(), 0.1, 1.5);
-			double turnValue    = driveCommand.applyDeadzoneExponentiation(gPad1.getRightX(), 0.1, 1.5);
-			double strafeValue  = driveCommand.applyDeadzoneExponentiation(gPad1.getLeftX(), 0.15, 1.5);
-
 			// Telemetry
 			telemetry.update();
 			telemetry.addData("LiftPos", lift.getPosition());
 			telemetry.addData("LiftVel", lift.getVelocity());
 			telemetry.addData("LiftError", lift.getPositionError());
-			telemetry.addLine("Controlls");
-			telemetry.addData("LeftY", -gPad1.getLeftY());
-			telemetry.addData("LeftYMod", driveCommand.returnForward());
-/*			telemetry.addData("LeftX", strafe);
-			telemetry.addData("LeftXMod", strafeValue);
-			telemetry.addData("RightX", turn);
-			telemetry.addData("RightXMod", turnValue);*/
-//			telemetry.addData("voltage", "%.1f volts", getBatteryVoltage());
+			telemetry.addData("LiftMod", lift.getMod());
 		})));
-
 	}
-
-	// Computes the current battery voltage
-	double getBatteryVoltage() {
-		double result = Double.POSITIVE_INFINITY;
-		for (VoltageSensor sensor : hardwareMap.voltageSensor) {
-			double voltage = sensor.getVoltage();
-			if (voltage > 0) {
-				result = Math.min(result, voltage);
-			}
-		}
-		return result;
-	}
-
 }
+
