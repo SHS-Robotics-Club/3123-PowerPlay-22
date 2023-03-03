@@ -8,10 +8,10 @@ import java.util.function.DoubleSupplier;
 
 public class MecanumCommand extends CommandBase {
 
+	private static double forwardOut;
 	private final MecanumSubsystem drive;
 	private final DoubleSupplier   forward, strafe, turn;
 	private        double multiplier;
-	private static double forwardOut;
 
 	/**
 	 * @param drive   The drive subsystem this command wil run on.
@@ -46,6 +46,19 @@ public class MecanumCommand extends CommandBase {
 		addRequirements(drive);
 	}
 
+	public static double returnForward() {
+		return forwardOut;
+	}
+
+	public static double applyDeadzoneExponentiation(double input, double deadzone, double exponent) {
+		double magnitude = Math.abs(input);
+		if (magnitude < deadzone) {
+			return 0;
+		}
+		return Math.signum(input) * Math.pow(magnitude - deadzone, exponent) /
+		       (1 - Math.pow(deadzone, exponent));
+	}
+
 	@Override
 	public void execute() {
 		double forwardMult = (-forward.getAsDouble() * 0.9) * multiplier;
@@ -61,20 +74,7 @@ public class MecanumCommand extends CommandBase {
 		drive.drive(forwardValue, strafeValue, turnValue);
 	}
 
-	public static double returnForward() {
-		return forwardOut;
-	}
-
-	public static double applyDeadzoneExponentiation(double input, double deadzone, double exponent) {
-		double magnitude = Math.abs(input);
-		if (magnitude < deadzone) {
-			return 0;
-		}
-		return Math.signum(input) * Math.pow(magnitude - deadzone, exponent) /
-		       (1 - Math.pow(deadzone, exponent));
-	}
-
-	public double applyDeadzone(double input, double deadzone){
+	public double applyDeadzone(double input, double deadzone) {
 		if (Math.abs(input) < deadzone) {
 			return 0;
 		}

@@ -1,18 +1,10 @@
 package org.firstinspires.ftc.teamcode.b_commands.auto;
 
-import static org.openftc.apriltag.ApriltagDetectionJNI.getPoseEstimate;
-
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.arcrobotics.ftclib.command.CommandBase;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.c_subsystems.MecanumSubsystem;
 import org.firstinspires.ftc.teamcode.c_subsystems.auto.AprilTagSubsystem;
-import org.firstinspires.ftc.teamcode.d_roadrunner.drive.MecanumDrive;
 import org.firstinspires.ftc.teamcode.d_roadrunner.trajectorysequence.TrajectorySequence;
 
 public class ParkCommand extends CommandBase {

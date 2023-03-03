@@ -9,7 +9,7 @@ import com.arcrobotics.ftclib.command.RunCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.b_commands.auto.ParkCommand;
+import org.firstinspires.ftc.teamcode.a_opmodes.Robot;
 import org.firstinspires.ftc.teamcode.b_commands.auto.TrajectoryFollowerCommand;
 import org.firstinspires.ftc.teamcode.d_roadrunner.trajectorysequence.TrajectorySequence;
 
@@ -18,38 +18,31 @@ import org.firstinspires.ftc.teamcode.d_roadrunner.trajectorysequence.Trajectory
 public class crash extends CommandOpMode {
 	@Override
 	public void initialize() {
+		// Get Devices
+		final Robot bot = new Robot(hardwareMap, true);
 
+		// Setup Telemetry
 		FtcDashboard dashboard          = FtcDashboard.getInstance(); //FTC Dashboard Instance
 		Telemetry    dashboardTelemetry = dashboard.getTelemetry();
-		telemetry = new MultipleTelemetry(telemetry, dashboardTelemetry);
+		telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-		AutoConfig auto = new AutoConfig(hardwareMap, ParkCommand.StartingZone.BLUE_LEFT);
+		bot.drive.setPoseEstimate(new Pose2d(-40.00, -64.00, Math.toRadians(90.00)));
 
-		auto.drive.setPoseEstimate(new Pose2d(-27.23, -37.45, Math.toRadians(72.37)));
+		TrajectorySequence auto1 = bot.drive.trajectorySequenceBuilder(new Pose2d(-40.00, -64.00, Math.toRadians(90.00)))
+		                                    .splineTo(new Vector2d(-34.00, -42.00), Math.toRadians(90.00))
+		                                    .splineTo(new Vector2d(-27.00, -9.50), Math.toRadians(55.00))
+		                                    .build();
 
-		TrajectorySequence auto1 = auto.drive.trajectorySequenceBuilder(new Pose2d(-27.23, -37.45, Math.toRadians(72.37)))
-		                                .splineTo(new Vector2d(-29.76, -34.08), Math.toRadians(95.81))
-		                                .splineTo(new Vector2d(-31.65, 22.91), Math.toRadians(73.07))
-		                                .splineTo(new Vector2d(12.27, 21.65), Math.toRadians(-9.46))
-		                                .splineTo(new Vector2d(18.49, -8.37), Math.toRadians(-88.83))
-		                                .splineTo(new Vector2d(16.80, -29.23), Math.toRadians(230.06))
-		                                .splineTo(new Vector2d(-25.76, -51.88), Math.toRadians(240.64))
-		                                .build();
+		waitForStart();
 
-		if (isStopRequested()) return;
-
+		register(bot.lift);
 		schedule(new RunCommand(() -> {
-			         //dashboard.startCameraStream(auto.aprilTag.getCamera(), 0);
-			         //telemetry.addData("Zone", auto.aprilTag.getParkingZone());
-			         //telemetry.addData("Zone Status", auto.aprilTag.getStatus());
+			         if (isStopRequested()) return;
+			         dashboard.startCameraStream(bot.aprilTag.getCamera(), 0);
 			         telemetry.update();
-		         })
-				         .alongWith(auto.DETECTOR_WAIT).withTimeout(1)
-				         .andThen(auto.CLAW_CLOSE)
-				         .andThen(new TrajectoryFollowerCommand(auto.drive, auto1))
-/*				         .andThen(auto.LIFT_HIGH)
-				         .andThen(auto.CLAW_OPEN)
-				         .andThen(auto.LIFT_FLOOR)*/
+		         }).alongWith(bot.LIFT_HIGH)
+		           .alongWith(new TrajectoryFollowerCommand(bot.drive, auto1))
+		           .andThen(bot.LIFT_FLOOR)
 		        );
 
 	}

@@ -64,7 +64,7 @@ public class AprilTagSubsystem extends SubsystemBase {
 				camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
 					@Override
 					public void onOpened() {
-						camera.startStreaming(WIDTH, HEIGHT, OpenCvCameraRotation.UPRIGHT);
+						camera.startStreaming(WIDTH, HEIGHT, OpenCvCameraRotation.SIDEWAYS_LEFT);
 
 						synchronized (sync) {
 							status = Status.RUNNING;

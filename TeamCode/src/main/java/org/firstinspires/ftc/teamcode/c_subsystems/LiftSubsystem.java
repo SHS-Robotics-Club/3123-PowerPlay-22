@@ -3,55 +3,54 @@ package org.firstinspires.ftc.teamcode.c_subsystems;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.controller.PIDFController;
-import com.arcrobotics.ftclib.controller.wpilibcontroller.ElevatorFeedforward;
 import com.arcrobotics.ftclib.hardware.motors.CRServo;
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
 
 @Config
 public class LiftSubsystem extends SubsystemBase {
-	public static double kP = 0.01, kI = 0.0, kD = 0.0001, kS = 0.0, kG = 0.0, kV = 0, kA = 0.0;
+	public static final double liftMath = 29.8 * Math.PI / 537.7; //0.174110809001
+	//public static double kP = 0.01, kI = 0.0, kD = 0.0001, kS = 0.0, kG = 0.0, kV = 0, kA = 0.0;
+	public static double kP = 0.01, kI = 0.0, kD = 0.0001, kF= 0.0;
 	// kv = 1.0 / (312 * 2 * Math.PI * 1.7 / 60.0)
 	public static double positionTolerance = 5.0, velocityTolerance = 1.0;
 	public static double     ffVelocity = 50;
 	public static LiftLevels liftLevels = LiftLevels.FLOOR;
-	public static int     mod   = 0;
-	static        boolean lower = false;
+	public static int        modifier   = 0;
+	static        boolean    lower      = false, modHalt = false;
 	MotorGroup          lift;
 	CRServo             spool;
-	PIDFController      pidf  = new PIDFController(kP, kI, kD, 0);
-	ElevatorFeedforward eff   = new ElevatorFeedforward(kS, kG, kV, kA);
+	PIDFController      pidf = new PIDFController(kP, kI, kD, kF);
+	//ElevatorFeedforward eff  = new ElevatorFeedforward(kS, kG, kV, kA);
 
 	public LiftSubsystem(MotorGroup lift, CRServo spool) {
 		this.lift  = lift;
 		this.spool = spool;
 
-		liftLevels = LiftLevels.FLOOR;
-
+		floor();
 		setTolerance(positionTolerance, velocityTolerance);
 	}
 
 	@Override
 	public void periodic() {
-		setSpool(1);
-		calculate();
-		checkPosition();
+		updateSpool();
+		//calculate();
+		updateLift();
 	}
 
 	public void lower(boolean lower) {
 		this.lower = lower;
 	}
 
-	public static boolean checkLowered() {
-		return lower;
+	public void updateSpool() {
+		if (getSetPoint() >= 800){
+			setSpool(0);
+		} else {
+			setSpool(1);
+		}
 	}
 
 	public void setSpool(double output) {
 		spool.set(output);
-	}
-
-	public void stopSpool() {
-		setSpool(0);
-		spool.stopMotor();
 	}
 
 	public void set(double output) {
@@ -78,14 +77,6 @@ public class LiftSubsystem extends SubsystemBase {
 	}
 
 	/**
-	 * @return the distance traveled by the encoder
-	 */
-	public double getDistance() {
-		return lift.getDistance();
-	}
-
-
-	/**
 	 * Resets the encoder without having to stop the motor.
 	 */
 	public void resetEncoder() {
@@ -95,7 +86,7 @@ public class LiftSubsystem extends SubsystemBase {
 	/**
 	 * Resets pid loop.
 	 */
-	public void reset() {
+	public void resetPIF() {
 		pidf.reset();
 	}
 
@@ -146,15 +137,13 @@ public class LiftSubsystem extends SubsystemBase {
 		return pidf.atSetPoint();
 	}
 
-	public static final double liftMath = 29.8 * Math.PI / 537.7; //0.174110809001
-
-	public double tickToMil(double ticks) {
+/*	public double tickToMil(double ticks) {
 		return ticks * liftMath;
 	}
 
 	public double milToTicks(double mil) {
 		return mil / liftMath;
-	}
+	}*/
 
 	/**
 	 * @return the positional error e(t)
@@ -176,15 +165,16 @@ public class LiftSubsystem extends SubsystemBase {
 	 * @return the value produced by u(t).
 	 */
 	public double calculate() {
-		pidf.setF(eff.calculate(ffVelocity));
+		//pidf.setF(eff.calculate(ffVelocity));
 		return pidf.calculate(getPosition());
 	}
 
 	/**
 	 * Checks if the lift is where it should be.
 	 */
-	public void checkPosition() {
-		setSetPoint(liftLevels.getLevelPos());
+	public void updateLift() {
+		setSetPoint(liftLevels.calculatePosition());
+
 		getPosition();
 		if (atSetPoint()) {
 			stop();
@@ -193,40 +183,48 @@ public class LiftSubsystem extends SubsystemBase {
 		}
 	}
 
-	public void LiftUp(int ammount){
-		mod =+ ammount;
+	public static boolean checkLowered() {
+		return lower;
 	}
 
-	public void LiftDown(int ammount){
-		mod =- ammount;
+	public void resetMod() {
+		modifier = 0;
+	}
+	public int getMod() {
+		return modifier;
 	}
 
-	public void floor(){
+	public void up(int ammount) {
+		if (!modHalt) {
+			modifier += ammount;
+		}
+
+	}
+
+	public void down(int ammount) {
+		if (!modHalt) {
+			modifier -= ammount;
+		}
+	}
+
+	public void floor() {
 		liftLevels = LiftLevels.FLOOR;
 		resetMod();
 	}
 
-	public void low(){
+	public void low() {
 		liftLevels = LiftLevels.LOW;
 		resetMod();
 	}
 
-	public void med(){
+	public void med() {
 		liftLevels = LiftLevels.MED;
 		resetMod();
 	}
 
-	public void high(){
+	public void high() {
 		liftLevels = LiftLevels.HIGH;
 		resetMod();
-	}
-
-	void resetMod (){
-		mod = 0;
-	}
-
-	public int getMod (){
-		return mod;
 	}
 
 	/**
@@ -237,7 +235,7 @@ public class LiftSubsystem extends SubsystemBase {
 	}
 
 	public enum LiftLevels {
-		FLOOR(0, 1.0), LOW(1290 , 1.0), MED(1760, 0.8), HIGH(2250, 0.7);
+		FLOOR(0, 1.0), LOW(920, 1.0), MED(1256, 0.8), HIGH(1570, 0.7);
 
 		private final int    levelPos;
 		private final double driveMult;
@@ -247,15 +245,25 @@ public class LiftSubsystem extends SubsystemBase {
 			this.driveMult = driveMult;
 		}
 
-		public int getLevelPosRaw() {
-				return levelPos;
-		}
-
-		public int getLevelPos() {
+		public int calculatePosition() {
+			int finalPos;
 			if (LiftSubsystem.checkLowered()) {
-				return levelPos + LiftSubsystem.mod - 200;
+				finalPos = levelPos + LiftSubsystem.modifier - 200;
 			} else {
-				return levelPos + LiftSubsystem.mod;
+				finalPos = levelPos + LiftSubsystem.modifier;
+			}
+
+			if (finalPos > HIGH.levelPos){
+				LiftSubsystem.modHalt  = true;
+				LiftSubsystem.modifier = HIGH.levelPos - levelPos;
+				return HIGH.levelPos;
+			} else if (finalPos < FLOOR.levelPos) {
+				LiftSubsystem.modHalt  = true;
+				LiftSubsystem.modifier = levelPos - FLOOR.levelPos;
+				return FLOOR.levelPos;
+			} else {
+				LiftSubsystem.modHalt = false;
+				return finalPos;
 			}
 		}
 

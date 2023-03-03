@@ -7,18 +7,15 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.ConditionalCommand;
-import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.b_commands.ClawCommand;
 import org.firstinspires.ftc.teamcode.b_commands.MecanumCommand;
 import org.firstinspires.ftc.teamcode.c_subsystems.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.c_subsystems.GamepadTrigger;
-import org.firstinspires.ftc.teamcode.c_subsystems.LiftSubsystem;
-import org.firstinspires.ftc.teamcode.c_subsystems.MecanumSubsystem;
-import org.firstinspires.ftc.teamcode.d_roadrunner.drive.MecanumDrive;
 
 //@Disabled
 @Config
@@ -26,52 +23,65 @@ import org.firstinspires.ftc.teamcode.d_roadrunner.drive.MecanumDrive;
 public class MainTeleOp extends CommandOpMode {
 	@Override
 	public void initialize() {
-		if (isStopRequested()) return;
+		//CommandScheduler.getInstance().reset();
+		Robot bot = new Robot(hardwareMap);
+		telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-		// Get Devices
-		final Devices devices = new Devices(hardwareMap);
-
-		// Gamepad
 		GamepadEx gPad1 = new GamepadEx(gamepad1);
 
-		// Define Systems ----------------------------------------------------------------------------------------------------
-		MecanumSubsystem drive = new MecanumSubsystem(new MecanumDrive(hardwareMap), true);
-		ClawSubsystem    claw  = new ClawSubsystem(devices.clawLeft, devices.clawRight);
-		LiftSubsystem    lift  = new LiftSubsystem(devices.lift, devices.spool);
-
-		MecanumCommand driveCommand = new MecanumCommand(drive, gPad1::getLeftY, gPad1::getLeftX, gPad1::getRightX, liftLevels.getDriveMult());
-
-		telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+		MecanumCommand driveCommand = new MecanumCommand(bot.drive, gPad1::getLeftY, gPad1::getLeftX, gPad1::getRightX, liftLevels.getDriveMult());
 
 		// CONTROLS ----------------------------------------------------------------------------------------------------
 		// X Button = Claw Open/Close
-		gPad1.getGamepadButton(GamepadKeys.Button.X).whenPressed(new ConditionalCommand(new InstantCommand(claw::open, claw), new InstantCommand(claw::close, claw), () -> {
-			claw.toggle();
-			return claw.isOpen();
-		}));
+/*		gPad1.getGamepadButton(GamepadKeys.Button.X)
+		     .whenPressed(new ConditionalCommand(bot.CLAW_OPEN, bot.CLAW_CLOSE, () -> {
+			         bot.claw.toggle();
+			         return bot.claw.isOpen();
+		         }));*/
 
-		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whenPressed(new InstantCommand(lift::floor, lift));
-		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(new InstantCommand(lift::low, lift));
-		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenPressed(new InstantCommand(lift::med, lift));
-		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT).whenPressed(new InstantCommand(lift::high, lift));
+		gPad1.getGamepadButton(GamepadKeys.Button.X)
+		     .whenPressed(new ConditionalCommand(new ClawCommand(bot.claw, ClawSubsystem.ClawState.OPEN), new ClawCommand(bot.claw, ClawSubsystem.ClawState.CLOSE), () -> {
+			     bot.claw.toggle();
+			     return bot.claw.isOpen();
+		     }));
 
-		gPad1.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).whenPressed(new InstantCommand(() -> lift.lower(true))).whenReleased(new InstantCommand(() -> lift.lower(false)));
+		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
+		     .whenPressed(bot.LIFT_FLOOR);
+		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_LEFT)
+		     .whenPressed(bot.LIFT_LOW);
+		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_UP)
+		     .whenPressed(bot.LIFT_MED);
+		gPad1.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT)
+		     .whenPressed(bot.LIFT_HIGH);
 
-		new GamepadTrigger(gPad1, GamepadKeys.Trigger.LEFT_TRIGGER).whileHeld(new RunCommand(() -> lift.LiftDown(50)));
-		new GamepadTrigger(gPad1, GamepadKeys.Trigger.RIGHT_TRIGGER).whileHeld(new RunCommand(() -> lift.LiftUp(50)));
+		gPad1.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
+		     .whenPressed(bot.LOWER_T)
+		     .whenReleased(bot.LOWER_F);
+
+		new GamepadTrigger(gPad1, 0.25, GamepadKeys.Trigger.LEFT_TRIGGER).whileHeld(bot.LIFT_DOWN);
+		new GamepadTrigger(gPad1, 0.25, GamepadKeys.Trigger.RIGHT_TRIGGER).whileHeld(bot.LIFT_UP);
 
 
 		// Register and Schedule ----------------------------------------------------------------------------------------------------
 		gPad1.readButtons();
-		register(drive, lift);
+		register(bot.lift);
 		schedule(driveCommand.alongWith(new RunCommand(() -> {
 			// Telemetry
 			telemetry.update();
-			telemetry.addData("LiftPos", lift.getPosition());
-			telemetry.addData("LiftVel", lift.getVelocity());
-			telemetry.addData("LiftError", lift.getPositionError());
-			telemetry.addData("LiftMod", lift.getMod());
+			telemetry.addData("Status", "Running");
+			telemetry.addData("Lift Position", bot.lift.getPosition());
+			telemetry.addData("Lift Velocity", bot.lift.getVelocity());
+			telemetry.addData("Lift POS Error", bot.lift.getPositionError());
+			telemetry.addData("Lift Modifier", bot.lift.getMod());
 		})));
+
 	}
+
+
+/*	@Override
+	public void run() {
+
+	}*/
+
 }
 
