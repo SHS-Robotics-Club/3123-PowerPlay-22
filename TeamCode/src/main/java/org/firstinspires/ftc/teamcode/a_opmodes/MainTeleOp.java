@@ -7,6 +7,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.ConditionalCommand;
+import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
@@ -19,12 +20,14 @@ import org.firstinspires.ftc.teamcode.c_subsystems.GamepadTrigger;
 
 //@Disabled
 @Config
-@TeleOp(name = "MainTeleOp", group = ".")
+@TeleOp(name = "MainTeleOp", group = ".Drive")
 public class MainTeleOp extends CommandOpMode {
+	Robot bot;
+
 	@Override
 	public void initialize() {
 		//CommandScheduler.getInstance().reset();
-		Robot bot = new Robot(hardwareMap);
+		bot = new Robot(hardwareMap);
 		telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
 		GamepadEx gPad1 = new GamepadEx(gamepad1);
@@ -40,7 +43,7 @@ public class MainTeleOp extends CommandOpMode {
 		         }));*/
 
 		gPad1.getGamepadButton(GamepadKeys.Button.X)
-		     .whenPressed(new ConditionalCommand(new ClawCommand(bot.claw, ClawSubsystem.ClawState.OPEN), new ClawCommand(bot.claw, ClawSubsystem.ClawState.CLOSE), () -> {
+		     .whenPressed(new ConditionalCommand(bot.CLAW_OPEN, bot.CLAW_CLOSE, () -> {
 			     bot.claw.toggle();
 			     return bot.claw.isOpen();
 		     }));
@@ -68,7 +71,7 @@ public class MainTeleOp extends CommandOpMode {
 		schedule(driveCommand.alongWith(new RunCommand(() -> {
 			// Telemetry
 			telemetry.update();
-			telemetry.addData("Status", "Running");
+			telemetry.addData("Voltage", bot.voltageSensor.getVoltage());
 			telemetry.addData("Lift Position", bot.lift.getPosition());
 			telemetry.addData("Lift Velocity", bot.lift.getVelocity());
 			telemetry.addData("Lift POS Error", bot.lift.getPositionError());
@@ -76,12 +79,4 @@ public class MainTeleOp extends CommandOpMode {
 		})));
 
 	}
-
-
-/*	@Override
-	public void run() {
-
-	}*/
-
 }
-

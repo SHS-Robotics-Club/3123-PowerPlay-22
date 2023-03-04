@@ -8,11 +8,11 @@ import org.firstinspires.ftc.teamcode.d_roadrunner.trajectorysequence.Trajectory
 
 public class ClawCommand extends CommandBase {
 
-	private final ClawSubsystem      claw;
+	private final ClawSubsystem           claw;
 	private final ClawSubsystem.ClawState state;
 
 	public ClawCommand(ClawSubsystem claw, ClawSubsystem.ClawState state) {
-		this.claw       = claw;
+		this.claw  = claw;
 		this.state = state;
 
 		addRequirements(claw);

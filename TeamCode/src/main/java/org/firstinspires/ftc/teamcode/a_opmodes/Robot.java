@@ -23,8 +23,11 @@ import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.b_commands.ClawCommand;
+import org.firstinspires.ftc.teamcode.b_commands.LiftCommand;
 import org.firstinspires.ftc.teamcode.c_subsystems.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.c_subsystems.LiftSubsystem;
 import org.firstinspires.ftc.teamcode.c_subsystems.MecanumSubsystem;
@@ -34,6 +37,8 @@ import org.firstinspires.ftc.teamcode.d_roadrunner.drive.MecanumDrive;
 import java.util.List;
 
 public class Robot {
+	public VoltageSensor voltageSensor;
+
 	public MotorEx liftLeft, liftRight;// Motors
 	public MotorGroup liftGroup;// Motor Group
 	public ServoEx    clawLeft, clawRight; // Servos
@@ -48,17 +53,21 @@ public class Robot {
 	public ClawSubsystem    claw;
 	public LiftSubsystem    lift;
 
-	public InstantCommand CLAW_OPEN, CLAW_CLOSE, LIFT_FLOOR, LIFT_LOW, LIFT_MED, LIFT_HIGH, LOWER_T, LOWER_F, LIFT_DOWN, LIFT_UP;
-	public FunctionalCommand CLAW_OPEN_F, CLAW_CLOSE_F;
+	public InstantCommand LIFT_FLOOR, LIFT_LOW, LIFT_MED, LIFT_HIGH, LOWER_T, LOWER_F, LIFT_DOWN, LIFT_UP;
+	public ClawCommand CLAW_OPEN, CLAW_CLOSE;
+	//public LiftCommand LIFT_FLOOR, LIFT_LOW, LIFT_MED, LIFT_HIGH;
 
 	public AprilTagSubsystem aprilTag;
-	public WaitUntilCommand DETECTOR_WAIT;
+	public WaitUntilCommand  DETECTOR_WAIT;
 
 	public Robot(HardwareMap hardwareMap) {
 		this(hardwareMap, false);
 	}
 
 	public Robot(HardwareMap hardwareMap, boolean isAuto) {
+
+		voltageSensor = hardwareMap.voltageSensor.iterator().next();
+
 		this.isAuto = isAuto;
 
 		if (isAuto) {
@@ -109,8 +118,11 @@ public class Robot {
 		claw  = new ClawSubsystem(clawLeft, clawRight);
 		lift  = new LiftSubsystem(liftGroup, spool);
 
-		CLAW_OPEN  = new InstantCommand(claw::open, claw);
-		CLAW_CLOSE = new InstantCommand(claw::close, claw);
+/*		CLAW_OPEN  = new InstantCommand(claw::open, claw);
+		CLAW_CLOSE = new InstantCommand(claw::close, claw);*/
+
+		CLAW_OPEN  = new ClawCommand(claw, ClawSubsystem.ClawState.OPEN);
+		CLAW_CLOSE = new ClawCommand(claw, ClawSubsystem.ClawState.CLOSE);
 
 /*		CLAW_TOGGLE = new ConditionalCommand(CLAW_OPEN, CLAW_CLOSE, () -> {
 			claw.toggle();
@@ -122,11 +134,16 @@ public class Robot {
 		LIFT_MED   = new InstantCommand(lift::med, lift);
 		LIFT_HIGH  = new InstantCommand(lift::high, lift);
 
+/*		LIFT_FLOOR = new LiftCommand(lift, LiftSubsystem.LiftLevels.FLOOR);
+		LIFT_LOW   = new LiftCommand(lift, LiftSubsystem.LiftLevels.LOW);
+		LIFT_MED   = new LiftCommand(lift, LiftSubsystem.LiftLevels.MED);
+		LIFT_HIGH  = new LiftCommand(lift, LiftSubsystem.LiftLevels.HIGH);*/
+
 		LOWER_T = new InstantCommand(() -> lift.lower(true));
 		LOWER_F = new InstantCommand(() -> lift.lower(false));
 
-		LIFT_DOWN = new InstantCommand(() -> lift.down(25));
-		LIFT_UP   = new InstantCommand(() -> lift.up(25));
+		LIFT_DOWN = new InstantCommand(() -> lift.down(15));
+		LIFT_UP   = new InstantCommand(() -> lift.up(15));
 	}
 
 	private void autoConfig(HardwareMap hardwareMap) {

@@ -6,16 +6,16 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.RunCommand;
+import com.arcrobotics.ftclib.command.WaitCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.a_opmodes.Robot;
-import org.firstinspires.ftc.teamcode.b_commands.auto.TrajectoryFollowerCommand;
 import org.firstinspires.ftc.teamcode.d_roadrunner.trajectorysequence.TrajectorySequence;
 
 
-@Autonomous(name = "T:", group = "Parking", preselectTeleOp = "MainTeleOp")
-public class crash extends CommandOpMode {
+@Autonomous(name = "Cycle", group = ".Score", preselectTeleOp = "MainTeleOp")
+public class Cycle extends CommandOpMode {
 	@Override
 	public void initialize() {
 		// Get Devices
@@ -37,12 +37,17 @@ public class crash extends CommandOpMode {
 
 		register(bot.lift);
 		schedule(new RunCommand(() -> {
-			         if (isStopRequested()) return;
-			         dashboard.startCameraStream(bot.aprilTag.getCamera(), 0);
-			         telemetry.update();
-		         }).alongWith(bot.LIFT_HIGH)
-		           .alongWith(new TrajectoryFollowerCommand(bot.drive, auto1))
-		           .andThen(bot.LIFT_FLOOR)
+			if (isStopRequested()) return;
+			dashboard.startCameraStream(bot.aprilTag.getCamera(), 0);
+			telemetry.update();
+		}));
+
+		schedule(
+				bot.CLAW_CLOSE
+						.andThen(new WaitCommand(500))
+						.andThen(bot.LIFT_HIGH)
+						.andThen(new WaitCommand(5000))
+						.andThen(bot.LIFT_FLOOR)
 		        );
 
 	}

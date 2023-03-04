@@ -5,22 +5,20 @@ import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.arcrobotics.ftclib.hardware.motors.CRServo;
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 @Config
 public class LiftSubsystem extends SubsystemBase {
 	public static final double liftMath = 29.8 * Math.PI / 537.7; //0.174110809001
-	//public static double kP = 0.01, kI = 0.0, kD = 0.0001, kS = 0.0, kG = 0.0, kV = 0, kA = 0.0;
-	public static double kP = 0.01, kI = 0.0, kD = 0.0001, kF= 0.0;
-	// kv = 1.0 / (312 * 2 * Math.PI * 1.7 / 60.0)
+	public static       double kP       = 0.01, kI = 0.0, kD = 0.0001, kF = 0.0;
 	public static double positionTolerance = 5.0, velocityTolerance = 1.0;
 	public static double     ffVelocity = 50;
 	public static LiftLevels liftLevels = LiftLevels.FLOOR;
 	public static int        modifier   = 0;
 	static        boolean    lower      = false, modHalt = false;
-	MotorGroup          lift;
-	CRServo             spool;
-	PIDFController      pidf = new PIDFController(kP, kI, kD, kF);
-	//ElevatorFeedforward eff  = new ElevatorFeedforward(kS, kG, kV, kA);
+	MotorGroup     lift;
+	CRServo        spool;
+	PIDFController pidf = new PIDFController(kP, kI, kD, kF);
 
 	public LiftSubsystem(MotorGroup lift, CRServo spool) {
 		this.lift  = lift;
@@ -33,7 +31,7 @@ public class LiftSubsystem extends SubsystemBase {
 	@Override
 	public void periodic() {
 		updateSpool();
-		//calculate();
+		calculate();
 		updateLift();
 	}
 
@@ -42,7 +40,7 @@ public class LiftSubsystem extends SubsystemBase {
 	}
 
 	public void updateSpool() {
-		if (getSetPoint() >= 800){
+		if (getSetPoint() >= 800) {
 			setSpool(0);
 		} else {
 			setSpool(1);
@@ -190,6 +188,7 @@ public class LiftSubsystem extends SubsystemBase {
 	public void resetMod() {
 		modifier = 0;
 	}
+
 	public int getMod() {
 		return modifier;
 	}
@@ -235,7 +234,7 @@ public class LiftSubsystem extends SubsystemBase {
 	}
 
 	public enum LiftLevels {
-		FLOOR(0, 1.0), LOW(920, 1.0), MED(1256, 0.8), HIGH(1570, 0.7);
+		FLOOR(0, 1.0), LOW(920, 1.0), MED(1256, 0.8), HIGH(1560, 0.7);
 
 		private final int    levelPos;
 		private final double driveMult;
@@ -253,7 +252,7 @@ public class LiftSubsystem extends SubsystemBase {
 				finalPos = levelPos + LiftSubsystem.modifier;
 			}
 
-			if (finalPos > HIGH.levelPos){
+			if (finalPos > HIGH.levelPos) {
 				LiftSubsystem.modHalt  = true;
 				LiftSubsystem.modifier = HIGH.levelPos - levelPos;
 				return HIGH.levelPos;
