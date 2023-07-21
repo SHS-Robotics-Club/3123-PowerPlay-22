@@ -233,8 +233,12 @@ public class LiftSubsystem extends SubsystemBase {
 		return pidf.getCoefficients();
 	}
 
+	public void setCoefficients(double kP, double kI, double kD, double kF){
+		pidf.setPIDF(kP, kI, kD, kF);
+	}
+
 	public enum LiftLevels {
-		FLOOR(0, 1.0), LOW(920, 1.0), MED(1256, 0.8), HIGH(1560, 0.7);
+		FLOOR(0, 1.0), LOW(920, 1.0), MED(1256, 0.8), HIGH(1590, 0.7);
 
 		private final int    levelPos;
 		private final double driveMult;

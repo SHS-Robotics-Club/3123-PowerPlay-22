@@ -69,7 +69,7 @@ public class ClawSubsystem extends SubsystemBase {
 	}
 
 	public enum ClawState {
-		OPEN(20), CLOSE(-15), INIT(30);
+		OPEN(23), CLOSE(-15), INIT(30);
 
 		private final int clawAng;
 

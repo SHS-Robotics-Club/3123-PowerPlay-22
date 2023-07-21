@@ -13,7 +13,7 @@ package org.firstinspires.ftc.teamcode.a_opmodes;
  */
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.arcrobotics.ftclib.command.FunctionalCommand;
+import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.arcrobotics.ftclib.hardware.ServoEx;
@@ -27,7 +27,6 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.b_commands.ClawCommand;
-import org.firstinspires.ftc.teamcode.b_commands.LiftCommand;
 import org.firstinspires.ftc.teamcode.c_subsystems.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.c_subsystems.LiftSubsystem;
 import org.firstinspires.ftc.teamcode.c_subsystems.MecanumSubsystem;
@@ -36,7 +35,9 @@ import org.firstinspires.ftc.teamcode.d_roadrunner.drive.MecanumDrive;
 
 import java.util.List;
 
+@Config
 public class Robot {
+	public static double akP = 0.005, akI = 0.0, akD = 0, akF = 0.0;
 	public VoltageSensor voltageSensor;
 
 	public MotorEx liftLeft, liftRight;// Motors
@@ -69,10 +70,6 @@ public class Robot {
 		voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
 		this.isAuto = isAuto;
-
-		if (isAuto) {
-			autoConfig(hardwareMap);
-		}
 
 		// Bulk Read
 		revHubs = hardwareMap.getAll(LynxModule.class);
@@ -144,9 +141,16 @@ public class Robot {
 
 		LIFT_DOWN = new InstantCommand(() -> lift.down(15));
 		LIFT_UP   = new InstantCommand(() -> lift.up(15));
+
+		if (isAuto) {
+			autoConfig(hardwareMap);
+		}
+
 	}
 
 	private void autoConfig(HardwareMap hardwareMap) {
+
+		lift.setCoefficients(akP, akI, akD, akF);
 
 		aprilTag = new AprilTagSubsystem(hardwareMap, "Webcam 1", 1280, 720, 0.4, 1552.74274588,
 		                                 1552.74274588, 793.573231003, 202.006088244);

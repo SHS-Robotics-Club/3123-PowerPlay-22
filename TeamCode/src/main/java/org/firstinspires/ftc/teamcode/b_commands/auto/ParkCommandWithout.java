@@ -61,7 +61,7 @@ public class ParkCommandWithout extends CommandBase {
 				            .build();
 			default:
 				return drive.trajectorySequenceBuilder(startPose)
-				            .forward(1)
+				            .back(0.01)
 				            .build();
 		}
 	}
