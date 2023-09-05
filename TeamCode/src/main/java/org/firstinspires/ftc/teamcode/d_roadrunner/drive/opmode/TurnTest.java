@@ -14,16 +14,16 @@ import org.firstinspires.ftc.teamcode.d_roadrunner.drive.MecanumDrive;
 @Config
 @Autonomous(group = "drive")
 public class TurnTest extends LinearOpMode {
-	public static double ANGLE = 90; // deg
+    public static double ANGLE = 90; // deg
 
-	@Override
-	public void runOpMode() throws InterruptedException {
-		MecanumDrive drive = new MecanumDrive(hardwareMap);
+    @Override
+    public void runOpMode() throws InterruptedException {
+        MecanumDrive drive = new MecanumDrive(hardwareMap);
 
-		waitForStart();
+        waitForStart();
 
-		if (isStopRequested()) return;
+        if (isStopRequested()) return;
 
-		drive.turn(Math.toRadians(ANGLE));
-	}
+        drive.turn(Math.toRadians(ANGLE));
+    }
 }

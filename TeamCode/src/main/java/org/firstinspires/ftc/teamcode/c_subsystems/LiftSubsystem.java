@@ -3,33 +3,52 @@ package org.firstinspires.ftc.teamcode.c_subsystems;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.controller.PIDFController;
-import com.arcrobotics.ftclib.controller.wpilibcontroller.ElevatorFeedforward;
-import com.arcrobotics.ftclib.hardware.motors.MotorEx;
+import com.arcrobotics.ftclib.hardware.motors.CRServo;
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 @Config
 public class LiftSubsystem extends SubsystemBase {
-	public static double kP = 0.01, kI = 0.0, kD = 0.0001, kS = 0.0, kG = 0.0, kV = 0.0, kA = 0.0;
-	MotorGroup lift;
-	MotorEx    liftLeft, liftRight;
-	double              botVoltage;
-	int                 targetPosition = 0;
-	PIDFController      pidf           = new PIDFController(kP, kI, kD, 0);
-	ElevatorFeedforward eff            = new ElevatorFeedforward(kS, kG, kV, kA);
+	public static final double liftMath = 29.8 * Math.PI / 537.7; //0.174110809001
+	public static       double kP       = 0.01, kI = 0.0, kD = 0.0001, kF = 0.0;
+	public static double positionTolerance = 5.0, velocityTolerance = 1.0;
+	public static double     ffVelocity = 50;
+	public static LiftLevels liftLevels = LiftLevels.FLOOR;
+	public static int        modifier   = 0;
+	static        boolean    lower      = false, modHalt = false;
+	MotorGroup     lift;
+	CRServo        spool;
+	PIDFController pidf = new PIDFController(kP, kI, kD, kF);
 
-	public LiftSubsystem(MotorEx liftLeft, MotorEx liftRight) {
-		this.liftLeft  = liftLeft;
-		this.liftRight = liftRight;
+	public LiftSubsystem(MotorGroup lift, CRServo spool) {
+		this.lift  = lift;
+		this.spool = spool;
 
-		lift = new MotorGroup(liftLeft, liftRight);
-		lift.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
+		floor();
+		setTolerance(positionTolerance, velocityTolerance);
 	}
 
 	@Override
 	public void periodic() {
-		getPosition();
-		getVelocity();
+		updateSpool();
 		calculate();
+		updateLift();
+	}
+
+	public void lower(boolean lower) {
+		this.lower = lower;
+	}
+
+	public void updateSpool() {
+		if (getSetPoint() >= 800) {
+			setSpool(0);
+		} else {
+			setSpool(1);
+		}
+	}
+
+	public void setSpool(double output) {
+		spool.set(output);
 	}
 
 	public void set(double output) {
@@ -37,6 +56,7 @@ public class LiftSubsystem extends SubsystemBase {
 	}
 
 	public void stop() {
+		set(0);
 		lift.stopMotor();
 	}
 
@@ -48,39 +68,10 @@ public class LiftSubsystem extends SubsystemBase {
 	}
 
 	/**
-	 * @param velocity the velocity in ticks per second
-	 */
-	public void setVelocity(double velocity) {
-		liftLeft.setVelocity(velocity);
-		liftRight.setVelocity(velocity);
-	}
-
-	/**
-	 * @return the acceleration of the motor in ticks per second squared
-	 */
-	public double getAcceleration() {
-		return liftLeft.getAcceleration();
-	}
-
-	/**
 	 * @return the current position of the encoder
 	 */
 	public Double getPosition() {
 		return lift.getPositions().get(0);
-	}
-
-	/**
-	 * @return the distance traveled by the encoder
-	 */
-	public double getDistance() {
-		return liftLeft.getDistance();
-	}
-
-	/**
-	 * @return the velocity of the encoder adjusted to account for the distance per pulse
-	 */
-	public double getRate() {
-		return liftLeft.getRate();
 	}
 
 	/**
@@ -91,24 +82,9 @@ public class LiftSubsystem extends SubsystemBase {
 	}
 
 	/**
-	 * Sets the distance per pulse of the encoder.
-	 *
-	 * @param distancePerPulse the desired distance per pulse (in units per tick)
+	 * Resets pid loop.
 	 */
-	public void setDistancePerPulse(double distancePerPulse) {
-		lift.setDistancePerPulse(distancePerPulse);
-	}
-
-	/**
-	 * Corrects for velocity overflow
-	 *
-	 * @return the corrected velocity
-	 */
-	public double getCorrectedVelocity() {
-		return liftLeft.getCorrectedVelocity();
-	}
-
-	public void reset() {
+	public void resetPIF() {
 		pidf.reset();
 	}
 
@@ -120,6 +96,15 @@ public class LiftSubsystem extends SubsystemBase {
 	 */
 	public void setTolerance(double positionTolerance, double velocityTolerance) {
 		pidf.setTolerance(positionTolerance, velocityTolerance);
+	}
+
+	/**
+	 * Sets the error which is considered tolerable for use with {@link #atSetPoint()}.
+	 *
+	 * @param positionTolerance Position error which is tolerable.
+	 */
+	public void setTolerance(double positionTolerance) {
+		pidf.setTolerance(positionTolerance);
 	}
 
 	/**
@@ -150,34 +135,19 @@ public class LiftSubsystem extends SubsystemBase {
 		return pidf.atSetPoint();
 	}
 
-	/**
-	 * @return the PIDF coefficients
-	 */
-	public double[] getCoefficients() {
-		return pidf.getCoefficients();
+/*	public double tickToMil(double ticks) {
+		return ticks * liftMath;
 	}
+
+	public double milToTicks(double mil) {
+		return mil / liftMath;
+	}*/
 
 	/**
 	 * @return the positional error e(t)
 	 */
 	public double getPositionError() {
 		return pidf.getPositionError();
-	}
-
-	/**
-	 * @return the tolerances of the controller
-	 */
-	public double[] getTolerance() {
-		return pidf.getTolerance();
-	}
-
-	/**
-	 * Sets the error which is considered tolerable for use with {@link #atSetPoint()}.
-	 *
-	 * @param positionTolerance Position error which is tolerable.
-	 */
-	public void setTolerance(double positionTolerance) {
-		pidf.setTolerance(positionTolerance);
 	}
 
 	/**
@@ -190,16 +160,118 @@ public class LiftSubsystem extends SubsystemBase {
 	/**
 	 * Calculates the control value, u(t).
 	 *
-	 * @param veloSetPoint  VelocitySetPoint
 	 * @return the value produced by u(t).
 	 */
-	public double calculate(double veloSetPoint) {
-		pidf.setF(eff.calculate(veloSetPoint));
+	public double calculate() {
+		//pidf.setF(eff.calculate(ffVelocity));
 		return pidf.calculate(getPosition());
 	}
 
-	public double calculate() {
-		return pidf.calculate();
+	/**
+	 * Checks if the lift is where it should be.
+	 */
+	public void updateLift() {
+		setSetPoint(liftLevels.calculatePosition());
+
+		getPosition();
+		if (atSetPoint()) {
+			stop();
+		} else if (!atSetPoint()) {
+			set(calculate());
+		}
 	}
 
+	public static boolean checkLowered() {
+		return lower;
+	}
+
+	public void resetMod() {
+		modifier = 0;
+	}
+
+	public int getMod() {
+		return modifier;
+	}
+
+	public void up(int ammount) {
+		if (!modHalt) {
+			modifier += ammount;
+		}
+
+	}
+
+	public void down(int ammount) {
+		if (!modHalt) {
+			modifier -= ammount;
+		}
+	}
+
+	public void floor() {
+		liftLevels = LiftLevels.FLOOR;
+		resetMod();
+	}
+
+	public void low() {
+		liftLevels = LiftLevels.LOW;
+		resetMod();
+	}
+
+	public void med() {
+		liftLevels = LiftLevels.MED;
+		resetMod();
+	}
+
+	public void high() {
+		liftLevels = LiftLevels.HIGH;
+		resetMod();
+	}
+
+	/**
+	 * @return the PIDF coefficients
+	 */
+	public double[] getCoefficients() {
+		return pidf.getCoefficients();
+	}
+
+	public void setCoefficients(double kP, double kI, double kD, double kF){
+		pidf.setPIDF(kP, kI, kD, kF);
+	}
+
+	public enum LiftLevels {
+		FLOOR(0, 1.0), LOW(920, 1.0), MED(1256, 0.8), HIGH(1590, 0.7);
+
+		private final int    levelPos;
+		private final double driveMult;
+
+		LiftLevels(int levelPos, double driveMult) {
+			this.levelPos  = levelPos;
+			this.driveMult = driveMult;
+		}
+
+		public int calculatePosition() {
+			int finalPos;
+			if (LiftSubsystem.checkLowered()) {
+				finalPos = levelPos + LiftSubsystem.modifier - 200;
+			} else {
+				finalPos = levelPos + LiftSubsystem.modifier;
+			}
+
+			if (finalPos > HIGH.levelPos) {
+				LiftSubsystem.modHalt  = true;
+				LiftSubsystem.modifier = HIGH.levelPos - levelPos;
+				return HIGH.levelPos;
+			} else if (finalPos < FLOOR.levelPos) {
+				LiftSubsystem.modHalt  = true;
+				LiftSubsystem.modifier = levelPos - FLOOR.levelPos;
+				return FLOOR.levelPos;
+			} else {
+				LiftSubsystem.modHalt = false;
+				return finalPos;
+			}
+		}
+
+		public double getDriveMult() {
+			return driveMult;
+		}
+	}
 }

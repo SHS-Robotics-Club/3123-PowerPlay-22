@@ -1,74 +1,40 @@
 package org.firstinspires.ftc.teamcode.b_commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
-import com.arcrobotics.ftclib.gamepad.GamepadEx;
 
+import org.firstinspires.ftc.teamcode.c_subsystems.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.c_subsystems.LiftSubsystem;
 
-
 public class LiftCommand extends CommandBase {
-	public static double positionTolerance = 1.0, velo = 0.0, accel = 0.0;
-	GamepadEx     gamepadEx;
-	LiftSubsystem lift;
-	LiftStates    liftStates;
-	LiftLevels liftLevels;
 
-	public LiftCommand(LiftSubsystem liftSubsystem, GamepadEx gamepadEx) {
-		lift           = liftSubsystem;
-		this.gamepadEx = gamepadEx;
-		addRequirements(liftSubsystem);
-	}
+	private final LiftSubsystem            lift;
+	private final LiftSubsystem.LiftLevels state;
 
-	@Override
-	public void initialize() {
-		liftStates = LiftStates.READY;
-		liftLevels = LiftLevels.FLOOR;
-		lift.setTolerance(positionTolerance);
-		lift.setSetPoint(0);
-		lift.stop();
-	}
+	public LiftCommand(LiftSubsystem lift, LiftSubsystem.LiftLevels state) {
+		this.lift  = lift;
+		this.state = state;
 
-	public void setLiftLevels(LiftLevels liftLevels) {
-		this.liftLevels = liftLevels;
+		addRequirements(lift);
 	}
 
 	@Override
 	public void execute() {
-		lift.getPosition();
-		lift.setSetPoint(liftLevels.getLevelPos());
-		switch (liftStates) {
-			case READY:
-				if (lift.atSetPoint()) {
-					lift.stop();
-				}
-				if (!lift.atSetPoint()) {
-					liftStates = LiftStates.MOVING;
-				}
-			case MOVING:
-				if (!lift.atSetPoint()) {
-					lift.set(lift.calculate(0));
-				}
-				if (lift.atSetPoint()) {
-					liftStates = LiftStates.READY;
-				}
+		switch (state) {
+			default:
+				lift.floor();
+			case LOW:
+				lift.low();
+			case MED:
+				lift.med();
+			case HIGH:
+				lift.high();
+
 		}
 	}
 
-	enum LiftStates {
-		READY, MOVING
+	@Override
+	public boolean isFinished() {
+		return lift.atSetPoint();
 	}
 
-	public enum LiftLevels {
-		FLOOR(0), LOW(2000), MED(2990), HIGH(3100);
-
-		private final int levelPos;
-
-		LiftLevels(int levelPos) {
-			this.levelPos = levelPos;
-		}
-
-		public int getLevelPos() {
-			return levelPos;
-		}
-	}
 }

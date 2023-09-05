@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.b_commands.auto;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 
-import org.firstinspires.ftc.teamcode.c_subsystems.auto.MecanumSubsystem;
+import org.firstinspires.ftc.teamcode.c_subsystems.MecanumSubsystem;
 import org.firstinspires.ftc.teamcode.d_roadrunner.trajectorysequence.TrajectorySequence;
 
 public class TrajectoryFollowerCommand extends CommandBase {
@@ -19,7 +19,7 @@ public class TrajectoryFollowerCommand extends CommandBase {
 
 	@Override
 	public void initialize() {
-		drive.followTrajectorySequence(trajectory);
+		drive.followTrajectorySequenceAsync(trajectory);
 	}
 
 	@Override

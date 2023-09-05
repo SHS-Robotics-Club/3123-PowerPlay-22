@@ -14,19 +14,20 @@ import java.util.ArrayList;
 
 
 public class AprilTagSubsystem extends SubsystemBase {
-	public static ParkingZone lastParkingZone = ParkingZone.NONE;
+	public static ParkingZone      lastParkingZone = ParkingZone.NONE;
 	private final HardwareMap      hardwareMap;
 	private final int              WIDTH;
 	private final int              HEIGHT;
-	private final Object           sync   = new Object();
-	public        Status           status = Status.NOT_CONFIGURED;
+	private final Object           sync            = new Object();
+	public        Status           status          = Status.NOT_CONFIGURED;
 	private       OpenCvCamera     camera;
 	private       String           cameraName;
 	private       AprilTagPipeline aprilTagPipeline;
 	private       double           tagSize; // Metres
 	private       double           fx, fy, cx, cy;// Pixels
 
-	public AprilTagSubsystem(HardwareMap hardwareMap, String cameraName, int width, int height, double tagSize, double fx, double fy, double cx, double cy) {
+	public AprilTagSubsystem(HardwareMap hardwareMap, String cameraName, int width, int height,
+	                         double tagSize, double fx, double fy, double cx, double cy) {
 		this.hardwareMap = hardwareMap;
 		this.cameraName  = cameraName;
 		WIDTH            = width;
@@ -49,18 +50,21 @@ public class AprilTagSubsystem extends SubsystemBase {
 		lastParkingZone = ParkingZone.NONE;
 		synchronized (sync) {
 			if (status == Status.NOT_CONFIGURED) {
-				int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+				int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
+						"cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 
-				camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, cameraName), cameraMonitorViewId);
+				camera = OpenCvCameraFactory.getInstance().createWebcam(
+						hardwareMap.get(WebcamName.class, cameraName), cameraMonitorViewId);
 
-				camera.setPipeline(aprilTagPipeline = new AprilTagPipeline(tagSize, fx, fy, cx, cy));
+				camera.setPipeline(
+						aprilTagPipeline = new AprilTagPipeline(tagSize, fx, fy, cx, cy));
 
 				status = Status.INITIALIZING;
 
 				camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
 					@Override
 					public void onOpened() {
-						camera.startStreaming(WIDTH, HEIGHT, OpenCvCameraRotation.UPRIGHT);
+						camera.startStreaming(WIDTH, HEIGHT, OpenCvCameraRotation.SIDEWAYS_LEFT);
 
 						synchronized (sync) {
 							status = Status.RUNNING;
@@ -73,7 +77,11 @@ public class AprilTagSubsystem extends SubsystemBase {
 							status = Status.FAILURE;
 						}
 
-						RobotLog.addGlobalWarningMessage("Warning: Camera device failed to open with EasyOpenCv error: " + ((errorCode == -1) ? "CAMERA_OPEN_ERROR_FAILURE_TO_OPEN_CAMERA_DEVICE" : "CAMERA_OPEN_ERROR_POSTMORTEM_OPMODE")); //Warn the user about the issue
+						RobotLog.addGlobalWarningMessage(
+								"Warning: Camera device failed to open with EasyOpenCv error: " +
+								((errorCode == -1) ?
+								 "CAMERA_OPEN_ERROR_FAILURE_TO_OPEN_CAMERA_DEVICE" :
+								 "CAMERA_OPEN_ERROR_POSTMORTEM_OPMODE")); //Warn the user about the issue
 					}
 				});
 			}
